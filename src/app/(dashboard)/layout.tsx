@@ -35,7 +35,6 @@ export default async function DashboardLayout({
         <div className="hidden lg:flex lg:shrink-0">
           <AppSidebar
             role={session.role}
-            tenantName={tenantName}
             userName={session.fullName ?? session.email}
             unreadNotifications={unreadNotifications}
           />

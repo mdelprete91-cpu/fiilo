@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { FiloLogo } from './FiloLogo'
-import { SubtractMark } from './SubtractMark'
 import { UserMenu } from './UserMenu'
 import type { TenantRole } from '@/types/database'
 
@@ -45,12 +44,11 @@ const D = {
 
 interface AppSidebarProps {
   role: TenantRole
-  tenantName?: string
   userName?: string
   unreadNotifications?: number
 }
 
-export function AppSidebar({ role, tenantName, userName, unreadNotifications }: AppSidebarProps) {
+export function AppSidebar({ role, userName, unreadNotifications }: AppSidebarProps) {
   const pathname = usePathname()
   const nav = role === 'platform_owner'
     ? platformNav
@@ -81,20 +79,9 @@ export function AppSidebar({ role, tenantName, userName, unreadNotifications }: 
         '--ring':               D.hover,
       } as React.CSSProperties}
     >
-      {/* Logo / tenant */}
+      {/* Logo */}
       <div className="flex h-16 items-center px-4">
-        {tenantName ? (
-          /* Tenant context: mark + sartoria name */
-          <div className="flex items-center gap-2.5 min-w-0">
-            <SubtractMark className="h-7 w-7 shrink-0" style={{ color: D.fg }} />
-            <p className="text-sm font-medium truncate leading-tight min-w-0" style={{ color: D.fg }}>
-              {tenantName}
-            </p>
-          </div>
-        ) : (
-          /* Platform context: show filo wordmark */
-          <FiloLogo className="h-6 w-auto" style={{ color: D.fg } as React.CSSProperties} />
-        )}
+        <FiloLogo className="h-6 w-auto" style={{ color: D.fg } as React.CSSProperties} />
       </div>
 
       {/* Nav */}
