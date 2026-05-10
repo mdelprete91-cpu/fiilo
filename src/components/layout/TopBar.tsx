@@ -7,13 +7,12 @@ import type { TenantRole } from '@/types/database'
 
 interface TopBarProps {
   role: TenantRole
-  tenantName?: string
   userName?: string
   title?: string
   subtitle?: string
 }
 
-export function TopBar({ role, tenantName, userName, title, subtitle }: TopBarProps) {
+export function TopBar({ role, userName, title, subtitle }: TopBarProps) {
   return (
     <div className="flex items-start gap-3">
       {/* Mobile hamburger — hidden on desktop */}
@@ -23,7 +22,7 @@ export function TopBar({ role, tenantName, userName, title, subtitle }: TopBarPr
           <span className="sr-only">Apri menu</span>
         </SheetTrigger>
         <SheetContent side="left" className="w-56 p-0">
-          <AppSidebar role={role} tenantName={tenantName} userName={userName} />
+          <AppSidebar role={role} userName={userName} />
         </SheetContent>
       </Sheet>
 
