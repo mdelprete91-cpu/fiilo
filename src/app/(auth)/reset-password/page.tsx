@@ -5,7 +5,7 @@ import { ResetPasswordForm } from '@/components/auth/ResetPasswordForm'
 import { createClient } from '@/lib/supabase/server'
 
 export const metadata: Metadata = {
-  title: 'Imposta nuova password — filo',
+  title: 'Imposta nuova password — fiilo',
 }
 
 export default async function ResetPasswordPage() {

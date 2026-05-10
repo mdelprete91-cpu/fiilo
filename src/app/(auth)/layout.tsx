@@ -21,7 +21,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 
       {/* Quiet footer */}
       <footer className="px-6 py-6 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} filo · Gestionale per sartorie su misura
+        © {new Date().getFullYear()} fiilo · Gestionale per sartorie su misura
       </footer>
     </div>
   )

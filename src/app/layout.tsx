@@ -16,7 +16,7 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'filo — gestionale su misura',
+  title: 'fiilo — gestionale su misura',
   description: 'Piattaforma SaaS per sartorie su misura',
 }
 
