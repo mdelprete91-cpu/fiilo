@@ -1,21 +1,28 @@
 import type { Metadata } from 'next'
-import { DM_Sans, Geist_Mono } from 'next/font/google'
+import { Inter, JetBrains_Mono, Playfair_Display } from 'next/font/google'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import './globals.css'
 
-const dmSans = DM_Sans({
+const inter = Inter({
   variable: '--font-sans',
   subsets: ['latin'],
-  weight: ['300', '400', '500'],
+  weight: ['300', '400', '500', '600'],
 })
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+const jetbrainsMono = JetBrains_Mono({
+  variable: '--font-mono',
   subsets: ['latin'],
+  weight: ['400', '500', '600'],
+})
+
+const playfair = Playfair_Display({
+  variable: '--font-heading',
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
 })
 
 export const metadata: Metadata = {
-  title: 'Sartoria — Gestionale su misura',
+  title: 'filo — gestionale su misura',
   description: 'Piattaforma SaaS per sartorie su misura',
 }
 
@@ -25,7 +32,7 @@ export default function RootLayout({
   return (
     <html
       lang="it"
-      className={`${dmSans.variable} ${geistMono.variable} h-full`}
+      className={`${inter.variable} ${jetbrainsMono.variable} ${playfair.variable} h-full`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-background text-foreground antialiased">

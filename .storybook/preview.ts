@@ -1,18 +1,25 @@
 import type { Preview } from '@storybook/nextjs-vite'
-import { DM_Sans, Geist_Mono } from 'next/font/google'
+import { Inter, JetBrains_Mono, Playfair_Display } from 'next/font/google'
 import React from 'react'
 
 import '../src/app/globals.css'
 
-const dmSans = DM_Sans({
+const inter = Inter({
   variable: '--font-sans',
   subsets: ['latin'],
-  weight: ['300', '400', '500'],
+  weight: ['300', '400', '500', '600'],
 })
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+const jetbrainsMono = JetBrains_Mono({
+  variable: '--font-mono',
   subsets: ['latin'],
+  weight: ['400', '500', '600'],
+})
+
+const playfair = Playfair_Display({
+  variable: '--font-heading',
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
 })
 
 const preview: Preview = {
@@ -26,9 +33,9 @@ const preview: Preview = {
     backgrounds: {
       default: 'app',
       values: [
-        { name: 'app', value: 'oklch(0.984 0.002 80)' },
-        { name: 'card', value: '#ffffff' },
-        { name: 'dark', value: 'oklch(0.13 0.01 255)' },
+        { name: 'app', value: '#D4D1CA' },
+        { name: 'card', value: '#E8E5DC' },
+        { name: 'dark', value: '#1A1A1A' },
       ],
     },
     layout: 'centered',
