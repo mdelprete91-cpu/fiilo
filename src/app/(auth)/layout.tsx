@@ -1,30 +1,28 @@
+import Link from 'next/link'
+
 import { FiloLogo } from '@/components/layout/FiloLogo'
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
-      {/* Pannello sinistro — brand */}
-      <div className="hidden lg:flex flex-col justify-between bg-ink p-12 text-white">
-        <div>
-          <FiloLogo className="h-8 w-auto text-white" />
-        </div>
-        <blockquote className="space-y-4">
-          <p className="font-heading text-3xl leading-snug text-white/90">
-            &ldquo;Il vero lusso è avere il tempo di fare le cose bene.&rdquo;
-          </p>
-          <footer className="text-sm text-white/50 tracking-wider uppercase">
-            — Giorgio Armani
-          </footer>
-        </blockquote>
-        <p className="text-xs text-white/30 tracking-wider">
-          Gestionale professionale per sartorie su misura
-        </p>
-      </div>
+    <div className="min-h-screen flex flex-col bg-background">
+      {/* Top nav — sticky cream bar with wordmark left */}
+      <header className="flex items-center justify-between px-6 py-5 lg:px-12">
+        <Link href="/" aria-label="filo home" className="inline-flex">
+          <FiloLogo className="h-6 w-auto text-ink" />
+        </Link>
+      </header>
 
-      {/* Pannello destro — form */}
-      <div className="flex items-center justify-center p-8 bg-parchment">
-        {children}
-      </div>
+      {/* Centered card on canvas */}
+      <main className="flex flex-1 items-center justify-center px-6 py-12">
+        <div className="w-full max-w-md rounded-xl border border-border bg-card p-8 sm:p-10">
+          {children}
+        </div>
+      </main>
+
+      {/* Quiet footer */}
+      <footer className="px-6 py-6 text-center text-xs text-muted-foreground">
+        © {new Date().getFullYear()} filo · Gestionale per sartorie su misura
+      </footer>
     </div>
   )
 }

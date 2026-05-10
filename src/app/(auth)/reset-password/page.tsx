@@ -2,7 +2,6 @@ import { redirect } from 'next/navigation'
 import type { Metadata } from 'next'
 
 import { ResetPasswordForm } from '@/components/auth/ResetPasswordForm'
-import { FiloLogo } from '@/components/layout/FiloLogo'
 import { createClient } from '@/lib/supabase/server'
 
 export const metadata: Metadata = {
@@ -21,10 +20,9 @@ export default async function ResetPasswordPage() {
   }
 
   return (
-    <div className="w-full max-w-sm space-y-8">
-      <FiloLogo className="h-7 w-auto text-ink lg:hidden" />
+    <div className="space-y-7">
       <div className="space-y-2">
-        <h1 className="font-heading text-4xl text-ink">Nuova password</h1>
+        <h1 className="font-heading text-3xl text-ink">Nuova password</h1>
         <p className="text-sm text-muted-foreground">
           Scegli una password di almeno 8 caratteri. Verrà aggiornata subito.
         </p>
