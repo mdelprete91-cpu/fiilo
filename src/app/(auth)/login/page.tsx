@@ -1,8 +1,9 @@
 import { LoginForm } from '@/components/auth/LoginForm'
+import { FiloLogo } from '@/components/layout/FiloLogo'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Accedi — Sartoria',
+  title: 'Accedi — filo',
 }
 
 export default function LoginPage({
@@ -12,6 +13,7 @@ export default function LoginPage({
 }) {
   return (
     <div className="w-full max-w-sm space-y-8">
+      <FiloLogo className="h-7 w-auto text-ink lg:hidden" />
       <div className="space-y-2">
         <h1 className="font-heading text-4xl text-ink">Accedi</h1>
         <p className="text-sm text-muted-foreground">

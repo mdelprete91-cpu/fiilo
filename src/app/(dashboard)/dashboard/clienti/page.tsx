@@ -3,6 +3,7 @@ import { Plus, Search } from 'lucide-react'
 import { requireRole } from '@/lib/auth/session'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
+import { FiloLogo } from '@/components/layout/FiloLogo'
 
 interface PageProps {
   searchParams: Promise<{ q?: string }>
@@ -56,6 +57,7 @@ export default async function ClientiPage({ searchParams }: PageProps) {
           {/* Mobile hamburger è dentro TopBar */}
           <TopBar role={session.role} userName={session.fullName ?? session.email} />
           <div>
+            <FiloLogo className="h-5 w-auto text-ink/80 mb-3" />
             <h1 className="font-heading text-5xl text-ink leading-none">Clienti</h1>
             <p className="mt-2 text-sm text-muted-foreground">
               {clients?.length

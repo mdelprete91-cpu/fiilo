@@ -1,12 +1,12 @@
+import { FiloLogo } from '@/components/layout/FiloLogo'
+
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
       {/* Pannello sinistro — brand */}
       <div className="hidden lg:flex flex-col justify-between bg-ink p-12 text-white">
         <div>
-          <span className="font-heading text-2xl tracking-widest text-gold uppercase">
-            Sartoria
-          </span>
+          <FiloLogo className="h-8 w-auto text-white" />
         </div>
         <blockquote className="space-y-4">
           <p className="font-heading text-3xl leading-snug text-white/90">
