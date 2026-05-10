@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { logoutAction } from '@/lib/actions/auth'
 import type { TenantRole } from '@/types/database'
+import { ThemeToggle } from './ThemeToggle'
 
 const ROLE_LABEL: Record<TenantRole, string> = {
   platform_owner: 'Platform Owner',
@@ -72,6 +73,10 @@ export function UserMenu({ userName, role }: UserMenuProps) {
           <Settings className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
           Impostazioni
         </DropdownMenuItem>
+
+        <DropdownMenuSeparator />
+
+        <ThemeToggle />
 
         <DropdownMenuSeparator />
 
