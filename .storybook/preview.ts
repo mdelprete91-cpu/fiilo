@@ -1,5 +1,5 @@
 import type { Preview } from '@storybook/nextjs-vite'
-import { Inter, JetBrains_Mono, Playfair_Display } from 'next/font/google'
+import { Inter, JetBrains_Mono } from 'next/font/google'
 import React from 'react'
 
 import '../src/app/globals.css'
@@ -16,12 +16,6 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ['400', '500', '600'],
 })
 
-const playfair = Playfair_Display({
-  variable: '--font-heading',
-  subsets: ['latin'],
-  weight: ['400', '500', '600'],
-})
-
 const preview: Preview = {
   parameters: {
     controls: {
@@ -33,9 +27,9 @@ const preview: Preview = {
     backgrounds: {
       default: 'app',
       values: [
-        { name: 'app', value: '#D4D1CA' },
-        { name: 'card', value: '#E8E5DC' },
-        { name: 'dark', value: '#1A1A1A' },
+        { name: 'app', value: '#FDFBF7' },
+        { name: 'card', value: '#F7F4EB' },
+        { name: 'dark', value: '#0F0F0F' },
       ],
     },
     layout: 'centered',
@@ -60,8 +54,8 @@ const preview: Preview = {
     (Story, context) => {
       const isDark = context.globals.theme === 'dark'
       const className = [
-        dmSans.variable,
-        geistMono.variable,
+        inter.variable,
+        jetbrainsMono.variable,
         'min-h-[200px]',
         'bg-background',
         'text-foreground',

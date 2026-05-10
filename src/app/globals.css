@@ -53,112 +53,112 @@
 }
 
 :root {
-  /* ── Palette Lumina Art Gallery — taupe museale + nero classico ── */
+  /* ── Palette PaperFlow — cream + arancio caldo, SaaS pulito ── */
 
-  /* Sfondo taupe caldo, non bianco */
-  --background: #D4D1CA;
-  --foreground: #111827;                 /* near-black con sotto-tono blu */
+  /* Sfondo crema neutra */
+  --background: #FDFBF7;
+  --foreground: #111827;
 
-  --card: #E8E5DC;                        /* sabbia chiara — leggera elevazione su background */
+  --card: #F7F4EB;                        /* surface — leggermente più scuro del background */
   --card-foreground: #111827;
 
-  --popover: #E8E5DC;
+  --popover: #FDFBF7;
   --popover-foreground: #111827;
 
-  /* Primary: nero profondo — accent forte come in galleria d'arte */
-  --primary: #1A1A1A;
-  --primary-foreground: #E8E5DC;
+  /* Primary: arancio caldo, accento forte sui CTA */
+  --primary: #E65C00;
+  --primary-foreground: #FDFBF7;
 
-  /* Secondary: tinta sabbia chiara */
-  --secondary: #E8E5DC;
-  --secondary-foreground: #1A1A1A;
+  /* Secondary: surface crema */
+  --secondary: #F7F4EB;
+  --secondary-foreground: #111827;
 
-  /* Muted: leggermente più scuro del background */
-  --muted: #C7C4BC;
+  /* Muted: cream ancora più chiaro */
+  --muted: #F0EDE3;
   --muted-foreground: #4B5563;
 
-  /* Accent: nero — stesso del primary */
-  --accent: #1A1A1A;
-  --accent-foreground: #E8E5DC;
+  /* Accent: pesca soft per stati hover/highlight */
+  --accent: #FFB380;
+  --accent-foreground: #111827;
 
   --destructive: oklch(0.577 0.245 27.325);
 
-  --border: #B8B5AC;                      /* bordo taupe medio */
-  --input: #E8E5DC;
-  --ring: #1A1A1A;
+  --border: #E5E7EB;
+  --input: #F7F4EB;
+  --ring: #E65C00;
 
-  /* Ink — nero pieno per titoli display */
-  --ink: #1A1A1A;
+  /* Ink — testo display */
+  --ink: #111827;
 
   /* Alias mantenuto */
-  --cb-blue: #1A1A1A;
+  --cb-blue: #E65C00;
 
-  --radius: 2.5rem;                       /* 40px — soft, museale */
+  --radius: 1rem;                         /* 16px — soft ma operativo */
 
-  /* Chart — toni neutri caldi */
-  --chart-1: #1A1A1A;
-  --chart-2: oklch(0.58 0.13 55);
+  /* Chart — toni caldi */
+  --chart-1: #E65C00;
+  --chart-2: #FFB380;
   --chart-3: oklch(0.35 0.07 250);
   --chart-4: oklch(0.50 0.10 30);
   --chart-5: oklch(0.45 0.07 300);
 
-  /* Sidebar — surface scuro contro background chiaro */
-  --sidebar: #1A1A1A;
-  --sidebar-foreground: #E8E5DC;
-  --sidebar-primary: #E8E5DC;
-  --sidebar-primary-foreground: #1A1A1A;
-  --sidebar-accent: #2A2A2A;
-  --sidebar-accent-foreground: #E8E5DC;
-  --sidebar-border: #2A2A2A;
-  --sidebar-ring: #E8E5DC;
+  /* Sidebar — bianco crema, non più scuro */
+  --sidebar: #F7F4EB;
+  --sidebar-foreground: #111827;
+  --sidebar-primary: #E65C00;
+  --sidebar-primary-foreground: #FDFBF7;
+  --sidebar-accent: #FFB380;
+  --sidebar-accent-foreground: #111827;
+  --sidebar-border: #E5E7EB;
+  --sidebar-ring: #E65C00;
 }
 
 .dark {
-  /* Dark = surface nero, contenuti su sabbia */
-  --background: #1A1A1A;
-  --foreground: #E8E5DC;
+  /* Dark — pari logica PaperFlow su surface nero, accent arancio resta */
+  --background: #0F0F0F;
+  --foreground: #FDFBF7;
 
-  --card: #2A2A2A;
-  --card-foreground: #E8E5DC;
+  --card: #1A1A1A;
+  --card-foreground: #FDFBF7;
 
-  --popover: #2A2A2A;
-  --popover-foreground: #E8E5DC;
+  --popover: #1A1A1A;
+  --popover-foreground: #FDFBF7;
 
-  --primary: #E8E5DC;
-  --primary-foreground: #1A1A1A;
+  --primary: #E65C00;
+  --primary-foreground: #FDFBF7;
 
-  --secondary: #2A2A2A;
-  --secondary-foreground: #E8E5DC;
+  --secondary: #1A1A1A;
+  --secondary-foreground: #FDFBF7;
 
-  --muted: #2A2A2A;
-  --muted-foreground: #A1A1AA;
+  --muted: #1F1F1F;
+  --muted-foreground: #9CA3AF;
 
-  --accent: #E8E5DC;
-  --accent-foreground: #1A1A1A;
+  --accent: #FFB380;
+  --accent-foreground: #111827;
 
   --destructive: oklch(0.704 0.191 22.216);
 
-  --border: rgba(232, 229, 220, 0.12);
-  --input: rgba(232, 229, 220, 0.1);
-  --ring: #E8E5DC;
+  --border: rgba(253, 251, 247, 0.10);
+  --input: rgba(253, 251, 247, 0.08);
+  --ring: #E65C00;
 
-  --cb-blue: #E8E5DC;
-  --ink: #E8E5DC;
+  --cb-blue: #E65C00;
+  --ink: #FDFBF7;
 
-  --chart-1: #E8E5DC;
-  --chart-2: oklch(0.55 0.10 200);
+  --chart-1: #E65C00;
+  --chart-2: #FFB380;
   --chart-3: oklch(0.65 0.12 140);
   --chart-4: oklch(0.68 0.16 30);
   --chart-5: oklch(0.52 0.14 290);
 
-  --sidebar: #111111;
-  --sidebar-foreground: #E8E5DC;
-  --sidebar-primary: #E8E5DC;
-  --sidebar-primary-foreground: #1A1A1A;
-  --sidebar-accent: #2A2A2A;
-  --sidebar-accent-foreground: #E8E5DC;
-  --sidebar-border: rgba(232, 229, 220, 0.08);
-  --sidebar-ring: #E8E5DC;
+  --sidebar: #0A0A0A;
+  --sidebar-foreground: #FDFBF7;
+  --sidebar-primary: #E65C00;
+  --sidebar-primary-foreground: #FDFBF7;
+  --sidebar-accent: #1A1A1A;
+  --sidebar-accent-foreground: #FDFBF7;
+  --sidebar-border: rgba(253, 251, 247, 0.08);
+  --sidebar-ring: #E65C00;
 }
 
 @layer base {
@@ -174,11 +174,11 @@
 }
 
 @layer utilities {
-  /* Playfair Display — display serif per titoli */
+  /* Inter display — peso 500, tracking compatto, line-height tight */
   .font-heading {
-    font-family: var(--font-heading), 'Playfair Display', Georgia, serif;
+    font-family: var(--font-sans), 'Inter', system-ui, sans-serif;
     font-weight: 500;
-    letter-spacing: 0;
+    letter-spacing: -0.015em;
     line-height: 1.04;
   }
 .text-ink {
