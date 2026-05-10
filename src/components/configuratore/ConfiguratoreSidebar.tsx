@@ -77,7 +77,10 @@ export function ConfiguratoreSidebar({ clientName, backHref, backLabel }: Props)
           const completedCount = group.steps.filter(
             (s) => visible.findIndex((v) => v.id === s.id) < currentIndex,
           ).length
-          const isCompleted = completedCount === group.steps.length && currentIndex > visible.findIndex((v) => v.id === group.steps[group.steps.length - 1].id)
+          const lastStep = group.steps[group.steps.length - 1]
+          const isCompleted = !!lastStep
+            && completedCount === group.steps.length
+            && currentIndex > visible.findIndex((v) => v.id === lastStep.id)
           const sectionNumber = gi + 1
 
           return (

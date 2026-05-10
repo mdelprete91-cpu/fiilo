@@ -72,14 +72,14 @@ export async function saveGarmentAction(
 
     // Keep the denormalized `type` column in sync with config.garmentType once
     // the user has picked one (so produzione filters / lists work correctly).
-    const update: Record<string, unknown> = {
+    const baseUpdate = {
       name,
       current_step: currentStep,
       configuration: config as unknown as Record<string, unknown>,
     }
-    if (config.garmentType) {
-      update.type = config.garmentType
-    }
+    const update = config.garmentType
+      ? { ...baseUpdate, type: config.garmentType }
+      : baseUpdate
 
     const { error } = await supabase
       .from('garments')

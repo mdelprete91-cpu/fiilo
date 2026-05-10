@@ -286,13 +286,17 @@ export function nextStep(
 ): ConfigStep | null {
   const visible = getVisibleSteps(state, ctx)
   const i = visible.findIndex((s) => s.id === current)
-  if (i !== -1) return i === visible.length - 1 ? null : visible[i + 1].id
+  if (i !== -1) {
+    if (i === visible.length - 1) return null
+    return visible[i + 1]?.id ?? null
+  }
 
   const masterIdx = STEPS.findIndex((s) => s.id === current)
   if (masterIdx === -1) return visible[0]?.id ?? null
   const visibleIds = new Set(visible.map((s) => s.id))
   for (let j = masterIdx + 1; j < STEPS.length; j++) {
-    if (visibleIds.has(STEPS[j].id)) return STEPS[j].id
+    const candidate = STEPS[j]
+    if (candidate && visibleIds.has(candidate.id)) return candidate.id
   }
   return null
 }
@@ -304,13 +308,17 @@ export function prevStep(
 ): ConfigStep | null {
   const visible = getVisibleSteps(state, ctx)
   const i = visible.findIndex((s) => s.id === current)
-  if (i !== -1) return i <= 0 ? null : visible[i - 1].id
+  if (i !== -1) {
+    if (i <= 0) return null
+    return visible[i - 1]?.id ?? null
+  }
 
   const masterIdx = STEPS.findIndex((s) => s.id === current)
   if (masterIdx === -1) return visible[visible.length - 1]?.id ?? null
   const visibleIds = new Set(visible.map((s) => s.id))
   for (let j = masterIdx - 1; j >= 0; j--) {
-    if (visibleIds.has(STEPS[j].id)) return STEPS[j].id
+    const candidate = STEPS[j]
+    if (candidate && visibleIds.has(candidate.id)) return candidate.id
   }
   return null
 }
