@@ -20,11 +20,11 @@ export default async function ResetPasswordPage() {
   }
 
   return (
-    <div className="space-y-7">
-      <div className="space-y-2">
-        <h1 className="font-heading text-3xl text-ink">Nuova password</h1>
+    <div className="space-y-6">
+      <div className="space-y-1.5">
+        <h1 className="font-heading text-2xl text-ink">Nuova password</h1>
         <p className="text-sm text-muted-foreground">
-          Scegli una password di almeno 8 caratteri. Verrà aggiornata subito.
+          Scegli una password di almeno 8 caratteri.
         </p>
       </div>
       <ResetPasswordForm />

@@ -39,53 +39,67 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <Field error={errors.email?.message}>
+        <Label htmlFor="email" className="text-sm font-medium text-ink">
+          Email
+        </Label>
         <Input
           id="email"
           type="email"
           placeholder="mario@sartoria.it"
           autoComplete="email"
+          className="h-11 rounded-md text-base md:text-sm"
           {...register('email')}
         />
-        {errors.email && (
-          <p className="text-xs text-destructive">{errors.email.message}</p>
-        )}
-      </div>
+      </Field>
 
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label htmlFor="password">Password</Label>
-          <Link
-            href="/forgot-password"
-            className="text-xs text-muted-foreground hover:text-primary hover:underline"
-            tabIndex={-1}
-          >
-            Hai dimenticato la password?
-          </Link>
-        </div>
+      <Field error={errors.password?.message}>
+        <Label htmlFor="password" className="text-sm font-medium text-ink">
+          Password
+        </Label>
         <Input
           id="password"
           type="password"
           autoComplete="current-password"
+          className="h-11 rounded-md text-base md:text-sm"
           {...register('password')}
         />
-        {errors.password && (
-          <p className="text-xs text-destructive">{errors.password.message}</p>
-        )}
-      </div>
+      </Field>
 
       {errors.root && (
-        <div className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+        <div className="rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive">
           {errors.root.message}
         </div>
       )}
 
-      <Button type="submit" className="w-full" disabled={isPending}>
-        {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+      <Button
+        type="submit"
+        size="lg"
+        className="h-11 w-full rounded-md text-sm font-medium"
+        disabled={isPending}
+      >
+        {isPending && <Loader2 className="size-4 animate-spin" />}
         Accedi
       </Button>
+
+      <p className="pt-1 text-center text-sm text-muted-foreground">
+        <Link
+          href="/forgot-password"
+          className="font-medium text-ink underline-offset-4 hover:underline"
+        >
+          Hai dimenticato la password?
+        </Link>
+      </p>
     </form>
+  )
+}
+
+function Field({ error, children }: { error?: string; children: React.ReactNode }) {
+  return (
+    <div className="space-y-1.5">
+      {children}
+      {error && <p className="text-xs text-destructive">{error}</p>}
+    </div>
   )
 }

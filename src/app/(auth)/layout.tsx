@@ -14,7 +14,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 
       {/* Centered card on canvas */}
       <main className="flex flex-1 items-center justify-center px-6 py-12">
-        <div className="w-full max-w-md rounded-xl border border-border bg-card p-8 sm:p-10">
+        <div className="w-full max-w-sm rounded-lg border border-border bg-card p-8">
           {children}
         </div>
       </main>

@@ -42,14 +42,17 @@ export function ResetPasswordForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-      <div className="space-y-2">
-        <Label htmlFor="password">Nuova password</Label>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <div className="space-y-1.5">
+        <Label htmlFor="password" className="text-sm font-medium text-ink">
+          Nuova password
+        </Label>
         <Input
           id="password"
           type="password"
           autoComplete="new-password"
           autoFocus
+          className="h-11 rounded-md text-base md:text-sm"
           {...register('password')}
         />
         {errors.password && (
@@ -57,12 +60,15 @@ export function ResetPasswordForm() {
         )}
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="confirm">Conferma password</Label>
+      <div className="space-y-1.5">
+        <Label htmlFor="confirm" className="text-sm font-medium text-ink">
+          Conferma password
+        </Label>
         <Input
           id="confirm"
           type="password"
           autoComplete="new-password"
+          className="h-11 rounded-md text-base md:text-sm"
           {...register('confirm')}
         />
         {errors.confirm && (
@@ -71,13 +77,18 @@ export function ResetPasswordForm() {
       </div>
 
       {errors.root && (
-        <div className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+        <div className="rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive">
           {errors.root.message}
         </div>
       )}
 
-      <Button type="submit" className="w-full" disabled={isPending}>
-        {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+      <Button
+        type="submit"
+        size="lg"
+        className="h-11 w-full rounded-md text-sm font-medium"
+        disabled={isPending}
+      >
+        {isPending && <Loader2 className="size-4 animate-spin" />}
         Salva password
       </Button>
     </form>

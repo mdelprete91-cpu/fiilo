@@ -52,15 +52,18 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <div className="space-y-1.5">
+        <Label htmlFor="email" className="text-sm font-medium text-ink">
+          Email
+        </Label>
         <Input
           id="email"
           type="email"
           placeholder="mario@sartoria.it"
           autoComplete="email"
           autoFocus
+          className="h-11 rounded-md text-base md:text-sm"
           {...register('email')}
         />
         {errors.email && (
@@ -68,8 +71,13 @@ export function ForgotPasswordForm() {
         )}
       </div>
 
-      <Button type="submit" className="w-full" disabled={isPending}>
-        {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+      <Button
+        type="submit"
+        size="lg"
+        className="h-11 w-full rounded-md text-sm font-medium"
+        disabled={isPending}
+      >
+        {isPending && <Loader2 className="size-4 animate-spin" />}
         Invia link
       </Button>
     </form>
