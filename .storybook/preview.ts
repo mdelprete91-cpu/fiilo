@@ -27,9 +27,11 @@ const preview: Preview = {
     backgrounds: {
       default: 'app',
       values: [
-        { name: 'app', value: '#FDFBF7' },
-        { name: 'card', value: '#F7F4EB' },
-        { name: 'dark', value: '#0F0F0F' },
+        { name: 'canvas', value: '#F5F1EC' },
+        { name: 'app', value: '#F5F1EC' },
+        { name: 'surface-1 (white card)', value: '#FFFFFF' },
+        { name: 'surface-2', value: '#EFE9E0' },
+        { name: 'inverse-canvas', value: '#000000' },
       ],
     },
     layout: 'centered',

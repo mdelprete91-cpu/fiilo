@@ -53,112 +53,115 @@
 }
 
 :root {
-  /* ── Palette PaperFlow — cream + arancio caldo, SaaS pulito ── */
+  /* ── Palette Intercom-style — canvas crema, charcoal primary, Fin Orange accent ── */
 
-  /* Sfondo crema neutra */
-  --background: #FDFBF7;
-  --foreground: #111827;
+  /* Canvas: crema caldo (#f5f1ec) — anchor del sistema, mai bianco puro */
+  --background: #F5F1EC;
+  --foreground: #111111;                  /* charcoal */
 
-  --card: #F7F4EB;                        /* surface — leggermente più scuro del background */
-  --card-foreground: #111827;
+  /* Card: bianco puro che si solleva dal cream */
+  --card: #FFFFFF;
+  --card-foreground: #111111;
 
-  --popover: #FDFBF7;
-  --popover-foreground: #111827;
+  --popover: #FFFFFF;
+  --popover-foreground: #111111;
 
-  /* Primary: arancio caldo, accento forte sui CTA */
-  --primary: #E65C00;
-  --primary-foreground: #FDFBF7;
+  /* Primary: charcoal — il system primary di Intercom */
+  --primary: #111111;
+  --primary-foreground: #FFFFFF;
 
-  /* Secondary: surface crema */
-  --secondary: #F7F4EB;
-  --secondary-foreground: #111827;
+  /* Secondary: surface 2 (cream più scuro per banner / alt rows) */
+  --secondary: #EFE9E0;
+  --secondary-foreground: #111111;
 
-  /* Muted: cream ancora più chiaro */
-  --muted: #F0EDE3;
-  --muted-foreground: #4B5563;
+  /* Muted: tinta tra canvas e secondary */
+  --muted: #EFE9E0;
+  --muted-foreground: #626260;            /* ink-muted */
 
-  /* Accent: pesca soft per stati hover/highlight */
-  --accent: #FFB380;
-  --accent-foreground: #111827;
+  /* Accent: Fin Orange — usato sparingly (CTA AI / badge) */
+  --accent: #FF5600;
+  --accent-foreground: #FFFFFF;
 
   --destructive: oklch(0.577 0.245 27.325);
 
-  --border: #E5E7EB;
-  --input: #F7F4EB;
-  --ring: #E65C00;
+  /* Hairline: bordo cream-warm */
+  --border: #D3CEC6;
+  --input: #FFFFFF;
+  --ring: #111111;
 
   /* Ink — testo display */
-  --ink: #111827;
+  --ink: #111111;
 
-  /* Alias mantenuto */
-  --cb-blue: #E65C00;
+  /* Alias mantenuto (era cb-blue → ora resta charcoal) */
+  --cb-blue: #111111;
 
-  --radius: 1rem;                         /* 16px — soft ma operativo */
+  --radius: 0.75rem;                      /* 12px — card lg; controlli ≈ 8px, mockup xl ≈ 17px */
 
-  /* Chart — toni caldi */
-  --chart-1: #E65C00;
-  --chart-2: #FFB380;
-  --chart-3: oklch(0.35 0.07 250);
-  --chart-4: oklch(0.50 0.10 30);
-  --chart-5: oklch(0.45 0.07 300);
+  /* Chart — palette report Intercom */
+  --chart-1: #111111;
+  --chart-2: #FF5600;                     /* Fin orange */
+  --chart-3: #0007CB;                     /* brand blue */
+  --chart-4: #00B894;                     /* report green */
+  --chart-5: #C9F76F;                     /* report lime */
 
-  /* Sidebar — bianco crema, non più scuro */
-  --sidebar: #F7F4EB;
-  --sidebar-foreground: #111827;
-  --sidebar-primary: #E65C00;
-  --sidebar-primary-foreground: #FDFBF7;
-  --sidebar-accent: #FFB380;
-  --sidebar-accent-foreground: #111827;
-  --sidebar-border: #E5E7EB;
-  --sidebar-ring: #E65C00;
+  /* Sidebar — surface 2 (cream più scuro del canvas, contrasto sottile) */
+  --sidebar: #EFE9E0;
+  --sidebar-foreground: #111111;
+  --sidebar-primary: #111111;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #FFFFFF;
+  --sidebar-accent-foreground: #111111;
+  --sidebar-border: #D3CEC6;
+  --sidebar-ring: #111111;
 }
 
 .dark {
-  /* Dark — pari logica PaperFlow su surface nero, accent arancio resta */
-  --background: #0F0F0F;
-  --foreground: #FDFBF7;
+  /* Dark — Intercom non documenta dark mode marketing, ma manteniamo
+     la coerenza: inverse-canvas nero (#000) con foreground crema */
+  --background: #000000;
+  --foreground: #F5F1EC;
 
-  --card: #1A1A1A;
-  --card-foreground: #FDFBF7;
+  --card: #111111;
+  --card-foreground: #F5F1EC;
 
-  --popover: #1A1A1A;
-  --popover-foreground: #FDFBF7;
+  --popover: #111111;
+  --popover-foreground: #F5F1EC;
 
-  --primary: #E65C00;
-  --primary-foreground: #FDFBF7;
+  --primary: #F5F1EC;
+  --primary-foreground: #111111;
 
-  --secondary: #1A1A1A;
-  --secondary-foreground: #FDFBF7;
+  --secondary: #111111;
+  --secondary-foreground: #F5F1EC;
 
-  --muted: #1F1F1F;
-  --muted-foreground: #9CA3AF;
+  --muted: #1A1A1A;
+  --muted-foreground: #9C9FA5;            /* ink-tertiary */
 
-  --accent: #FFB380;
-  --accent-foreground: #111827;
+  --accent: #FF5600;
+  --accent-foreground: #FFFFFF;
 
   --destructive: oklch(0.704 0.191 22.216);
 
-  --border: rgba(253, 251, 247, 0.10);
-  --input: rgba(253, 251, 247, 0.08);
-  --ring: #E65C00;
+  --border: rgba(245, 241, 236, 0.10);
+  --input: rgba(245, 241, 236, 0.08);
+  --ring: #F5F1EC;
 
-  --cb-blue: #E65C00;
-  --ink: #FDFBF7;
+  --cb-blue: #F5F1EC;
+  --ink: #F5F1EC;
 
-  --chart-1: #E65C00;
-  --chart-2: #FFB380;
-  --chart-3: oklch(0.65 0.12 140);
-  --chart-4: oklch(0.68 0.16 30);
-  --chart-5: oklch(0.52 0.14 290);
+  --chart-1: #F5F1EC;
+  --chart-2: #FF5600;
+  --chart-3: #6B7AFF;
+  --chart-4: #00B894;
+  --chart-5: #C9F76F;
 
-  --sidebar: #0A0A0A;
-  --sidebar-foreground: #FDFBF7;
-  --sidebar-primary: #E65C00;
-  --sidebar-primary-foreground: #FDFBF7;
+  --sidebar: #000000;
+  --sidebar-foreground: #F5F1EC;
+  --sidebar-primary: #F5F1EC;
+  --sidebar-primary-foreground: #111111;
   --sidebar-accent: #1A1A1A;
-  --sidebar-accent-foreground: #FDFBF7;
-  --sidebar-border: rgba(253, 251, 247, 0.08);
-  --sidebar-ring: #E65C00;
+  --sidebar-accent-foreground: #F5F1EC;
+  --sidebar-border: rgba(245, 241, 236, 0.08);
+  --sidebar-ring: #F5F1EC;
 }
 
 @layer base {
@@ -174,12 +177,12 @@
 }
 
 @layer utilities {
-  /* Inter display — peso 500, tracking compatto, line-height tight */
+  /* Inter al posto di Saans — display 500, tracking aggressivo come Intercom */
   .font-heading {
     font-family: var(--font-sans), 'Inter', system-ui, sans-serif;
     font-weight: 500;
-    letter-spacing: -0.015em;
-    line-height: 1.04;
+    letter-spacing: -0.025em;             /* ≈ -2.0px su 72px (3% del size) */
+    line-height: 1.05;
   }
 .text-ink {
     color: var(--ink);
