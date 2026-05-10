@@ -62,3 +62,50 @@ export async function sendMagicLinkAction(formData: FormData): Promise<ActionRes
 
   return { success: true }
 }
+
+export async function requestPasswordResetAction(formData: FormData): Promise<ActionResult> {
+  const email = z.string().email().safeParse(formData.get('email'))
+  if (!email.success) {
+    return { success: false, error: 'Email non valida' }
+  }
+
+  const supabase = await createClient()
+  const { error } = await supabase.auth.resetPasswordForEmail(email.data, {
+    redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback?next=/reset-password`,
+  })
+
+  // Always return success to avoid leaking which emails are registered.
+  if (error) {
+    console.error('Password reset request failed:', error.message)
+  }
+  return { success: true }
+}
+
+const PasswordSchema = z.object({
+  password: z.string().min(8, 'La password deve avere almeno 8 caratteri'),
+  confirm: z.string(),
+}).refine((d) => d.password === d.confirm, {
+  message: 'Le password non coincidono',
+  path: ['confirm'],
+})
+
+export async function updatePasswordAction(formData: FormData): Promise<ActionResult> {
+  const parsed = PasswordSchema.safeParse({
+    password: formData.get('password'),
+    confirm: formData.get('confirm'),
+  })
+
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues[0]?.message ?? 'Dati non validi' }
+  }
+
+  const supabase = await createClient()
+  const { error } = await supabase.auth.updateUser({ password: parsed.data.password })
+
+  if (error) {
+    return { success: false, error: 'Impossibile aggiornare la password. Riprova dal link nella mail.' }
+  }
+
+  revalidatePath('/', 'layout')
+  redirect('/dashboard')
+}

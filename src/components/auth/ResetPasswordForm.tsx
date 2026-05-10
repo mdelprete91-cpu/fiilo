@@ -1,23 +1,26 @@
 'use client'
 
 import { useTransition } from 'react'
-import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Loader2 } from 'lucide-react'
+
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { loginAction } from '@/lib/actions/auth'
+import { updatePasswordAction } from '@/lib/actions/auth'
 
 const schema = z.object({
-  email: z.string().email('Email non valida'),
-  password: z.string().min(1, 'La password è obbligatoria'),
+  password: z.string().min(8, 'Almeno 8 caratteri'),
+  confirm: z.string(),
+}).refine((d) => d.password === d.confirm, {
+  message: 'Le password non coincidono',
+  path: ['confirm'],
 })
 type FormData = z.infer<typeof schema>
 
-export function LoginForm() {
+export function ResetPasswordForm() {
   const [isPending, startTransition] = useTransition()
   const {
     register,
@@ -29,9 +32,9 @@ export function LoginForm() {
   function onSubmit(data: FormData) {
     startTransition(async () => {
       const fd = new FormData()
-      fd.set('email', data.email)
       fd.set('password', data.password)
-      const result = await loginAction(fd)
+      fd.set('confirm', data.confirm)
+      const result = await updatePasswordAction(fd)
       if (!result.success) {
         setError('root', { message: result.error })
       }
@@ -41,38 +44,29 @@ export function LoginForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
-          type="email"
-          placeholder="mario@sartoria.it"
-          autoComplete="email"
-          {...register('email')}
-        />
-        {errors.email && (
-          <p className="text-xs text-destructive">{errors.email.message}</p>
-        )}
-      </div>
-
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label htmlFor="password">Password</Label>
-          <Link
-            href="/forgot-password"
-            className="text-xs text-muted-foreground hover:text-primary hover:underline"
-            tabIndex={-1}
-          >
-            Hai dimenticato la password?
-          </Link>
-        </div>
+        <Label htmlFor="password">Nuova password</Label>
         <Input
           id="password"
           type="password"
-          autoComplete="current-password"
+          autoComplete="new-password"
+          autoFocus
           {...register('password')}
         />
         {errors.password && (
           <p className="text-xs text-destructive">{errors.password.message}</p>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="confirm">Conferma password</Label>
+        <Input
+          id="confirm"
+          type="password"
+          autoComplete="new-password"
+          {...register('confirm')}
+        />
+        {errors.confirm && (
+          <p className="text-xs text-destructive">{errors.confirm.message}</p>
         )}
       </div>
 
@@ -84,7 +78,7 @@ export function LoginForm() {
 
       <Button type="submit" className="w-full" disabled={isPending}>
         {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-        Accedi
+        Salva password
       </Button>
     </form>
   )

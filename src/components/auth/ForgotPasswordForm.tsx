@@ -1,28 +1,27 @@
 'use client'
 
-import { useTransition } from 'react'
-import Link from 'next/link'
+import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Loader2 } from 'lucide-react'
+import { CheckCircle2, Loader2 } from 'lucide-react'
+
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { loginAction } from '@/lib/actions/auth'
+import { requestPasswordResetAction } from '@/lib/actions/auth'
 
 const schema = z.object({
   email: z.string().email('Email non valida'),
-  password: z.string().min(1, 'La password è obbligatoria'),
 })
 type FormData = z.infer<typeof schema>
 
-export function LoginForm() {
+export function ForgotPasswordForm() {
   const [isPending, startTransition] = useTransition()
+  const [sent, setSent] = useState(false)
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema) })
 
@@ -30,12 +29,26 @@ export function LoginForm() {
     startTransition(async () => {
       const fd = new FormData()
       fd.set('email', data.email)
-      fd.set('password', data.password)
-      const result = await loginAction(fd)
-      if (!result.success) {
-        setError('root', { message: result.error })
-      }
+      await requestPasswordResetAction(fd)
+      setSent(true)
     })
+  }
+
+  if (sent) {
+    return (
+      <div className="rounded-md border border-primary/30 bg-primary/5 px-4 py-4">
+        <div className="flex items-start gap-3">
+          <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-primary" />
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-foreground">Controlla la tua casella</p>
+            <p className="text-xs text-muted-foreground">
+              Se l&apos;email è registrata riceverai un link per reimpostare la password entro
+              qualche minuto. Controlla anche la cartella spam.
+            </p>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -47,6 +60,7 @@ export function LoginForm() {
           type="email"
           placeholder="mario@sartoria.it"
           autoComplete="email"
+          autoFocus
           {...register('email')}
         />
         {errors.email && (
@@ -54,37 +68,9 @@ export function LoginForm() {
         )}
       </div>
 
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label htmlFor="password">Password</Label>
-          <Link
-            href="/forgot-password"
-            className="text-xs text-muted-foreground hover:text-primary hover:underline"
-            tabIndex={-1}
-          >
-            Hai dimenticato la password?
-          </Link>
-        </div>
-        <Input
-          id="password"
-          type="password"
-          autoComplete="current-password"
-          {...register('password')}
-        />
-        {errors.password && (
-          <p className="text-xs text-destructive">{errors.password.message}</p>
-        )}
-      </div>
-
-      {errors.root && (
-        <div className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          {errors.root.message}
-        </div>
-      )}
-
       <Button type="submit" className="w-full" disabled={isPending}>
         {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-        Accedi
+        Invia link
       </Button>
     </form>
   )
