@@ -11,7 +11,6 @@ import {
   MessageCircle,
   Phone,
   Play,
-  Plus,
   Search,
   Shirt,
   Sparkles,
@@ -37,7 +36,6 @@ export function LandingPage() {
       <Mockup />
       <Features />
       <Testimonial />
-      <FAQ />
       <FinalCTA />
       <Footer />
     </div>
@@ -60,9 +58,6 @@ function Nav() {
           <a href="#use-cases" className="transition-colors hover:text-foreground">
             Per chi
           </a>
-          <a href="#faq" className="transition-colors hover:text-foreground">
-            FAQ
-          </a>
         </div>
         <div className="flex items-center gap-2">
           <Link
@@ -71,12 +66,12 @@ function Nav() {
           >
             Accedi
           </Link>
-          <Link
-            href="/login"
+          <a
+            href="mailto:hello@fiilo.it?subject=Richiesta%20demo%20fiilo"
             className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-transform hover:scale-[1.02]"
           >
-            Inizia gratis
-          </Link>
+            Richiedi una demo
+          </a>
         </div>
       </div>
     </nav>
@@ -158,30 +153,14 @@ function Hero() {
           transition={{ ...REVEAL_T, delay: 0.15 }}
           className="mt-9 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center"
         >
-          <Link
-            href="/login"
+          <a
+            href="mailto:hello@fiilo.it?subject=Richiesta%20demo%20fiilo"
             className="group inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-medium text-foreground shadow-lg transition-transform hover:scale-[1.02]"
           >
-            Inizia gratis
+            Richiedi una demo
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </Link>
-          <Link
-            href="#prodotto"
-            className="inline-flex items-center justify-center gap-2 rounded-full border border-white/25 bg-white/5 px-6 py-3.5 text-sm font-medium text-white backdrop-blur transition-colors hover:bg-white/10"
-          >
-            Guarda demo
-          </Link>
+          </a>
         </motion.div>
-
-        <motion.p
-          variants={REVEAL}
-          initial="hidden"
-          animate="visible"
-          transition={{ ...REVEAL_T, delay: 0.2 }}
-          className="mt-5 text-sm text-white/60"
-        >
-          14 giorni gratis · nessuna carta richiesta
-        </motion.p>
       </div>
     </section>
   )
@@ -602,72 +581,6 @@ function Testimonial() {
   )
 }
 
-/* ─────────────────  FAQ  ───────────────── */
-
-function FAQ() {
-  const items = [
-    {
-      q: 'I miei dati restano miei?',
-      a: 'Sì. Hosting EU, backup giornalieri, GDPR-ready. Esporti tutto in CSV in qualunque momento.',
-    },
-    {
-      q: 'Come funziona WhatsApp?',
-      a: 'Colleghi il numero del tuo atelier. Foto, audio e testi dei clienti vengono salvati nelle rispettive schede in automatico, categorizzati per tipo (misure, reference, conferme).',
-    },
-    {
-      q: 'Posso gestire più atelier?',
-      a: 'Sì, dal piano Maison. Multi-tenant con utenti, permessi e dati separati per ogni sede.',
-    },
-    {
-      q: 'C’è un’app mobile?',
-      a: 'filo è progettato mobile-first: funziona perfettamente da iPhone o Android via browser. App native in arrivo nel 2026.',
-    },
-    {
-      q: 'Posso provarlo prima di pagare?',
-      a: 'Sì, 14 giorni gratis su tutti i piani a pagamento. Nessuna carta richiesta per Starter.',
-    },
-  ]
-  return (
-    <section id="faq" className="bg-card py-24 md:py-32">
-      <div className="mx-auto max-w-3xl px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={REVEAL_T}
-          className="mb-12"
-        >
-          <div className="mb-4 text-xs font-medium uppercase tracking-[0.2em] text-foreground/55">
-            Domande frequenti
-          </div>
-          <h2 className="text-4xl font-normal leading-[1] tracking-[-0.02em] font-[family-name:var(--font-serif)] text-ink md:text-5xl">
-            Tutto quello che vuoi sapere.
-          </h2>
-        </motion.div>
-
-        <div className="divide-y divide-border rounded-3xl border border-border bg-background">
-          {items.map((it, i) => (
-            <details
-              key={i}
-              className="group px-7 py-5 [&_summary::-webkit-details-marker]:hidden"
-            >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-medium text-foreground">
-                {it.q}
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-card transition-transform group-open:rotate-45">
-                  <Plus className="h-4 w-4 text-foreground/55" />
-                </span>
-              </summary>
-              <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-foreground/65">
-                {it.a}
-              </p>
-            </details>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
 /* ─────────────────  FINAL CTA  ───────────────── */
 
 function FinalCTA() {
@@ -687,22 +600,16 @@ function FinalCTA() {
           Pronto a cucire il prossimo capo?
         </h2>
         <p className="relative mx-auto mt-6 max-w-md text-[15px] text-primary-foreground/65">
-          14 giorni gratis. Nessuna carta richiesta. Setup in 5 minuti.
+          Stiamo aprendo l’early access agli atelier italiani. Scrivici per una demo personalizzata.
         </p>
-        <div className="relative mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <Link
-            href="/login"
+        <div className="relative mt-10 flex justify-center">
+          <a
+            href="mailto:hello@fiilo.it?subject=Richiesta%20demo%20fiilo"
             className="group inline-flex items-center gap-2 rounded-full bg-card px-6 py-3.5 text-sm font-medium text-foreground shadow-lg transition-transform hover:scale-[1.02]"
           >
-            Inizia gratis
+            Richiedi una demo
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </Link>
-          <Link
-            href="mailto:hello@fiilo.it"
-            className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/20 px-6 py-3.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-foreground/10"
-          >
-            Parla con noi
-          </Link>
+          </a>
         </div>
       </motion.div>
     </section>
