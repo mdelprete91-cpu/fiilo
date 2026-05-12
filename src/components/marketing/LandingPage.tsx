@@ -44,7 +44,7 @@ const COPY = {
       titleEm: 'cucito su misura',
       title2: 'per i sarti.',
       subhead:
-        'Disegno dell’abito, preventivo in PDF, messaggi WhatsApp, lavorazioni in corso: pensato per le sartorie vere, non riadattato da un programma qualunque. Apriamo i primi posti nel 2026.',
+        'Schede cliente complete, WhatsApp ordinato dall’AI, disegno dell’abito al bancone. Pensato per le sartorie vere, non riadattato da un programma qualunque. Apriamo i primi posti nel 2026.',
       cta: 'Prenota una dimostrazione',
     },
     mockup: {
@@ -54,10 +54,10 @@ const COPY = {
       titleLine1Em: 'digitale',
       titleLine2: 'al servizio della tradizione.',
       lede:
-        'Tessuto, taglio, dettagli: si scelgono al bancone, davanti al cliente. Il preventivo in PDF esce firmato con il vostro logo. Niente più appunti persi tra le chat di WhatsApp.',
-      chip1: 'Disegno dell’abito + preventivo in PDF',
-      chip2: 'WhatsApp che si ordina da solo',
-      chip3: 'Storico misure cliente per cliente',
+        'Una scheda per ogni cliente, completa. I messaggi WhatsApp si ordinano da soli nella sua scheda. L’abito si disegna al bancone, davanti a chi lo comprerà.',
+      chip1: 'Schede cliente complete',
+      chip2: 'WhatsApp ordinato dall’AI',
+      chip3: 'Disegno dell’abito al bancone',
       app: {
         header: 'Ordini, autunno inverno 2026',
         statusPill: 'In corso',
@@ -93,7 +93,7 @@ const COPY = {
           n: '2',
           title: 'Si disegna l’abito insieme al cliente',
           body:
-            'Tessuto, taglio, finiture, bottoni: si decide al bancone. Il preventivo in PDF è pronto prima che il cliente esca dal negozio.',
+            'Tessuto, taglio, finiture, bottoni: si decide al bancone, davanti a chi compra. Esce subito un preventivo firmato, pronto da consegnare.',
         },
         {
           n: '3',
@@ -133,24 +133,24 @@ const COPY = {
     features: {
       marker: 'IV.',
       eyebrow: 'Cosa fa fiilo',
-      title: 'Quattro cose fatte bene. Niente fronzoli.',
+      title: 'Costruito intorno al mestiere.',
       cards: [
         {
           colSpan: 2 as 1 | 2,
-          title: 'Disegno dell’abito e preventivo in PDF',
+          title: 'Disegno dell’abito',
           body:
-            'Tessuto, taglio, dettagli, bottoni: si scelgono al bancone insieme al cliente. Il preventivo firmato, con il vostro logo, esce in un attimo. L’esperienza che la sartoria su misura merita.',
+            'Tessuto, taglio, dettagli, bottoni: si scelgono al bancone insieme al cliente. Alla fine esce un preventivo firmato col vostro logo, pronto da consegnare. Vendere su misura come si deve.',
           accent: true,
         },
         {
           colSpan: 1 as 1 | 2,
-          title: 'WhatsApp che si ordina da solo',
-          body: 'Le foto, i vocali, le misure e le conferme che arrivano dai clienti finiscono nella scheda giusta. Senza che dobbiate copiare nulla.',
+          title: 'Schede cliente complete',
+          body: 'Misure, foto, preferenze, storico delle prove. Tutto sul cliente, in un posto solo, sempre con voi.',
         },
         {
           colSpan: 1 as 1 | 2,
-          title: 'Storico delle misure',
-          body: 'Ogni prova rimane archiviata. Si confronta una stagione con l’altra, un anno con l’altro, per vedere come cambia il cliente.',
+          title: 'WhatsApp ordinato dall’AI',
+          body: 'Foto, vocali, misure e conferme finiscono nella scheda giusta. Senza che dobbiate copiare nulla.',
         },
         {
           colSpan: 2 as 1 | 2,
