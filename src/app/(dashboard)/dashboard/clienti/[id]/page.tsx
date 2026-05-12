@@ -73,37 +73,23 @@ export default async function ClienteDetailPage({ params, searchParams }: PagePr
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Anagrafica */}
         <div className="lg:col-span-1 space-y-4">
-          <div className="rounded-xl border border-border bg-card p-5">
-            <div className="flex items-start justify-between">
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-ink text-base font-bold text-background uppercase">
-                  {client.first_name[0]}{client.last_name[0]}
-                </div>
-                <div>
-                  <h2 className="text-base font-semibold leading-tight text-ink">
-                    {client.first_name} {client.last_name}
-                  </h2>
-                  {client.city && (
-                    <p className="text-sm text-muted-foreground mt-0.5">{client.city}</p>
-                  )}
-                </div>
-              </div>
+          <div className="overflow-hidden rounded-xl border border-border bg-card">
+            <div className="flex items-center justify-between border-b border-border px-5 py-4">
+              <h3 className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+                Contatti
+              </h3>
               <Link
                 href={`/dashboard/clienti/${id}/modifica`}
-                className="rounded-md p-1.5 hover:bg-muted transition-colors"
+                className="rounded-md p-1.5 transition-colors hover:bg-muted"
                 title="Modifica"
               >
                 <Edit className="h-4 w-4 text-muted-foreground" />
               </Link>
             </div>
 
-            <dl className="mt-5 space-y-2.5 text-sm">
-              {client.email && (
-                <Row label="Email" value={client.email} />
-              )}
-              {client.phone && (
-                <Row label="Telefono" value={client.phone} />
-              )}
+            <dl className="space-y-2.5 px-5 py-4 text-sm">
+              {client.email && <Row label="Email" value={client.email} />}
+              {client.phone && <Row label="Telefono" value={client.phone} />}
               {client.date_of_birth && (
                 <Row
                   label="Nascita"
@@ -116,10 +102,13 @@ export default async function ClienteDetailPage({ params, searchParams }: PagePr
                   value={`${client.address}${client.city ? `, ${client.city}` : ''}`}
                 />
               )}
+              {!client.address && client.city && (
+                <Row label="Città" value={client.city} />
+              )}
             </dl>
 
             {client.notes && (
-              <div className="mt-4 rounded-md bg-muted/50 p-3 text-sm text-muted-foreground">
+              <div className="border-t border-border bg-muted/30 px-5 py-3 text-sm text-muted-foreground">
                 {client.notes}
               </div>
             )}
