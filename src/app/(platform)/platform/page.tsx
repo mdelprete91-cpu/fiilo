@@ -113,9 +113,7 @@ export default async function PlatformPage() {
           <KpiCell
             label="Abiti configurati"
             value={totalGarments ?? 0}
-            pill={`${garmentsInProduction ?? 0}`}
-            pillTone="neutral"
-            context="in produzione"
+            context={`${garmentsInProduction ?? 0} in produzione`}
           />
         </div>
       </div>
@@ -228,19 +226,21 @@ function KpiCell({
       <p className="font-heading mt-3 text-5xl leading-none tabular-nums text-ink">
         {value}
       </p>
-      {pill && (
+      {(pill || context) && (
         <div className="mt-4 flex flex-wrap items-center gap-2 text-xs">
-          <span
-            className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 font-medium tabular-nums ${PILL_TONE_CLASSES[pillTone]}`}
-          >
-            {pillTone === 'positive' && (
-              <TrendingUp className="h-3 w-3" aria-hidden />
-            )}
-            {pillTone === 'negative' && (
-              <TrendingDown className="h-3 w-3" aria-hidden />
-            )}
-            {pill}
-          </span>
+          {pill && (
+            <span
+              className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 font-medium tabular-nums ${PILL_TONE_CLASSES[pillTone]}`}
+            >
+              {pillTone === 'positive' && (
+                <TrendingUp className="h-3 w-3" aria-hidden />
+              )}
+              {pillTone === 'negative' && (
+                <TrendingDown className="h-3 w-3" aria-hidden />
+              )}
+              {pill}
+            </span>
+          )}
           {context && (
             <span className="text-muted-foreground">{context}</span>
           )}
