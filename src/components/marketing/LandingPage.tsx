@@ -29,7 +29,7 @@ const REVEAL_T = { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const }
 
 export function LandingPage() {
   return (
-    <div className="relative w-full overflow-x-hidden bg-card text-foreground selection:bg-secondary selection:text-foreground">
+    <div className="force-light relative w-full overflow-x-hidden bg-card text-foreground selection:bg-secondary selection:text-foreground">
       <Nav />
       <Hero />
       <Steps />

@@ -180,6 +180,36 @@
   html {
     @apply font-sans;
   }
+
+  /* Forza la palette light su elementi marcati come force-light
+     anche quando <html> ha .dark. Usato sulla landing pubblica. */
+  .force-light,
+  .dark .force-light {
+    color-scheme: light;
+    --background: #FAFAFA;
+    --foreground: #111111;
+    --card: #FFFFFF;
+    --card-foreground: #111111;
+    --popover: #FFFFFF;
+    --popover-foreground: #111111;
+    --primary: #111111;
+    --primary-foreground: #FFFFFF;
+    --secondary: #F1F1F1;
+    --secondary-foreground: #111111;
+    --muted: #F1F1F1;
+    --muted-foreground: #6B6B6B;
+    --accent: #FF5600;
+    --accent-foreground: #FFFFFF;
+    --destructive: oklch(0.577 0.245 27.325);
+    --border: #E5E5E5;
+    --input: #FFFFFF;
+    --ring: #111111;
+    --ink: #111111;
+    --cb-blue: #111111;
+    --kpi-fatturato: oklch(0.30 0.08 155);
+    --kpi-incassato: oklch(0.32 0.07 250);
+    --kpi-due: oklch(0.55 0.12 55);
+  }
 }
 
 @layer utilities {
