@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { TrendingDown, TrendingUp } from 'lucide-react'
 import { requireRole } from '@/lib/auth/session'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
@@ -105,9 +106,7 @@ export default async function PlatformPage() {
             label="Clienti totali"
             value={totalClients ?? 0}
             sub={
-              (clientsLast30 ?? 0) > 0
-                ? `+${clientsLast30} ultimi 30gg`
-                : 'Nessun nuovo cliente'
+              (clientsLast30 ?? 0) > 0 ? `+${clientsLast30} · 30gg` : '—'
             }
             subTone={(clientsLast30 ?? 0) > 0 ? 'positive' : 'neutral'}
           />
@@ -117,9 +116,9 @@ export default async function PlatformPage() {
             sub={
               (garmentsInProduction ?? 0) > 0
                 ? `${garmentsInProduction} in produzione`
-                : 'Niente in produzione'
+                : 'Nessuno in produzione'
             }
-            subTone={(garmentsInProduction ?? 0) > 0 ? 'warning' : 'neutral'}
+            subTone="neutral"
           />
         </div>
       </div>
@@ -198,17 +197,12 @@ export default async function PlatformPage() {
   )
 }
 
-type SubTone = 'neutral' | 'positive' | 'negative' | 'warning'
+type SubTone = 'neutral' | 'positive' | 'negative'
 
 const SUB_TONE_CLASSES: Record<SubTone, string> = {
-  positive:
-    'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300',
-  negative:
-    'bg-rose-50 text-rose-700 dark:bg-rose-950/50 dark:text-rose-300',
-  warning:
-    'bg-amber-50 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300',
-  neutral:
-    'bg-secondary text-muted-foreground dark:bg-muted/60',
+  positive: 'text-emerald-700 dark:text-emerald-400',
+  negative: 'text-rose-700 dark:text-rose-400',
+  neutral: 'text-muted-foreground',
 }
 
 function KpiCell({
@@ -224,19 +218,27 @@ function KpiCell({
 }) {
   return (
     <div className="px-6 py-7">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
-        {label}
-      </p>
-      <p className="font-heading mt-3 text-5xl leading-none tabular-nums text-ink">
+      <div className="flex items-baseline justify-between gap-3">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+          {label}
+        </p>
+        {sub && (
+          <span
+            className={`inline-flex items-center gap-1 text-[11px] font-medium tabular-nums ${SUB_TONE_CLASSES[subTone]}`}
+          >
+            {subTone === 'positive' && (
+              <TrendingUp className="h-3 w-3" aria-hidden />
+            )}
+            {subTone === 'negative' && (
+              <TrendingDown className="h-3 w-3" aria-hidden />
+            )}
+            {sub}
+          </span>
+        )}
+      </div>
+      <p className="font-heading mt-4 text-5xl leading-none tabular-nums text-ink">
         {value}
       </p>
-      {sub && (
-        <span
-          className={`mt-3 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium leading-none tabular-nums ${SUB_TONE_CLASSES[subTone]}`}
-        >
-          {sub}
-        </span>
-      )}
     </div>
   )
 }
@@ -267,11 +269,10 @@ function ActiveBadge({ active }: { active: boolean }) {
 }
 
 function formatDeltaSub(deltaPct: number | null): string {
-  if (deltaPct == null) return 'Nuova attività'
-  if (deltaPct === 0) return 'Stabile vs mese scorso'
-  const arrow = deltaPct > 0 ? '↑' : '↓'
+  if (deltaPct == null) return 'nuove'
+  if (deltaPct === 0) return 'stabile'
   const sign = deltaPct > 0 ? '+' : ''
-  return `${arrow} ${sign}${deltaPct}% vs mese scorso`
+  return `${sign}${deltaPct}% MoM`
 }
 
 function capitalize(s: string): string {
