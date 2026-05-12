@@ -44,7 +44,7 @@ const COPY = {
       titleEm: 'su misura',
       title2: 'per le sartorie.',
       subhead:
-        'Configuratore d’abito, preventivo PDF, WhatsApp, produzione: pensati per atelier su misura, non riadattati da un CRM generico. Apriamo i primi accessi nel 2026.',
+        'Schede cliente complete, WhatsApp ordinato dall’AI, disegno dell’abito al bancone: pensato per le sartorie vere, non riadattato da un programma qualunque. Apriamo i primi accessi nel 2026.',
       cta: 'Prenota una dimostrazione',
     },
     mockup: {
