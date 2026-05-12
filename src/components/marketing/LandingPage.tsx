@@ -14,7 +14,6 @@ import {
   Search,
   Shirt,
   Sparkles,
-  Star,
   Users,
 } from 'lucide-react'
 
@@ -35,7 +34,6 @@ export function LandingPage() {
       <Steps />
       <UseCases />
       <Features />
-      <Testimonial />
       <FinalCTA />
       <Footer />
     </div>
@@ -117,9 +115,9 @@ function Hero() {
           transition={REVEAL_T}
           className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-white/20 bg-black/20 px-3 py-1 backdrop-blur"
         >
-          <span className="flex h-2 w-2 rounded-full bg-emerald-400" />
-          <span className="text-xs font-medium text-white/85">
-            Disponibile in Italia · 2026
+          <span className="flex h-2 w-2 rounded-full bg-accent" />
+          <span className="text-xs font-medium uppercase tracking-[0.15em] text-white/85">
+            Early access · primi atelier italiani
           </span>
         </motion.div>
 
@@ -142,8 +140,8 @@ function Hero() {
           transition={{ ...REVEAL_T, delay: 0.1 }}
           className="mt-6 max-w-lg text-lg leading-relaxed text-white/80"
         >
-          Clienti, misure, ordini, WhatsApp. Tutto cucito in un solo gestionale
-          pensato per atelier su misura italiani.
+          Clienti, misure, ordini, WhatsApp: cuciti in un solo gestionale per atelier
+          su misura italiani. Stiamo aprendo l’accesso ai primi atelier nel 2026.
         </motion.p>
 
         <motion.div
@@ -238,22 +236,14 @@ function UseCases() {
     {
       label: 'Atelier su misura',
       title: 'Abiti, cappotti, smoking',
+      body: 'Configurazione capo, misure storiche per cliente, gestione delle prove e dello stato di lavorazione.',
       tint: 'bg-[#FFF4ED]',
     },
     {
       label: 'Camicerie',
       title: 'Camicie su misura',
+      body: 'Misure di polso, collo e spalla salvate per stagione. WhatsApp del cliente integrato alla scheda.',
       tint: 'bg-[#F2F2F2]',
-    },
-    {
-      label: 'Pellicceria',
-      title: 'Capi spalla in pelle',
-      tint: 'bg-[#FBF4EA]',
-    },
-    {
-      label: 'Cravatteria',
-      title: 'Cravatte e papillon',
-      tint: 'bg-[#EEF1FB]',
     },
   ]
 
@@ -283,30 +273,37 @@ function UseCases() {
           </p>
         </motion.div>
 
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-5 md:grid-cols-2">
           {cases.map((c, i) => (
-            <motion.a
+            <motion.div
               key={c.label}
-              href="#"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-60px' }}
-              transition={{ ...REVEAL_T, delay: i * 0.06 }}
-              whileHover={{ y: -4 }}
-              className={`group relative flex aspect-[3/4] flex-col justify-between overflow-hidden rounded-3xl p-6 ${c.tint}`}
+              transition={{ ...REVEAL_T, delay: i * 0.08 }}
+              className={`group relative flex aspect-[4/5] flex-col justify-between overflow-hidden rounded-3xl p-8 md:p-10 ${c.tint}`}
             >
-              <span className="text-xs font-medium uppercase tracking-[0.15em] text-foreground/55">
+              <span className="text-xs font-medium uppercase tracking-[0.18em] text-foreground/55">
                 {c.label}
               </span>
-              <h3
-                className="text-3xl font-normal leading-[1.05] tracking-[-0.02em] text-ink md:text-4xl"
-                style={{ fontFamily: 'var(--font-serif), Georgia, serif' }}
-              >
-                {c.title}
-              </h3>
-            </motion.a>
+              <div className="space-y-4">
+                <h3
+                  className="text-3xl font-normal leading-[1.05] tracking-[-0.02em] text-ink md:text-4xl"
+                  style={{ fontFamily: 'var(--font-serif), Georgia, serif' }}
+                >
+                  {c.title}
+                </h3>
+                <p className="max-w-sm text-[15px] leading-relaxed text-foreground/65">
+                  {c.body}
+                </p>
+              </div>
+            </motion.div>
           ))}
         </div>
+
+        <p className="mt-10 text-sm text-foreground/55">
+          Altre lavorazioni in arrivo: scrivici per discuterne durante la demo.
+        </p>
       </div>
     </section>
   )
@@ -620,38 +617,6 @@ function Features() {
           ))}
         </div>
       </div>
-    </section>
-  )
-}
-
-/* ─────────────────  TESTIMONIAL  ───────────────── */
-
-function Testimonial() {
-  return (
-    <section className="bg-background py-24 md:py-32">
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-100px' }}
-        transition={REVEAL_T}
-        className="mx-auto max-w-3xl rounded-3xl border border-border bg-card p-10 text-center md:p-14"
-      >
-        <div className="mb-5 flex items-center justify-center gap-1">
-          {[0, 1, 2, 3, 4].map((i) => (
-            <Star key={i} className="h-4 w-4 fill-accent text-accent" />
-          ))}
-        </div>
-        <p className="text-2xl font-medium leading-relaxed text-ink md:text-3xl">
-          “Da quando uso filo, le misure non si perdono più. E le serate finiscono prima.”
-        </p>
-        <div className="mt-7 flex items-center justify-center gap-3">
-          <div className="h-10 w-10 rounded-full bg-secondary" />
-          <div className="text-left">
-            <div className="text-sm font-medium">Antonio Esposito</div>
-            <div className="text-xs text-foreground/55">Sartoria Esposito · Napoli</div>
-          </div>
-        </div>
-      </motion.div>
     </section>
   )
 }
