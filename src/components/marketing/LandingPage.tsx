@@ -39,8 +39,9 @@ const COPY = {
     nav: { product: 'Prodotto', useCases: 'Per chi', login: 'Accedi', cta: 'Richiedi una demo' },
     hero: {
       badge: 'In fase di lancio',
-      title1: 'Un gestionale',
-      title2: 'cucito addosso al mestiere.',
+      title1: 'Il gestionale',
+      titleEm: 'su misura',
+      title2: 'per le sartorie.',
       subhead:
         'Configuratore d’abito, preventivo PDF, WhatsApp, produzione: pensati per atelier su misura, non riadattati da un CRM generico. Apriamo i primi accessi nel 2026.',
       cta: 'Richiedi una demo',
@@ -176,7 +177,8 @@ const COPY = {
     hero: {
       badge: 'Launching soon',
       title1: 'Software',
-      title2: 'tailored to the craft.',
+      titleEm: 'made to measure',
+      title2: 'for tailors.',
       subhead:
         'Garment configurator, PDF quote, WhatsApp, production: built for bespoke ateliers, not retrofitted from a generic CRM. We are opening the first seats in 2026.',
       cta: 'Request a demo',
@@ -482,7 +484,7 @@ function Hero({ t, mailto }: { t: Copy; mailto: string }) {
           transition={{ ...REVEAL_T, delay: 0.05 }}
           className="max-w-4xl text-[clamp(2.75rem,7vw,6.5rem)] font-normal leading-[0.95] tracking-[-0.02em] font-[family-name:var(--font-serif)]"
         >
-          {t.hero.title1}
+          {t.hero.title1} <em className="italic">{t.hero.titleEm}</em>
           <br />
           {t.hero.title2}
         </motion.h1>
