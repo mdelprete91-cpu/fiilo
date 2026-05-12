@@ -158,16 +158,11 @@ const COPY = {
       ],
     },
     finalCta: {
-      marker: 'V.',
-      eyebrow: 'Nota dal fondatore',
-      line1:
-        'Vengo dall’automotive, dove comprare un’auto è ormai un’esperienza configurata, accompagnata, ricca. Si configura il veicolo col venditore, si firma il preventivo, si aspetta la consegna nella fiducia che tutto fili.',
-      line2:
-        'La sartoria su misura segue lo stesso processo, da decenni. Solo, senza strumenti che parlino la sua lingua. Il cliente esce dall’atelier e troppe volte se ne perdono le tracce.',
-      line3:
-        'filo non snatura il mestiere. Lo mette al passo con il presente. Apriamo i primi accessi nel 2026: se siete un atelier serio, parliamone.',
-      signatureName: 'Mario Del Prete',
-      signatureRole: 'fondatore',
+      eyebrow: 'Primi accessi nel 2026',
+      headlineBefore: 'Il vostro mestiere merita strumenti ',
+      headlineEm: 'su misura',
+      headlineAfter: '.',
+      subtext: 'Apriamo l’accesso in modo selettivo. Una demo di 20 minuti, dal vivo con il fondatore.',
       cta: 'Richiedi una demo',
     },
     footer: { tagline: 'Gestionale per sartorie su misura', emailLabel: 'Email' },
@@ -295,13 +290,11 @@ const COPY = {
       ],
     },
     finalCta: {
-      marker: 'V.',
-      eyebrow: 'A note from the founder',
-      line1: 'I come from automotive, where buying a car is now a configured, accompanied, polished experience. You walk in, configure the vehicle with a sales advisor, sign a quote, leave trusting that everything is in motion.',
-      line2: 'Bespoke tailoring has been doing the same for decades. Just without tools that speak its language. Too often, after delivery, the client disappears.',
-      line3: 'filo does not change the craft. It brings it into the present. We are opening the first seats in 2026: if you run a serious atelier, let us talk.',
-      signatureName: 'Mario Del Prete',
-      signatureRole: 'founder',
+      eyebrow: 'First seats opening in 2026',
+      headlineBefore: 'Your craft deserves tools ',
+      headlineEm: 'made to measure',
+      headlineAfter: '.',
+      subtext: 'We are opening access selectively. A 20-minute demo, live with the founder.',
       cta: 'Request a demo',
     },
     footer: { tagline: 'Software for bespoke tailoring', emailLabel: 'Email' },
@@ -978,44 +971,25 @@ function FinalCTA({ t, mailto }: { t: Copy; mailto: string }) {
         <div className="pointer-events-none absolute -left-32 -top-32 h-96 w-96 rounded-full bg-accent/20 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-32 -right-32 h-96 w-96 rounded-full bg-primary-foreground/5 blur-3xl" />
 
-        <div className="relative mx-auto max-w-2xl">
-          <div className="mb-12 flex items-baseline gap-3">
-            <span
-              className="text-2xl italic leading-none text-primary-foreground/30"
-              style={{ fontFamily: 'var(--font-serif), Georgia, serif' }}
-            >
-              {t.finalCta.marker}
-            </span>
-            <span className="text-xs font-medium uppercase tracking-[0.2em] text-primary-foreground/55">
-              {t.finalCta.eyebrow}
-            </span>
-          </div>
+        <div className="relative mx-auto max-w-3xl text-center">
+          <span className="inline-block text-[11px] font-medium uppercase tracking-[0.2em] text-primary-foreground/55">
+            {t.finalCta.eyebrow}
+          </span>
 
-          <div
-            className="space-y-7 text-3xl font-normal leading-[1.25] tracking-[-0.015em] text-primary-foreground md:text-4xl"
+          <h2
+            className="mt-6 text-balance text-4xl font-normal leading-[1.05] tracking-[-0.02em] text-primary-foreground md:text-6xl"
             style={{ fontFamily: 'var(--font-serif), Georgia, serif' }}
           >
-            <p>{t.finalCta.line1}</p>
-            <p className="text-primary-foreground/85">{t.finalCta.line2}</p>
-            <p className="italic text-primary-foreground/70">{t.finalCta.line3}</p>
-          </div>
+            {t.finalCta.headlineBefore}
+            <em className="italic">{t.finalCta.headlineEm}</em>
+            {t.finalCta.headlineAfter}
+          </h2>
 
-          <div className="mt-14 flex items-center gap-4">
-            <div className="h-px w-10 bg-primary-foreground/30" />
-            <div className="leading-tight">
-              <div className="text-sm font-medium text-primary-foreground">
-                {t.finalCta.signatureName}
-              </div>
-              <div
-                className="text-xs italic text-primary-foreground/55"
-                style={{ fontFamily: 'var(--font-serif), Georgia, serif' }}
-              >
-                {t.finalCta.signatureRole}
-              </div>
-            </div>
-          </div>
+          <p className="mx-auto mt-6 max-w-xl text-balance text-base leading-relaxed text-primary-foreground/65 md:text-lg">
+            {t.finalCta.subtext}
+          </p>
 
-          <div className="mt-12">
+          <div className="mt-10 flex justify-center">
             <a
               href={mailto}
               className="group inline-flex items-center gap-2 rounded-full bg-card px-6 py-3.5 text-sm font-medium text-foreground shadow-lg transition-transform hover:scale-[1.02]"
