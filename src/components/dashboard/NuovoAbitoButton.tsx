@@ -29,7 +29,7 @@ export function NuovoAbitoButton({ clientId }: { clientId: string }) {
       {isPending
         ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
         : <Plus className="h-3.5 w-3.5" />}
-      Nuovo abito
+      Nuovo ordine
     </button>
   )
 }

@@ -62,7 +62,7 @@ export default async function ClienteDetailPage({ params, searchParams }: PagePr
 
       {pageError === 'create_garment' && (
         <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive space-y-1">
-          <p className="font-medium">Impossibile creare il nuovo abito.</p>
+          <p className="font-medium">Impossibile creare il nuovo ordine.</p>
           {pageErrorMsg && <p className="font-mono text-xs opacity-80">{decodeURIComponent(pageErrorMsg)}</p>}
           {pageErrorMsg?.includes('column') && (
             <p className="text-xs opacity-70">→ Applica la migrazione: <code className="font-mono">ALTER TABLE garments ADD COLUMN IF NOT EXISTS configuration jsonb NOT NULL DEFAULT &apos;{}&apos;, ADD COLUMN IF NOT EXISTS current_step text NOT NULL DEFAULT &apos;fabric&apos;;</code></p>
@@ -129,7 +129,7 @@ export default async function ClienteDetailPage({ params, searchParams }: PagePr
           <div className="rounded-xl border border-border bg-card overflow-hidden">
             <div className="grid grid-cols-2 divide-x divide-border">
               <div className="px-6 py-5">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">Abiti</p>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">Ordini</p>
                 <p className="font-heading mt-3 text-5xl leading-none tabular-nums text-ink">{garments?.length ?? 0}</p>
               </div>
               <div className="px-6 py-5">
@@ -146,7 +146,7 @@ export default async function ClienteDetailPage({ params, searchParams }: PagePr
           <div className="rounded-xl border border-border bg-card">
             <div className="flex items-center justify-between border-b border-border px-5 py-4">
               <h3 className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground flex items-center gap-2">
-                <Scissors className="h-3.5 w-3.5" /> Abiti configurati
+                <Scissors className="h-3.5 w-3.5" /> Ordini configurati
               </h3>
               <NuovoAbitoButton clientId={id} />
             </div>

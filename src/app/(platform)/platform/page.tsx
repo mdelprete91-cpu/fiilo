@@ -96,7 +96,7 @@ export default async function PlatformPage() {
             context="ultimi 30 giorni"
           />
           <KpiCell
-            label="Abiti configurati"
+            label="Ordini configurati"
             value={totalGarments ?? 0}
           />
         </div>

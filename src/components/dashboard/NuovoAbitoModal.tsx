@@ -105,7 +105,7 @@ export function NuovoAbitoModal({ clients }: Props) {
         className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors active:scale-[0.97] will-change-transform"
       >
         <Plus className="h-4 w-4" />
-        Nuovo abito
+        Nuovo ordine
       </button>
 
       {open && (
@@ -123,7 +123,7 @@ export function NuovoAbitoModal({ clients }: Props) {
             <div className="shrink-0 px-6 py-5 border-b border-border">
               <div className="flex items-start justify-between">
                 <div>
-                  <h2 className="font-heading text-2xl text-ink leading-none">Nuovo abito</h2>
+                  <h2 className="font-heading text-2xl text-ink leading-none">Nuovo ordine</h2>
                   <p className="mt-1.5 text-xs text-muted-foreground">
                     Misure e configurazione li imposti nel funnel.
                   </p>

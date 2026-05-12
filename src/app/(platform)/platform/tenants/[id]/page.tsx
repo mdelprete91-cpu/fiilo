@@ -97,7 +97,7 @@ export default async function TenantDetailPage({ params }: PageProps) {
                   <p className="font-heading mt-3 text-5xl leading-none tabular-nums text-ink">{clientCount ?? 0}</p>
                 </div>
                 <div className="px-6 py-5">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">Abiti</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">Ordini</p>
                   <p className="font-heading mt-3 text-5xl leading-none tabular-nums text-ink">{garmentCount ?? 0}</p>
                 </div>
               </div>

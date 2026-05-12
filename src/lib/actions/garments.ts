@@ -20,7 +20,7 @@ export async function createGarmentAction(clientId: string): Promise<ActionResul
       // The DB column is non-null so we keep suit_2pc as the row-level default
       // and overwrite when the user makes their choice.
       type: 'suit_2pc',
-      name: 'Nuovo abito',
+      name: 'Nuovo ordine',
       status: 'draft',
       current_step: 'setup.type',
       configuration: {

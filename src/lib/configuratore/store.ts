@@ -68,7 +68,7 @@ const INITIAL_STATE: ConfiguratoreState = {
 export const useConfiguratoreStore = create<ConfiguratoreStore>((set, get) => ({
   garmentId: null,
   clientId: null,
-  garmentName: 'Nuovo abito',
+  garmentName: 'Nuovo ordine',
   currentStep: 'setup.type',
   isDirty: false,
   isSaving: false,
@@ -153,7 +153,7 @@ export const useConfiguratoreStore = create<ConfiguratoreStore>((set, get) => ({
     set({
       garmentId: null,
       clientId: null,
-      garmentName: 'Nuovo abito',
+      garmentName: 'Nuovo ordine',
       currentStep: 'setup.type',
       isDirty: false,
       isSaving: false,

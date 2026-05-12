@@ -264,7 +264,7 @@ function OverviewCard({ stats, joinedAt }: { stats: Stats; joinedAt: string }) {
         <Row label="Attivo dal" value={joinedAt} />
         <Row label="Sartorie registrate" value={stats.totalTenants.toString()} accent />
         <Row label="Clienti totali" value={stats.totalClients.toString()} accent />
-        <Row label="Abiti configurati" value={stats.totalGarments.toString()} accent />
+        <Row label="Ordini configurati" value={stats.totalGarments.toString()} accent />
       </dl>
     </Card>
   )

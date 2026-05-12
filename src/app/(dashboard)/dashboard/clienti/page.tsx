@@ -105,10 +105,10 @@ export default async function ClientiPage({ searchParams }: PageProps) {
                 Cliente dal
               </th>
               <th className="hidden px-5 py-3.5 text-right text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground xl:table-cell">
-                Abiti richiesti
+                Ordini richiesti
               </th>
               <th className="hidden px-5 py-3.5 text-right text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground xl:table-cell">
-                Abiti consegnati
+                Ordini consegnati
               </th>
               <th className="hidden px-5 py-3.5 text-right text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground xl:table-cell">
                 Fatturato

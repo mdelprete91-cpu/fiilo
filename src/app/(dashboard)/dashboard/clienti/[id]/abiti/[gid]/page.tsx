@@ -81,7 +81,7 @@ export default async function ConfiguratorePage({ params, searchParams }: PagePr
       garmentId={garmentId}
       clientId={clientId}
       clientName={`${client.first_name} ${client.last_name}`}
-      garmentName={garment.name ?? 'Nuovo abito'}
+      garmentName={garment.name ?? 'Nuovo ordine'}
       initialStep={initialStep}
       initialConfig={config}
       measurementsCount={measurementsCount}
