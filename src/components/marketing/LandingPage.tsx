@@ -31,9 +31,9 @@ export function LandingPage() {
     <div className="force-light relative w-full overflow-x-hidden bg-card text-foreground selection:bg-secondary selection:text-foreground">
       <Nav />
       <Hero />
+      <Mockup />
       <Steps />
       <UseCases />
-      <Mockup />
       <Features />
       <Testimonial />
       <FinalCTA />
@@ -316,33 +316,85 @@ function UseCases() {
 
 function Mockup() {
   return (
-    <section id="prodotto" className="bg-primary py-24 text-primary-foreground md:py-32">
-      <div className="mx-auto max-w-7xl px-6">
+    <section id="prodotto" className="relative overflow-hidden bg-background py-24 md:py-32">
+      {/* Atmosfera: spotlight radial sotto il mockup, niente glassmorphism */}
+      <div
+        className="pointer-events-none absolute inset-0 -z-10"
+        style={{
+          background:
+            'radial-gradient(ellipse 70% 55% at 50% 60%, var(--secondary) 0%, transparent 70%)',
+        }}
+      />
+
+      <div className="relative mx-auto max-w-7xl px-6">
+        {/* Header — asimmetrico, con marker romano + lede laterale */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-100px' }}
           transition={REVEAL_T}
-          className="mb-16 max-w-2xl"
+          className="mb-16 grid items-end gap-8 md:mb-20 md:grid-cols-[1fr_auto] md:gap-16"
         >
-          <div className="mb-4 text-xs font-medium uppercase tracking-[0.2em] text-primary-foreground/55">
-            Prodotto
+          <div>
+            <div className="mb-5 flex items-baseline gap-3">
+              <span
+                className="text-2xl italic leading-none text-foreground/30"
+                style={{ fontFamily: 'var(--font-serif), Georgia, serif' }}
+              >
+                I.
+              </span>
+              <span className="text-xs font-medium uppercase tracking-[0.2em] text-foreground/55">
+                Il prodotto
+              </span>
+            </div>
+            <h2 className="max-w-3xl text-5xl font-normal leading-[0.95] tracking-[-0.02em] text-ink md:text-7xl"
+                style={{ fontFamily: 'var(--font-serif), Georgia, serif' }}>
+              Un{' '}
+              <span className="italic text-foreground/55">gestionale</span>
+              <br />
+              che parla la lingua del sarto.
+            </h2>
           </div>
-          <h2 className="text-4xl font-normal leading-[1] tracking-[-0.02em] font-[family-name:var(--font-serif)] md:text-5xl">
-            Un gestionale che parla
-            <br />
-            la lingua del sarto.
-          </h2>
+          <p className="max-w-xs text-[15px] leading-relaxed text-foreground/60 md:pb-3">
+            Clienti, misure, lavorazioni e WhatsApp in un solo spazio. Niente menu
+            inventati: solo i nomi che usa già in atelier.
+          </p>
         </motion.div>
 
+        {/* Mockup card con chip annotazioni intorno */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-100px' }}
           transition={{ ...REVEAL_T, duration: 0.9 }}
-          className="relative rounded-2xl bg-card/5 p-1 ring-1 ring-card/10 md:p-2"
+          className="relative"
         >
-          <div className="flex min-h-[500px] overflow-hidden rounded-xl border border-border bg-card text-foreground shadow-2xl">
+          {/* Chip flottanti — escono dal mockup come annotazioni editoriali */}
+          <AnnotationChip
+            className="left-[-1.5rem] top-12 md:left-[-3rem] md:top-16"
+            delay={0.5}
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+            <span>Categorizza WhatsApp con AI</span>
+          </AnnotationChip>
+          <AnnotationChip
+            className="right-[-1rem] top-[35%] md:right-[-2.5rem]"
+            delay={0.65}
+          >
+            <span className="font-mono text-foreground/45">·</span>
+            <span>Misure storiche per cliente</span>
+          </AnnotationChip>
+          <AnnotationChip
+            className="bottom-[-1rem] left-[12%] md:bottom-[-1.25rem] md:left-[18%]"
+            delay={0.8}
+          >
+            <span className="font-mono text-foreground/45">·</span>
+            <span>PDF preventivi e ricevute</span>
+          </AnnotationChip>
+
+          {/* La superficie del prodotto */}
+          <div className="relative overflow-hidden rounded-2xl bg-card shadow-[0_30px_80px_-20px_rgb(0,0,0,0.18)] ring-1 ring-foreground/8">
+          <div className="flex min-h-[500px] overflow-hidden rounded-xl border border-border bg-card text-foreground">
             {/* Sidebar */}
             <aside className="hidden w-16 flex-col items-center gap-5 border-r border-border bg-secondary py-6 md:flex">
               <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
@@ -423,9 +475,32 @@ function Mockup() {
               </div>
             </div>
           </div>
+          </div>
         </motion.div>
       </div>
     </section>
+  )
+}
+
+function AnnotationChip({
+  children,
+  className,
+  delay = 0,
+}: {
+  children: React.ReactNode
+  className?: string
+  delay?: number
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8, scale: 0.96 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: '-50px' }}
+      transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1], delay }}
+      className={`absolute z-10 hidden items-center gap-2 rounded-full border border-border bg-card px-3.5 py-2 text-xs font-medium text-foreground shadow-[0_10px_30px_-8px_rgb(0,0,0,0.15)] md:inline-flex ${className ?? ''}`}
+    >
+      {children}
+    </motion.div>
   )
 }
 
