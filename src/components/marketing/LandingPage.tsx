@@ -158,11 +158,10 @@ const COPY = {
       ],
     },
     finalCta: {
-      eyebrow: 'Primi accessi nel 2026',
-      headlineBefore: 'Il vostro mestiere merita strumenti ',
-      headlineEm: 'su misura',
+      headlineBefore: 'Scopri un futuro che non dimentica la ',
+      headlineEm: 'tradizione',
       headlineAfter: '.',
-      subtext: 'Apriamo l’accesso in modo selettivo. Una demo di 20 minuti, per capire se filo fa al caso vostro.',
+      subtext: 'Una demo di 20 minuti per capire se filo fa al caso vostro.',
       cta: 'Richiedi una demo',
     },
     footer: { tagline: 'Gestionale per sartorie su misura', emailLabel: 'Email' },
@@ -290,11 +289,10 @@ const COPY = {
       ],
     },
     finalCta: {
-      eyebrow: 'First seats opening in 2026',
-      headlineBefore: 'Your craft deserves tools ',
-      headlineEm: 'made to measure',
+      headlineBefore: 'A future that does not forget ',
+      headlineEm: 'tradition',
       headlineAfter: '.',
-      subtext: 'We are opening access selectively. A 20-minute demo, to see if filo is the right fit.',
+      subtext: 'A 20-minute demo to see if filo is the right fit.',
       cta: 'Request a demo',
     },
     footer: { tagline: 'Software for bespoke tailoring', emailLabel: 'Email' },
@@ -972,12 +970,8 @@ function FinalCTA({ t, mailto }: { t: Copy; mailto: string }) {
         <div className="pointer-events-none absolute -bottom-32 -right-32 h-96 w-96 rounded-full bg-primary-foreground/5 blur-3xl" />
 
         <div className="relative mx-auto max-w-3xl text-center">
-          <span className="inline-block text-[11px] font-medium uppercase tracking-[0.2em] text-primary-foreground/55">
-            {t.finalCta.eyebrow}
-          </span>
-
           <h2
-            className="mt-6 text-balance text-4xl font-normal leading-[1.05] tracking-[-0.02em] text-primary-foreground md:text-6xl"
+            className="text-balance text-4xl font-normal leading-[1.05] tracking-[-0.02em] text-primary-foreground md:text-6xl"
             style={{ fontFamily: 'var(--font-serif), Georgia, serif' }}
           >
             {t.finalCta.headlineBefore}
