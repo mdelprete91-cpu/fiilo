@@ -49,9 +49,9 @@ const COPY = {
     mockup: {
       marker: 'I.',
       eyebrow: 'Il prodotto',
-      titleLine1Before: 'Un ',
-      titleLine1Em: 'configuratore',
-      titleLine2: 'che parla la lingua del sarto.',
+      titleLine1Before: 'Il ',
+      titleLine1Em: 'digitale',
+      titleLine2: 'al servizio della tradizione.',
       lede:
         'Tessuto, taglio, dettagli: si scelgono davanti al cliente. Il preventivo PDF parte già firmato con il vostro logo. Niente più stime perse nei thread WhatsApp.',
       chip1: 'Configuratore + preventivo PDF',
@@ -186,9 +186,9 @@ const COPY = {
     mockup: {
       marker: 'I.',
       eyebrow: 'The product',
-      titleLine1Before: 'A ',
-      titleLine1Em: 'configurator',
-      titleLine2: 'that speaks the tailor’s language.',
+      titleLine1Before: '',
+      titleLine1Em: 'Digital',
+      titleLine2: 'in service of tradition.',
       lede:
         'Fabric, cut, details: configured at the bench, in front of the client. The PDF quote leaves signed with your logo. No more estimates lost in WhatsApp threads.',
       chip1: 'Configurator + PDF quote',
