@@ -80,7 +80,7 @@ export default async function ClienteDetailPage({ params, searchParams }: PagePr
                   {client.first_name[0]}{client.last_name[0]}
                 </div>
                 <div>
-                  <h2 className="font-heading text-xl text-ink leading-tight">
+                  <h2 className="text-base font-semibold leading-tight text-ink">
                     {client.first_name} {client.last_name}
                   </h2>
                   {client.city && (
