@@ -316,8 +316,21 @@ export function PanoramicaView({ garments }: { garments: PanoramicaGarment[] }) 
                             </span>
                           )}
                           {days !== null && (
-                            <span className={`text-xs font-semibold tabular-nums w-9 text-right ${daysClass}`}>
-                              {days < 0 ? 'Scad.' : days === 0 ? 'Oggi' : `${days}g`}
+                            <span
+                              className={`text-xs font-semibold tabular-nums w-14 text-right ${daysClass}`}
+                              title={
+                                days < 0
+                                  ? `Doveva essere consegnato ${Math.abs(days)} giorn${Math.abs(days) === 1 ? 'o' : 'i'} fa`
+                                  : days === 0
+                                    ? 'Consegna prevista oggi'
+                                    : `Consegna tra ${days} giorn${days === 1 ? 'o' : 'i'}`
+                              }
+                            >
+                              {days < 0
+                                ? `${Math.abs(days)}g fa`
+                                : days === 0
+                                  ? 'Oggi'
+                                  : `tra ${days}g`}
                             </span>
                           )}
                         </div>
