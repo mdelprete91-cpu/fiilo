@@ -113,10 +113,7 @@ export function NotificheList({ messages: initial, unreadCount: initialCount, te
         <div className="flex items-center gap-2">
           <h2 className="text-sm font-semibold text-foreground">Messaggi WhatsApp</h2>
           {unreadCount > 0 && (
-            <span
-              className="text-[10px] font-bold px-1.5 py-0.5 rounded-full tabular-nums"
-              style={{ background: 'oklch(0.50 0.18 250)', color: '#fff' }}
-            >
+            <span className="rounded-full bg-blue-500 px-1.5 py-0.5 text-[10px] font-bold tabular-nums text-white dark:bg-blue-400 dark:text-blue-950">
               {unreadCount}
             </span>
           )}

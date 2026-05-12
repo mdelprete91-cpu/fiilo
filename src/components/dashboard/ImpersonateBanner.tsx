@@ -14,17 +14,24 @@ export function ImpersonateBanner({ tenantName }: { tenantName: string }) {
   }
 
   return (
-    <div className="flex items-center justify-between bg-amber-500 px-6 py-2 text-sm font-medium text-white shrink-0">
+    <div className="flex shrink-0 items-center justify-between bg-amber-500 px-6 py-2 text-sm font-medium text-white dark:bg-amber-700 dark:text-amber-50">
       <div className="flex items-center gap-2">
         <ShieldAlert className="h-4 w-4" />
-        <span>Modalità super admin — stai visualizzando la dashboard di <strong>{tenantName}</strong></span>
+        <span>
+          Modalità super admin · stai visualizzando la dashboard di{' '}
+          <strong>{tenantName}</strong>
+        </span>
       </div>
       <button
         onClick={handle}
         disabled={isPending}
-        className="flex items-center gap-1.5 rounded-md border border-white/40 bg-white/10 px-3 py-1 hover:bg-white/20 transition-colors"
+        className="flex items-center gap-1.5 rounded-full border border-white/40 bg-white/10 px-3 py-1 transition-colors hover:bg-white/20"
       >
-        {isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <LogOut className="h-3.5 w-3.5" />}
+        {isPending ? (
+          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+        ) : (
+          <LogOut className="h-3.5 w-3.5" />
+        )}
         Esci
       </button>
     </div>

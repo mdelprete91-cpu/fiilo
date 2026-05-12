@@ -333,19 +333,19 @@ export function GarmentSidebar({ garment, client }: Props) {
               </div>
               {/* Da saldare — calcolato quando entrambi i valori sono presenti */}
               {garment.total_price != null && depositInput && !isNaN(parseFloat(depositInput)) && (
-                <p className="text-[11px] tabular-nums" style={{ color: 'oklch(0.58 0.13 55)' }}>
+                <p className="text-[11px] tabular-nums text-amber-700 dark:text-amber-300">
                   Da saldare: {fmtCurrency(Math.max(0, garment.total_price - parseFloat(depositInput.replace(',', '.'))))}
                 </p>
               )}
               {depositSaved && (
-                <p className="text-[11px]" style={{ color: 'oklch(0.28 0.07 155)' }}>Salvato</p>
+                <p className="text-[11px] text-emerald-700 dark:text-emerald-400">Salvato</p>
               )}
             </div>
           )}
 
           {/* Saldato — conferma visiva */}
           {optimisticPaymentStatus === 'paid' && garment.total_price != null && (
-            <p className="text-[11px] tabular-nums" style={{ color: 'oklch(0.28 0.07 155)' }}>
+            <p className="text-[11px] tabular-nums text-emerald-700 dark:text-emerald-400">
               Importo saldato: {formattedPrice}
             </p>
           )}
@@ -429,8 +429,8 @@ export function GarmentSidebar({ garment, client }: Props) {
           />
           <div className="flex items-center justify-between">
             <span
-              className="text-[11px] transition-opacity"
-              style={{ color: 'oklch(0.28 0.07 155)', opacity: notesSaved ? 1 : 0 }}
+              className="text-[11px] text-emerald-700 transition-opacity dark:text-emerald-400"
+              style={{ opacity: notesSaved ? 1 : 0 }}
             >
               Salvato
             </span>
