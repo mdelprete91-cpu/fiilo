@@ -309,7 +309,7 @@ export function PanoramicaView({ garments }: { garments: PanoramicaGarment[] }) 
                           </Link>
                           <p className="text-xs text-muted-foreground truncate">{g.clientName}</p>
                         </div>
-                        <div className="flex items-center gap-3 shrink-0">
+                        <div className="flex items-center gap-2 shrink-0">
                           {g.total_price != null && (
                             <span className="text-sm font-semibold text-ink tabular-nums">
                               {fmt(g.total_price, g.currency)}
@@ -317,7 +317,7 @@ export function PanoramicaView({ garments }: { garments: PanoramicaGarment[] }) 
                           )}
                           {days !== null && (
                             <span
-                              className={`text-xs font-semibold tabular-nums w-14 text-right ${daysClass}`}
+                              className={`text-xs font-semibold tabular-nums ${daysClass}`}
                               title={
                                 days < 0
                                   ? `Doveva essere consegnato ${Math.abs(days)} giorn${Math.abs(days) === 1 ? 'o' : 'i'} fa`
