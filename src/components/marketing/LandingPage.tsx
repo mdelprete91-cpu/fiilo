@@ -39,23 +39,23 @@ const COPY = {
     nav: { product: 'Prodotto', useCases: 'Per chi', login: 'Accedi', cta: 'Richiedi una demo' },
     hero: {
       badge: 'In fase di lancio',
-      title1: 'La sartoria,',
-      title2: 'organizzata.',
+      title1: 'Un gestionale',
+      title2: 'cucito addosso al mestiere.',
       subhead:
-        'Clienti, misure, ordini, WhatsApp: cuciti in un solo gestionale per atelier su misura italiani. Stiamo aprendo l’accesso ai primi atelier nel 2026.',
+        'Configuratore d’abito, preventivo PDF, WhatsApp, produzione: pensati per atelier su misura, non riadattati da un CRM generico. Apriamo i primi accessi nel 2026.',
       cta: 'Richiedi una demo',
     },
     mockup: {
       marker: 'I.',
       eyebrow: 'Il prodotto',
       titleLine1Before: 'Un ',
-      titleLine1Em: 'gestionale',
+      titleLine1Em: 'configuratore',
       titleLine2: 'che parla la lingua del sarto.',
       lede:
-        'Clienti, misure, lavorazioni e WhatsApp in un solo spazio. Niente menu inventati: solo i nomi che usa già in atelier.',
-      chip1: 'Categorizza WhatsApp con AI',
-      chip2: 'Misure storiche per cliente',
-      chip3: 'PDF preventivi e ricevute',
+        'Tessuto, taglio, dettagli: si scelgono davanti al cliente. Il preventivo PDF parte già firmato con il vostro logo. Niente più stime perse nei thread WhatsApp.',
+      chip1: 'Configuratore + preventivo PDF',
+      chip2: 'WhatsApp categorizzato con AI',
+      chip3: 'Misure storiche per cliente',
       app: {
         header: 'Ordini · FW 2026',
         statusPill: 'In corso',
@@ -79,89 +79,92 @@ const COPY = {
     steps: {
       marker: 'II.',
       eyebrow: 'Come funziona',
-      title: 'Tre passi. Zero attriti.',
+      title: 'Dal preventivo alla consegna, in continuità.',
       items: [
         {
           n: '1',
-          title: 'Prendi le misure',
+          title: 'Cliente, misure, contesto',
           body:
-            'Salva ogni misura nella scheda del cliente. Foto e reference da WhatsApp finiscono lì in automatico.',
+            'Scheda cliente con misure, foto, preferenze. Anche foto e audio WhatsApp ci finiscono dentro, già categorizzati dall’AI.',
         },
         {
           n: '2',
-          title: 'Lavora con calma',
+          title: 'Configura insieme al cliente',
           body:
-            'Pianifica prove e consegne sulla timeline. Ogni capo segue lo stato giusto.',
+            'Tessuto, taglio, finiture, bottoni: scelti al banco. Il preventivo PDF parte prima che il cliente esca dall’atelier.',
         },
         {
           n: '3',
-          title: 'Consegna, e ricomincia',
+          title: 'Produzione sotto controllo',
           body:
-            'Storico misure pronto per la stagione dopo. Ogni cliente è una continuità.',
+            'Pipeline visiva, stati e date chiari. Quando il capo è pronto, il cliente lo sa: nessun follow-up dimenticato.',
         },
       ],
     },
     useCases: {
       marker: 'III.',
       eyebrow: 'Per chi',
-      titleLine1: 'Per ogni mestiere',
-      titleLine2: 'della sartoria.',
+      titleLine1: 'Per chi vive',
+      titleLine2: 'di misura.',
       lede:
-        'filo si adatta alla tua bottega, non viceversa. Workflow e campi personalizzabili.',
+        'filo si adatta al vostro flusso. Nomi, stati, finiture: tutto modellato sul mestiere reale, non su quello immaginato da un product manager.',
       items: [
         {
           label: 'Atelier su misura',
           title: 'Abiti, cappotti, smoking',
           body:
-            'Configurazione capo, misure storiche per cliente, gestione delle prove e dello stato di lavorazione.',
+            'Configurazione capo, misure storiche per cliente, prove in calendario, stato di lavorazione vivo. Pensato per chi parte sempre dalla persona.',
           tint: 'bg-[#FFF4ED]',
         },
         {
           label: 'Camicerie',
           title: 'Camicie su misura',
           body:
-            'Misure di polso, collo e spalla salvate per stagione. WhatsApp del cliente integrato alla scheda.',
+            'Collo, polso, spalla salvati per stagione. WhatsApp del cliente integrato alla scheda: continuità tra una rivisitazione e la successiva.',
           tint: 'bg-[#F2F2F2]',
         },
       ],
-      footnote: 'Altre lavorazioni in arrivo: scrivici per discuterne durante la demo.',
+      footnote: 'Pellicceria, cravatteria, modisteria: in roadmap. Scriveteci durante la demo per parlarne.',
     },
     features: {
       marker: 'IV.',
       eyebrow: 'Funzionalità',
-      title: 'Tutto quello che serve. Niente di più.',
+      title: 'Quattro pilastri. Zero gimmick.',
       cards: [
         {
           colSpan: 2 as 1 | 2,
-          title: 'WhatsApp integrato',
+          title: 'Configuratore + preventivo PDF',
           body:
-            'Foto, misure e reference dei clienti finiscono nella scheda. Niente più chat disperse o screenshot persi nella galleria.',
+            'Tessuto, taglio, dettagli, bottoni: scelti al banco insieme al cliente. Il PDF firmato col vostro logo esce in un click. È l’esperienza di vendita che la sartoria su misura merita.',
           accent: true,
         },
         {
           colSpan: 1 as 1 | 2,
-          title: 'Misure storiche',
-          body: 'Storico delle prove, confronto fra stagioni.',
+          title: 'WhatsApp categorizzato',
+          body: 'AI legge foto, audio, misure, conferme. Tutto finisce nella scheda giusta.',
         },
         {
           colSpan: 1 as 1 | 2,
-          title: 'Catalogo capi',
-          body: 'Modelli, tessuti e finiture pronti.',
+          title: 'Misure storiche',
+          body: 'Ogni prova archiviata. Confronti stagione su stagione, anno su anno.',
         },
         {
           colSpan: 2 as 1 | 2,
-          title: 'Calendario produzione',
+          title: 'Pipeline produzione',
           body:
-            'Prove, consegne e carichi su una timeline chiara. Nessuna sorpresa a fine mese.',
+            'Bozza, conferma, prova, lavorazione, consegna. Una timeline pulita per ogni capo. Niente più ritardi che vi sfuggono fino al giorno della consegna.',
         },
       ],
     },
     finalCta: {
       marker: 'V.',
       eyebrow: 'Nota dal fondatore',
-      line1: 'Stiamo aprendo filo un capo alla volta.',
-      line2: 'Se cercate uno strumento che vi somigli, scriveteci.',
-      line3: 'Vediamo insieme se c’è terreno comune.',
+      line1:
+        'Vengo dall’automotive, dove comprare un’auto è ormai un’esperienza configurata, accompagnata, ricca. Si configura il veicolo col venditore, si firma il preventivo, si aspetta la consegna nella fiducia che tutto fili.',
+      line2:
+        'La sartoria su misura segue lo stesso processo, da decenni. Solo, senza strumenti che parlino la sua lingua. Il cliente esce dall’atelier e troppe volte se ne perdono le tracce.',
+      line3:
+        'filo non snatura il mestiere. Lo mette al passo con il presente. Apriamo i primi accessi nel 2026: se siete un atelier serio, parliamone.',
       signatureName: 'Mario Del Prete',
       signatureRole: 'fondatore',
       cta: 'Richiedi una demo',
@@ -172,23 +175,23 @@ const COPY = {
     nav: { product: 'Product', useCases: 'Use cases', login: 'Log in', cta: 'Request a demo' },
     hero: {
       badge: 'Launching soon',
-      title1: 'Tailoring,',
-      title2: 'organised.',
+      title1: 'Software',
+      title2: 'tailored to the craft.',
       subhead:
-        'Clients, measurements, orders, WhatsApp: stitched into one workspace built for Italian bespoke ateliers. We’re opening access to the first ateliers in 2026.',
+        'Garment configurator, PDF quote, WhatsApp, production: built for bespoke ateliers, not retrofitted from a generic CRM. We are opening the first seats in 2026.',
       cta: 'Request a demo',
     },
     mockup: {
       marker: 'I.',
       eyebrow: 'The product',
-      titleLine1Before: 'A tool that ',
-      titleLine1Em: 'speaks',
-      titleLine2: 'the tailor’s language.',
+      titleLine1Before: 'A ',
+      titleLine1Em: 'configurator',
+      titleLine2: 'that speaks the tailor’s language.',
       lede:
-        'Clients, measurements, work-in-progress and WhatsApp in one space. No invented menus, only the words you already use in the atelier.',
-      chip1: 'AI-categorised WhatsApp',
-      chip2: 'Per-client measurement history',
-      chip3: 'PDF quotes and receipts',
+        'Fabric, cut, details: configured at the bench, in front of the client. The PDF quote leaves signed with your logo. No more estimates lost in WhatsApp threads.',
+      chip1: 'Configurator + PDF quote',
+      chip2: 'AI-tagged WhatsApp',
+      chip3: 'Per-client measurement history',
       app: {
         header: 'Orders · FW 2026',
         statusPill: 'In progress',
@@ -212,89 +215,89 @@ const COPY = {
     steps: {
       marker: 'II.',
       eyebrow: 'How it works',
-      title: 'Three steps. Zero friction.',
+      title: 'From quote to delivery, in continuity.',
       items: [
         {
           n: '1',
-          title: 'Take the measurements',
+          title: 'Client, measurements, context',
           body:
-            'Save every measurement to the client’s record. Photos and references from WhatsApp land there automatically.',
+            'Client record with measurements, photos, preferences. Photos and audio from WhatsApp land there too, AI-categorised.',
         },
         {
           n: '2',
-          title: 'Work at your pace',
+          title: 'Configure with the client',
           body:
-            'Schedule fittings and deliveries on the timeline. Every garment follows the right status.',
+            'Fabric, cut, finishes, buttons: chosen at the bench. The PDF quote is ready before the client leaves.',
         },
         {
           n: '3',
-          title: 'Deliver, and start again',
+          title: 'Production under control',
           body:
-            'Measurement history is ready for the next season. Every client is a continuity.',
+            'Visual pipeline with clear statuses and dates. When the garment is ready, the client knows. Nothing slips.',
         },
       ],
     },
     useCases: {
       marker: 'III.',
       eyebrow: 'Use cases',
-      titleLine1: 'For every craft',
-      titleLine2: 'of tailoring.',
+      titleLine1: 'For everyone who',
+      titleLine2: 'works to measure.',
       lede:
-        'filo adapts to your workshop, not the other way round. Workflows and fields are yours to shape.',
+        'filo adapts to your workflow. Names, statuses, finishes: shaped around the real craft, not the one imagined by a product manager.',
       items: [
         {
           label: 'Bespoke ateliers',
           title: 'Suits, coats, tuxedos',
           body:
-            'Garment configuration, per-client measurement history, fitting scheduling and work-in-progress tracking.',
+            'Garment configuration, per-client measurement history, scheduled fittings, live work-in-progress. Built for ateliers that start from the person.',
           tint: 'bg-[#FFF4ED]',
         },
         {
           label: 'Shirtmakers',
           title: 'Made-to-measure shirts',
           body:
-            'Cuff, collar and shoulder measurements saved by season. The client’s WhatsApp wired right to the record.',
+            'Collar, cuff and shoulder saved by season. The client’s WhatsApp wired right to the record: continuity from one revision to the next.',
           tint: 'bg-[#F2F2F2]',
         },
       ],
-      footnote: 'More crafts coming: tell us during the demo.',
+      footnote: 'Furriers, tie-makers, milliners: on the roadmap. Tell us during the demo.',
     },
     features: {
       marker: 'IV.',
       eyebrow: 'Features',
-      title: 'Everything you need. Nothing more.',
+      title: 'Four pillars. Zero gimmick.',
       cards: [
         {
           colSpan: 2 as 1 | 2,
-          title: 'WhatsApp integrated',
+          title: 'Configurator + PDF quote',
           body:
-            'Photos, measurements and references from clients land in the record. No more scattered chats or screenshots lost in the camera roll.',
+            'Fabric, cut, details, buttons: chosen at the bench with the client. The signed PDF, with your logo, comes out in a click. The sales experience bespoke tailoring deserves.',
           accent: true,
         },
         {
           colSpan: 1 as 1 | 2,
-          title: 'Measurement history',
-          body: 'Fitting history, season-to-season comparisons.',
+          title: 'AI-tagged WhatsApp',
+          body: 'AI reads photos, audio, measurements, confirmations. Everything lands on the right record.',
         },
         {
           colSpan: 1 as 1 | 2,
-          title: 'Garment catalogue',
-          body: 'Models, fabrics and finishes ready to use.',
+          title: 'Measurement history',
+          body: 'Every fitting archived. Compare season to season, year to year.',
         },
         {
           colSpan: 2 as 1 | 2,
-          title: 'Production calendar',
+          title: 'Production pipeline',
           body:
-            'Fittings, deliveries and workloads on one clear timeline. No end-of-month surprises.',
+            'Draft, confirm, fitting, work-in-progress, delivery. One clean timeline per garment. No more delays sneaking up on you.',
         },
       ],
     },
     finalCta: {
       marker: 'V.',
       eyebrow: 'A note from the founder',
-      line1: 'We are opening filo one piece at a time.',
-      line2: 'If you are looking for a tool that resembles you, write to us.',
-      line3: 'Let us meet, and see if there is common ground.',
+      line1: 'I come from automotive, where buying a car is now a configured, accompanied, polished experience. You walk in, configure the vehicle with a sales advisor, sign a quote, leave trusting that everything is in motion.',
+      line2: 'Bespoke tailoring has been doing the same for decades. Just without tools that speak its language. Too often, after delivery, the client disappears.',
+      line3: 'filo does not change the craft. It brings it into the present. We are opening the first seats in 2026: if you run a serious atelier, let us talk.',
       signatureName: 'Mario Del Prete',
       signatureRole: 'founder',
       cta: 'Request a demo',
