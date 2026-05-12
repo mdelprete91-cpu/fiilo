@@ -17,7 +17,6 @@ export default async function PlatformPage() {
     { count: totalClients },
     { count: totalGarments },
     { count: clientsLast30 },
-    { count: garmentsInProduction },
     activationsRes,
   ] = await Promise.all([
     supabase.from('tenants').select('*', { count: 'exact', head: true }).eq('is_active', true),
@@ -27,10 +26,6 @@ export default async function PlatformPage() {
       .from('clients')
       .select('*', { count: 'exact', head: true })
       .gte('created_at', new Date(cutoff30).toISOString()),
-    supabase
-      .from('garments')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'in_production'),
     supabase
       .from('tenants')
       .select('created_at')
@@ -103,7 +98,6 @@ export default async function PlatformPage() {
           <KpiCell
             label="Abiti configurati"
             value={totalGarments ?? 0}
-            context={`${garmentsInProduction ?? 0} in produzione`}
           />
         </div>
       </div>
