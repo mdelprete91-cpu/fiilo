@@ -14,7 +14,7 @@ const GROQ_API_KEY = process.env.GROQ_API_KEY
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY
 
 const TEXT_MODEL = 'llama-3.3-70b-versatile'
-const VISION_MODEL = 'meta-llama/llama-4-maverick-17b-128e-instruct'
+const VISION_MODEL = 'meta-llama/llama-4-scout-17b-16e-instruct'
 
 let _client: Groq | null = null
 function client(): Groq | null {
