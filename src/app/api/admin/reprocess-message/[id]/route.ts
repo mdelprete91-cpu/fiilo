@@ -60,30 +60,36 @@ export async function POST(
   let detectedLanguage: string | null = null
 
   // STEP 1: per audio, re-trascrivere se media_url presente
-  if (msg.message_type === 'audio' && msg.media_url) {
-    try {
-      const mediaRes = await fetch(msg.media_url)
-      if (mediaRes.ok) {
-        const buffer = Buffer.from(await mediaRes.arrayBuffer())
-        const transcript = await transcribeWhatsAppAudio(
-          buffer,
-          msg.media_mime_type ?? null,
-        )
-        if (transcript && transcript.text.trim()) {
-          body = transcript.text.trim()
-          detectedLanguage = transcript.language
-          changes.transcript = {
-            text: body,
-            language: transcript.language,
+  if (msg.message_type === 'audio') {
+    if (!msg.media_url) {
+      errors.transcribe = 'media_url is null (audio non scaricato al primo arrivo, non recuperabile)'
+    } else {
+      try {
+        const mediaRes = await fetch(msg.media_url)
+        if (mediaRes.ok) {
+          const buffer = Buffer.from(await mediaRes.arrayBuffer())
+          const transcript = await transcribeWhatsAppAudio(
+            buffer,
+            msg.media_mime_type ?? null,
+          )
+          if (transcript && transcript.text.trim()) {
+            body = transcript.text.trim()
+            detectedLanguage = transcript.language
+            changes.transcript = {
+              text: body,
+              language: transcript.language,
+            }
+          } else if (transcript) {
+            errors.transcribe = `whisper returned empty text (lang=${transcript.language ?? '?'})`
+          } else {
+            errors.transcribe = 'whisper returned null (vedi server logs)'
           }
         } else {
-          errors.transcribe = 'returned null or empty'
+          errors.media_download = `HTTP ${mediaRes.status} on ${msg.media_url.slice(0, 80)}`
         }
-      } else {
-        errors.media_download = `HTTP ${mediaRes.status}`
+      } catch (err) {
+        errors.transcribe = err instanceof Error ? err.message : String(err)
       }
-    } catch (err) {
-      errors.transcribe = err instanceof Error ? err.message : String(err)
     }
   }
 
@@ -143,6 +149,9 @@ export async function POST(
     applied: Object.keys(updatePayload).length > 0,
     message_type: msg.message_type,
     had_media: Boolean(msg.media_url),
+    had_body: Boolean(msg.body),
+    media_mime: msg.media_mime_type,
+    media_url_preview: msg.media_url ? msg.media_url.slice(0, 100) : null,
     changes,
     errors,
   })
