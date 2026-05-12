@@ -1,8 +1,11 @@
 'use client'
 
+import { useState, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
 import { it } from 'date-fns/locale'
+import { Loader2, Sparkles } from 'lucide-react'
 import { markAsRead } from '@/lib/actions/whatsapp'
 import type { WhatsappCategory, WhatsappMessage } from '@/types/database'
 
@@ -165,20 +168,23 @@ export function WhatsAppMessageCard({ message, clientId }: Props) {
         )}
 
         {/* Footer */}
-        <div className="mt-1.5 flex items-center justify-between">
-          {message.media_url ? (
-            <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
-              <PhotoIcon className="h-3 w-3" />
-              Foto allegata
-            </span>
-          ) : (
-            <span />
-          )}
+        <div className="mt-1.5 flex items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-3">
+            {message.media_url && (
+              <span className="flex shrink-0 items-center gap-1 text-[11px] text-muted-foreground">
+                <PhotoIcon className="h-3 w-3" />
+                Foto allegata
+              </span>
+            )}
+            {!message.ai_processed && (
+              <ReprocessButton messageId={message.id} />
+            )}
+          </div>
           <a
             href={waLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-[11px] text-muted-foreground transition-colors hover:text-foreground"
+            className="inline-flex shrink-0 items-center gap-1 text-[11px] text-muted-foreground transition-colors hover:text-foreground"
             onClick={(e) => e.stopPropagation()}
           >
             <WhatsAppIcon className="h-3 w-3" />
@@ -187,6 +193,52 @@ export function WhatsAppMessageCard({ message, clientId }: Props) {
         </div>
       </div>
     </div>
+  )
+}
+
+function ReprocessButton({ messageId }: { messageId: string }) {
+  const router = useRouter()
+  const [isPending, startTransition] = useTransition()
+  const [error, setError] = useState<string | null>(null)
+
+  function handleClick(e: React.MouseEvent) {
+    e.stopPropagation()
+    setError(null)
+    startTransition(async () => {
+      const res = await fetch(`/api/admin/reprocess-message/${messageId}`, {
+        method: 'POST',
+      })
+      if (!res.ok) {
+        const data = (await res.json().catch(() => ({}))) as { error?: string }
+        setError(data.error ?? `HTTP ${res.status}`)
+        return
+      }
+      router.refresh()
+    })
+  }
+
+  if (error) {
+    return (
+      <span className="inline-flex items-center gap-1 text-[11px] text-destructive">
+        {error}
+      </span>
+    )
+  }
+
+  return (
+    <button
+      onClick={handleClick}
+      disabled={isPending}
+      title="Riprocessa con AI (trascrivi / analizza / categorizza)"
+      className="inline-flex shrink-0 items-center gap-1 text-[11px] font-medium text-foreground/70 transition-colors hover:text-foreground disabled:opacity-50"
+    >
+      {isPending ? (
+        <Loader2 className="h-3 w-3 animate-spin" />
+      ) : (
+        <Sparkles className="h-3 w-3" />
+      )}
+      {isPending ? 'AI in corso…' : 'Riprocessa con AI'}
+    </button>
   )
 }
 
