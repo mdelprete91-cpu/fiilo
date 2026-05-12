@@ -7,35 +7,39 @@ export default async function PlatformPage() {
   const session = await requireRole(['platform_owner'])
   const supabase = await createClient()
 
-  const [
-    { count: totalTenants },
-    { count: totalClients },
-    { count: totalGarments },
-  ] = await Promise.all([
-    supabase.from('tenants').select('*', { count: 'exact', head: true }).eq('is_active', true),
-    supabase.from('clients').select('*', { count: 'exact', head: true }),
-    supabase.from('garments').select('*', { count: 'exact', head: true }),
-  ])
-
-  const { data: tenants } = await supabase
-    .from('tenants')
-    .select('id, name, slug, plan, is_active, created_at')
-    .order('created_at', { ascending: false })
-    .limit(10)
-
-  // Attivazioni: count negli ultimi 30gg vs i 30gg precedenti per delta% MoM.
   const now = Date.now()
   const cutoff30 = now - 30 * 86_400_000
   const cutoff60 = now - 60 * 86_400_000
 
-  const { data: activationsRaw } = await supabase
-    .from('tenants')
-    .select('created_at')
-    .gte('created_at', new Date(cutoff60).toISOString())
+  const [
+    { count: totalTenants },
+    { count: totalClients },
+    { count: totalGarments },
+    { count: clientsLast30 },
+    { count: garmentsInProduction },
+    activationsRes,
+  ] = await Promise.all([
+    supabase.from('tenants').select('*', { count: 'exact', head: true }).eq('is_active', true),
+    supabase.from('clients').select('*', { count: 'exact', head: true }),
+    supabase.from('garments').select('*', { count: 'exact', head: true }),
+    supabase
+      .from('clients')
+      .select('*', { count: 'exact', head: true })
+      .gte('created_at', new Date(cutoff30).toISOString()),
+    supabase
+      .from('garments')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'in_production'),
+    supabase
+      .from('tenants')
+      .select('created_at')
+      .gte('created_at', new Date(cutoff60).toISOString()),
+  ])
 
+  // Activations: split degli ultimi 60gg in 30/30 per calcolare delta % MoM.
   let activationsCount = 0
   let prevActivations = 0
-  for (const row of activationsRaw ?? []) {
+  for (const row of activationsRes.data ?? []) {
     const t = new Date(row.created_at).getTime()
     if (t >= cutoff30) activationsCount++
     else if (t >= cutoff60) prevActivations++
@@ -47,8 +51,18 @@ export default async function PlatformPage() {
         : 0
       : Math.round(((activationsCount - prevActivations) / prevActivations) * 100)
 
+  const { data: tenants } = await supabase
+    .from('tenants')
+    .select('id, name, slug, plan, is_active, created_at')
+    .order('created_at', { ascending: false })
+    .limit(10)
+
+  const periodLabel = capitalize(
+    new Intl.DateTimeFormat('it-IT', { month: 'long', year: 'numeric' }).format(new Date()),
+  )
+
   return (
-    <div className="min-h-full bg-background px-6 py-8 lg:px-8 space-y-6">
+    <div className="min-h-full bg-background px-6 py-8 lg:px-8 space-y-8">
 
       {/* Page header */}
       <div className="flex items-start justify-between gap-4">
@@ -56,10 +70,11 @@ export default async function PlatformPage() {
           <TopBar role={session.role} userName={session.fullName ?? session.email} />
           <div>
             <h1 className="font-heading text-5xl text-ink leading-none">Overview</h1>
-            <p className="mt-2 text-sm text-muted-foreground">
-              {totalTenants != null
-                ? `${totalTenants} sartor${totalTenants === 1 ? 'ia' : 'ie'} attiv${totalTenants === 1 ? 'a' : 'e'}`
-                : 'Gestione sartorie'}
+            <p
+              className="mt-3 text-sm italic text-muted-foreground/80 leading-none"
+              style={{ fontFamily: 'var(--font-serif)' }}
+            >
+              {periodLabel}
             </p>
           </div>
         </div>
@@ -71,55 +86,82 @@ export default async function PlatformPage() {
         </Link>
       </div>
 
-      {/* KPI strip */}
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="grid grid-cols-2 divide-x divide-y divide-border animate-fade-up sm:grid-cols-4 sm:divide-y-0">
-          <KpiCell label="Sartorie attive" value={totalTenants ?? 0} />
-          <KpiCell
-            label="Attivazioni · 30gg"
-            value={activationsCount}
-            delta={activationsDelta}
-          />
-          <KpiCell label="Clienti totali" value={totalClients ?? 0} />
-          <KpiCell label="Abiti configurati" value={totalGarments ?? 0} />
-        </div>
+      {/* KPI strip — data block editoriale (no outer card) */}
+      <div className="grid grid-cols-1 divide-y divide-border border-y border-border animate-fade-up sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+        <KpiCell
+          label="Sartorie attive"
+          value={totalTenants ?? 0}
+          sub={formatActivationsSub(activationsCount, activationsDelta)}
+          subTone={
+            activationsDelta != null && activationsDelta > 0
+              ? 'positive'
+              : activationsDelta != null && activationsDelta < 0
+                ? 'negative'
+                : 'neutral'
+          }
+        />
+        <KpiCell
+          label="Clienti totali"
+          value={totalClients ?? 0}
+          sub={
+            (clientsLast30 ?? 0) > 0
+              ? `+${clientsLast30} negli ultimi 30 giorni`
+              : 'Nessun nuovo cliente'
+          }
+        />
+        <KpiCell
+          label="Abiti configurati"
+          value={totalGarments ?? 0}
+          sub={
+            (garmentsInProduction ?? 0) > 0
+              ? `${garmentsInProduction} in produzione`
+              : 'Niente in produzione'
+          }
+        />
       </div>
 
-      {/* Tenants table */}
-      <div className="rounded-xl border border-border bg-card overflow-hidden animate-fade-up">
-        <div className="border-b border-border px-5 py-4">
+      {/* Sartorie — registro editoriale */}
+      <section className="overflow-hidden rounded-xl border border-border bg-card">
+        <header className="flex items-baseline justify-between gap-4 border-b border-border px-6 pt-5 pb-4">
           <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
-            Sartorie
+            Registro sartorie
           </p>
-        </div>
+          <p className="text-[11px] text-muted-foreground tabular-nums">
+            {tenants?.length ?? 0} di {totalTenants ?? 0}
+          </p>
+        </header>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">
-                <th className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">Nome</th>
-                <th className="hidden px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground md:table-cell">Slug</th>
-                <th className="hidden px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground lg:table-cell">Piano</th>
-                <th className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">Stato</th>
-                <th className="hidden px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground md:table-cell">Creata</th>
+                <Th className="text-left">Nome</Th>
+                <Th className="hidden text-left md:table-cell">Slug</Th>
+                <Th className="hidden text-left lg:table-cell">Piano</Th>
+                <Th className="text-left">Stato</Th>
+                <Th className="hidden text-left md:table-cell">Creata</Th>
                 <th className="px-5 py-3.5" />
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
               {tenants?.map((t) => (
-                <tr key={t.id} className="group hover:bg-muted/30 transition-colors">
+                <tr key={t.id} className="group transition-colors hover:bg-muted/30">
                   <td className="px-5 py-4 font-medium text-foreground">{t.name}</td>
-                  <td className="hidden px-5 py-4 font-mono text-xs text-muted-foreground md:table-cell">{t.slug}</td>
-                  <td className="hidden px-5 py-4 capitalize text-muted-foreground lg:table-cell">{t.plan}</td>
+                  <td className="hidden px-5 py-4 font-mono text-xs text-muted-foreground md:table-cell">
+                    {t.slug}
+                  </td>
+                  <td className="hidden px-5 py-4 capitalize text-muted-foreground lg:table-cell">
+                    {t.plan}
+                  </td>
                   <td className="px-5 py-4">
                     <ActiveBadge active={t.is_active} />
                   </td>
-                  <td className="hidden px-5 py-4 text-muted-foreground md:table-cell">
+                  <td className="hidden px-5 py-4 tabular-nums text-muted-foreground md:table-cell">
                     {new Date(t.created_at).toLocaleDateString('it-IT')}
                   </td>
                   <td className="px-5 py-4 text-right">
                     <Link
                       href={`/platform/tenants/${t.id}`}
-                      className="text-xs font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="text-xs font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100"
                     >
                       Gestisci →
                     </Link>
@@ -129,9 +171,16 @@ export default async function PlatformPage() {
               {!tenants?.length && (
                 <tr>
                   <td colSpan={6} className="px-5 py-14 text-center">
-                    <p className="text-sm font-medium text-foreground mb-1">Nessuna sartoria registrata</p>
-                    <p className="text-xs text-muted-foreground mb-4">Inizia aggiungendo la prima sartoria.</p>
-                    <Link href="/platform/tenants/nuova" className="text-xs font-medium text-primary hover:text-primary/80 transition-colors">
+                    <p className="mb-1 text-sm font-medium text-foreground">
+                      Nessuna sartoria registrata
+                    </p>
+                    <p className="mb-4 text-xs text-muted-foreground">
+                      Inizia aggiungendo la prima sartoria.
+                    </p>
+                    <Link
+                      href="/platform/tenants/nuova"
+                      className="text-xs font-medium text-primary transition-colors hover:text-primary/80"
+                    >
                       Aggiungi la prima →
                     </Link>
                   </td>
@@ -140,7 +189,7 @@ export default async function PlatformPage() {
             </tbody>
           </table>
         </div>
-      </div>
+      </section>
     </div>
   )
 }
@@ -148,39 +197,46 @@ export default async function PlatformPage() {
 function KpiCell({
   label,
   value,
-  delta,
+  sub,
+  subTone = 'neutral',
 }: {
   label: string
   value: number
-  delta?: number | null
+  sub?: string
+  subTone?: 'neutral' | 'positive' | 'negative'
 }) {
   return (
-    <div className="px-6 py-5">
+    <div className="px-6 py-7">
       <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
         {label}
       </p>
       <p className="font-heading mt-3 text-5xl leading-none tabular-nums text-ink">
         {value}
       </p>
-      {delta != null && (
+      {sub && (
         <p
-          className={`mt-2.5 flex items-center gap-1 text-[11px] font-medium tabular-nums ${
-            delta > 0
-              ? 'text-emerald-700 dark:text-emerald-400'
-              : delta < 0
-                ? 'text-rose-700 dark:text-rose-400'
+          className={`mt-3 text-[11px] leading-none tabular-nums ${
+            subTone === 'positive'
+              ? 'font-medium text-emerald-700 dark:text-emerald-400'
+              : subTone === 'negative'
+                ? 'font-medium text-rose-700 dark:text-rose-400'
                 : 'text-muted-foreground'
           }`}
         >
-          <span aria-hidden>{delta > 0 ? '↑' : delta < 0 ? '↓' : '='}</span>
-          <span className="whitespace-nowrap">
-            {delta === 0
-              ? 'stabile vs mese scorso'
-              : `${Math.abs(delta)}% vs mese scorso`}
-          </span>
+          {sub}
         </p>
       )}
     </div>
+  )
+}
+
+function Th({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return (
+    <th
+      className={`px-5 py-3.5 text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground ${className}`}
+    >
+      {children}
+    </th>
   )
 }
 
@@ -197,4 +253,17 @@ function ActiveBadge({ active }: { active: boolean }) {
       <span className="h-1 w-1 rounded-full bg-muted-foreground/50" /> Inattiva
     </span>
   )
+}
+
+function formatActivationsSub(count: number, deltaPct: number | null): string {
+  if (count === 0) return 'Nessuna attivazione in 30gg'
+  const unit = count === 1 ? 'nuova in 30gg' : 'nuove in 30gg'
+  if (deltaPct == null) return `↑ ${count} ${unit}`
+  if (deltaPct === 0) return `${count} ${unit}, stabile vs mese scorso`
+  const arrow = deltaPct > 0 ? '↑' : '↓'
+  return `${arrow} ${count} ${unit}, ${deltaPct > 0 ? '+' : ''}${deltaPct}% vs mese scorso`
+}
+
+function capitalize(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1)
 }
