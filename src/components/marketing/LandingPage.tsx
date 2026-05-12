@@ -44,7 +44,7 @@ const COPY = {
       titleEm: 'cucito su misura',
       title2: 'per i sarti.',
       subhead:
-        'Schede cliente complete, WhatsApp ordinato dall’AI, disegno dell’abito al bancone. Pensato per le sartorie vere, non riadattato da un programma qualunque. Apriamo i primi posti nel 2026.',
+        'Disegno dell’abito, preventivo in PDF, messaggi WhatsApp, lavorazioni in corso: pensato per le sartorie vere, non riadattato da un programma qualunque. Apriamo i primi posti nel 2026.',
       cta: 'Prenota una dimostrazione',
     },
     mockup: {
