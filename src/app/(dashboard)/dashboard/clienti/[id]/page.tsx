@@ -128,13 +128,13 @@ export default async function ClienteDetailPage({ params, searchParams }: PagePr
           {/* KPI strip */}
           <div className="rounded-xl border border-border bg-card overflow-hidden">
             <div className="grid grid-cols-2 divide-x divide-border">
-              <div className="flex flex-col justify-between p-5">
+              <div className="px-6 py-5">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">Abiti</p>
-                <p className="mt-3 text-3xl font-bold tracking-tight text-ink tabular-nums leading-none">{garments?.length ?? 0}</p>
+                <p className="font-heading mt-3 text-5xl leading-none tabular-nums text-ink">{garments?.length ?? 0}</p>
               </div>
-              <div className="flex flex-col justify-between p-5">
+              <div className="px-6 py-5">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">Rilevazioni</p>
-                <p className="mt-3 text-3xl font-bold tracking-tight text-ink tabular-nums leading-none">{measurements?.length ?? 0}</p>
+                <p className="font-heading mt-3 text-5xl leading-none tabular-nums text-ink">{measurements?.length ?? 0}</p>
               </div>
             </div>
           </div>
@@ -248,12 +248,18 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 function PaymentBadge({ status }: { status: string }) {
-  if (status === 'paid') return (
-    <span className="text-[10px] font-semibold tabular-nums" style={{ color: 'oklch(0.28 0.07 155)' }}>Saldato</span>
-  )
-  if (status === 'partial') return (
-    <span className="text-[10px] font-semibold tabular-nums" style={{ color: 'oklch(0.50 0.10 30)' }}>Acconto</span>
-  )
+  if (status === 'paid')
+    return (
+      <span className="text-[10px] font-semibold tabular-nums text-emerald-700 dark:text-emerald-400">
+        Saldato
+      </span>
+    )
+  if (status === 'partial')
+    return (
+      <span className="text-[10px] font-semibold tabular-nums text-amber-700 dark:text-amber-300">
+        Acconto
+      </span>
+    )
   return null
 }
 

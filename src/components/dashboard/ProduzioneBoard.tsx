@@ -315,16 +315,14 @@ function GarmentCard({ garment: g, staffList, onEditPrice }: { garment: GarmentR
                   {g.needs_materials && (
                     <span
                       title="Materiali mancanti"
-                      className="h-1.5 w-1.5 rounded-full shrink-0"
-                      style={{ background: 'oklch(0.72 0.15 60)' }}
+                      className="h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500 dark:bg-amber-400"
                       aria-label="Materiali mancanti"
                     />
                   )}
                   {hasNotes && (
                     <span
                       title="Note interne"
-                      className="h-1.5 w-1.5 rounded-full shrink-0"
-                      style={{ background: 'oklch(0.55 0.005 85 / 0.55)' }}
+                      className="h-1.5 w-1.5 shrink-0 rounded-full bg-muted-foreground/55"
                       aria-label="Note interne"
                     />
                   )}
@@ -363,16 +361,14 @@ function GarmentCard({ garment: g, staffList, onEditPrice }: { garment: GarmentR
                   </span>
                   {g.payment_status === 'paid' && (
                     <span
-                      className="text-[11px] font-semibold shrink-0"
-                      style={{ color: 'oklch(0.55 0.15 155)' }}
+                      className="shrink-0 text-[11px] font-semibold text-emerald-700 dark:text-emerald-400"
                     >
                       Saldato
                     </span>
                   )}
                   {g.payment_status !== 'paid' && g.deposit_amount != null && g.deposit_amount > 0 && (
                     <span
-                      className="text-[11px] tabular-nums font-semibold shrink-0"
-                      style={{ color: 'oklch(0.55 0.15 155)' }}
+                      className="shrink-0 text-[11px] font-semibold tabular-nums text-emerald-700 dark:text-emerald-400"
                     >
                       acc. {formatCurrency(g.deposit_amount)}
                     </span>

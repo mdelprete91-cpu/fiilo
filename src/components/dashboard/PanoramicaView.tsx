@@ -226,7 +226,7 @@ export function PanoramicaView({ garments }: { garments: PanoramicaGarment[] }) 
 
           {/* Card header — titolo + link */}
           <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-border">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
               Produzione
             </p>
             <Link
@@ -278,7 +278,7 @@ export function PanoramicaView({ garments }: { garments: PanoramicaGarment[] }) 
             {kpis.prossime.length > 0 ? (
               <>
                 <div className="px-6 py-3 border-b border-border bg-muted/50">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
                     Pronti da consegnare
                   </p>
                 </div>
@@ -339,7 +339,7 @@ export function PanoramicaView({ garments }: { garments: PanoramicaGarment[] }) 
 
           {/* Card header */}
           <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-border">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
               Andamento
             </p>
             <div className="flex items-center gap-5 text-[10px] text-muted-foreground">

@@ -206,7 +206,7 @@ function TeamCard({
         onSubmit={handleInvite}
         className="space-y-3 border-t border-border bg-muted/30 p-6"
       >
-        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
           Invita un membro
         </p>
         <div className="flex flex-wrap gap-2 sm:flex-nowrap">

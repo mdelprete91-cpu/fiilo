@@ -16,7 +16,7 @@ export function StatCard({ label, value, trend, className }: StatCardProps) {
         {label}
       </p>
       <div className="mt-3">
-        <p className="text-3xl font-bold tracking-tight text-ink tabular-nums leading-none">
+        <p className="font-heading text-5xl leading-none tabular-nums text-ink">
           {value}
         </p>
         {trend && (
