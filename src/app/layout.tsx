@@ -67,7 +67,7 @@ export const metadata: Metadata = {
     images: ['/og.jpg'],
   },
   icons: {
-    icon: '/filo-logo.svg',
+    icon: '/fiilo-logo.svg',
   },
   robots: {
     index: true,

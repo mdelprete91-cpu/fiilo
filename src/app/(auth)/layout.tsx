@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { FiloLogo } from '@/components/layout/FiloLogo'
+import { FiiloLogo } from '@/components/layout/FiiloLogo'
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -9,8 +9,8 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       {/* Left column — form */}
       <div className="flex min-h-screen flex-col lg:min-h-0">
         <header className="flex items-center justify-between px-6 py-5 lg:px-12">
-          <Link href="/" aria-label="filo home" className="inline-flex">
-            <FiloLogo className="h-6 w-auto text-ink" />
+          <Link href="/" aria-label="fiilo home" className="inline-flex">
+            <FiiloLogo className="h-6 w-auto text-ink" />
           </Link>
         </header>
 

@@ -17,7 +17,7 @@ import {
   Users,
 } from 'lucide-react'
 
-import { FiloLogo } from '@/components/layout/FiloLogo'
+import { FiiloLogo } from '@/components/layout/FiiloLogo'
 
 const REVEAL = {
   hidden: { opacity: 0, y: 24 },
@@ -108,7 +108,7 @@ const COPY = {
       titleLine1: 'Per chi vive',
       titleLine2: 'di misura.',
       lede:
-        'filo si adatta al vostro flusso. Nomi, stati, finiture: tutto modellato sul mestiere reale, non su quello immaginato da un product manager.',
+        'fiilo si adatta al vostro flusso. Nomi, stati, finiture: tutto modellato sul mestiere reale, non su quello immaginato da un product manager.',
       items: [
         {
           label: 'Atelier su misura',
@@ -161,7 +161,7 @@ const COPY = {
       headlineBefore: 'Scopri un futuro che non dimentica la ',
       headlineEm: 'tradizione',
       headlineAfter: '.',
-      subtext: 'Una demo di 20 minuti per capire se filo fa al caso vostro.',
+      subtext: 'Una demo di 20 minuti per capire se fiilo fa al caso vostro.',
       cta: 'Richiedi una demo',
     },
     footer: { tagline: 'Gestionale per sartorie su misura', emailLabel: 'Email' },
@@ -239,7 +239,7 @@ const COPY = {
       titleLine1: 'For everyone who',
       titleLine2: 'works to measure.',
       lede:
-        'filo adapts to your workflow. Names, statuses, finishes: shaped around the real craft, not the one imagined by a product manager.',
+        'fiilo adapts to your workflow. Names, statuses, finishes: shaped around the real craft, not the one imagined by a product manager.',
       items: [
         {
           label: 'Bespoke ateliers',
@@ -292,7 +292,7 @@ const COPY = {
       headlineBefore: 'A future that does not forget ',
       headlineEm: 'tradition',
       headlineAfter: '.',
-      subtext: 'A 20-minute demo to see if filo is the right fit.',
+      subtext: 'A 20-minute demo to see if fiilo is the right fit.',
       cta: 'Request a demo',
     },
     footer: { tagline: 'Software for bespoke tailoring', emailLabel: 'Email' },
@@ -366,8 +366,8 @@ function Nav({ t, mailto }: { t: Copy; mailto: string }) {
       />
 
       <nav className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-3 px-4 md:h-16 md:px-6">
-        <Link href="/" aria-label="filo home" className="inline-flex items-center">
-          <FiloLogo
+        <Link href="/" aria-label="fiilo home" className="inline-flex items-center">
+          <FiiloLogo
             className={`h-[18px] w-auto md:h-5 ${trans} ${
               isOverHero ? 'text-white' : 'text-ink'
             }`}
@@ -1004,8 +1004,8 @@ function Footer({ t }: { t: Copy }) {
   return (
     <footer className="border-t border-border bg-card py-12">
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-6 md:flex-row">
-        <Link href="/" aria-label="filo home" className="inline-flex">
-          <FiloLogo className="h-5 w-auto text-ink" />
+        <Link href="/" aria-label="fiilo home" className="inline-flex">
+          <FiiloLogo className="h-5 w-auto text-ink" />
         </Link>
         <div className="text-xs text-foreground/55">
           © {new Date().getFullYear()} fiilo · {t.footer.tagline}

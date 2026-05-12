@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { FiloLogo } from './FiloLogo'
+import { FiiloLogo } from './FiiloLogo'
 import { NotificationsBell } from './NotificationsBell'
 import { UserMenu } from './UserMenu'
 import type { TenantRole } from '@/types/database'
@@ -71,7 +71,7 @@ export function AppSidebar({ role, userName, unreadNotifications }: AppSidebarPr
     >
       {/* Header — wordmark + bell */}
       <div className="flex h-16 items-center justify-between gap-2 px-4">
-        <FiloLogo className="h-6 w-auto" style={{ color: D.fg } as React.CSSProperties} />
+        <FiiloLogo className="h-6 w-auto" style={{ color: D.fg } as React.CSSProperties} />
         {isTenant && (
           <NotificationsBell
             href="/dashboard/notifiche"

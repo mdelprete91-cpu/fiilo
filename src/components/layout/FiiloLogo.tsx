@@ -1,10 +1,10 @@
-export function FiloLogo({ className, style }: { className?: string; style?: React.CSSProperties }) {
+export function FiiloLogo({ className, style }: { className?: string; style?: React.CSSProperties }) {
   return (
     <svg
       viewBox="0 0 57 24"
       fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
-      aria-label="filo"
+      aria-label="fiilo"
       className={className}
       style={style}
     >
