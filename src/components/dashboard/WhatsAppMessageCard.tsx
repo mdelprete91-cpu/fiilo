@@ -1,11 +1,8 @@
 'use client'
 
-import { useState, useTransition } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
 import { it } from 'date-fns/locale'
-import { Loader2, Sparkles } from 'lucide-react'
 import { markAsRead } from '@/lib/actions/whatsapp'
 import type { WhatsappCategory, WhatsappMessage } from '@/types/database'
 
@@ -152,13 +149,7 @@ export function WhatsAppMessageCard({ message, clientId }: Props) {
             {nameEl}
             <span
               className={`shrink-0 rounded-sm px-1.5 py-0.5 text-[10px] font-semibold uppercase leading-none tracking-wide ${CATEGORY_CLASS[message.category]}`}
-              title={message.ai_processed ? 'Categorizzato da AI' : 'Categorizzato da regole'}
             >
-              {message.ai_processed && (
-                <span className="mr-1 opacity-70" aria-hidden>
-                  ✨
-                </span>
-              )}
               {CATEGORY_LABELS[message.category]}
             </span>
             {detectedLangIso && detectedLangIso !== 'it' && (
@@ -176,11 +167,8 @@ export function WhatsAppMessageCard({ message, clientId }: Props) {
         </div>
 
         {/* Summary */}
-        <p className="mt-0.5 flex items-center gap-1 text-xs font-medium leading-snug text-foreground/70">
-          {isTranscribedAudio && (
-            <Sparkles className="h-3 w-3 shrink-0 opacity-60" aria-hidden />
-          )}
-          <span className="truncate">{summaryText}</span>
+        <p className="mt-0.5 truncate text-xs font-medium leading-snug text-foreground/70">
+          {summaryText}
         </p>
 
         {/* Body preview */}
@@ -204,9 +192,6 @@ export function WhatsAppMessageCard({ message, clientId }: Props) {
                 Foto allegata
               </span>
             )}
-            {!message.ai_processed && (
-              <ReprocessButton messageId={message.id} />
-            )}
           </div>
           <a
             href={waLink}
@@ -221,93 +206,6 @@ export function WhatsAppMessageCard({ message, clientId }: Props) {
         </div>
       </div>
     </div>
-  )
-}
-
-interface ReprocessResponse {
-  applied?: boolean
-  message_type?: string
-  had_media?: boolean
-  changes?: Record<string, unknown>
-  errors?: Record<string, string>
-  error?: string
-}
-
-function ReprocessButton({ messageId }: { messageId: string }) {
-  const router = useRouter()
-  const [isPending, startTransition] = useTransition()
-  const [errorMsg, setErrorMsg] = useState<string | null>(null)
-
-  function handleClick(e: React.MouseEvent) {
-    e.stopPropagation()
-    setErrorMsg(null)
-    startTransition(async () => {
-      let res: Response
-      try {
-        res = await fetch(`/api/admin/reprocess-message/${messageId}`, {
-          method: 'POST',
-        })
-      } catch (err) {
-        setErrorMsg(`network: ${err instanceof Error ? err.message : 'error'}`)
-        return
-      }
-
-      const data = (await res.json().catch(() => ({}))) as ReprocessResponse
-
-      if (!res.ok) {
-        setErrorMsg(data.error ?? `HTTP ${res.status}`)
-        return
-      }
-
-      // 200 ma niente è stato applicato: mostra gli errori dettagliati
-      if (data.applied === false) {
-        const errs = data.errors ?? {}
-        const summary = Object.entries(errs)
-          .map(([k, v]) => `${k}: ${String(v).slice(0, 80)}`)
-          .join(' · ')
-        setErrorMsg(
-          summary
-            ? `applied=false → ${summary}`
-            : `applied=false (had_media=${data.had_media}, type=${data.message_type})`,
-        )
-        // Log completo in console per debug
-        console.warn('[reprocess] full response:', data)
-        return
-      }
-
-      router.refresh()
-    })
-  }
-
-  if (errorMsg) {
-    return (
-      <button
-        onClick={(e) => {
-          e.stopPropagation()
-          setErrorMsg(null)
-        }}
-        className="inline-flex items-start gap-1 text-left text-[10px] text-destructive hover:text-destructive/80"
-        title="Clicca per chiudere"
-      >
-        {errorMsg}
-      </button>
-    )
-  }
-
-  return (
-    <button
-      onClick={handleClick}
-      disabled={isPending}
-      title="Riprocessa con AI (trascrivi / analizza / categorizza)"
-      className="inline-flex shrink-0 items-center gap-1 text-[11px] font-medium text-foreground/70 transition-colors hover:text-foreground disabled:opacity-50"
-    >
-      {isPending ? (
-        <Loader2 className="h-3 w-3 animate-spin" />
-      ) : (
-        <Sparkles className="h-3 w-3" />
-      )}
-      {isPending ? 'AI in corso…' : 'Riprocessa con AI'}
-    </button>
   )
 }
 
