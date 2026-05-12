@@ -2,6 +2,8 @@ import Link from 'next/link'
 import { requireRole } from '@/lib/auth/session'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
+import { ItaliaMap, type MapTenant } from '@/components/platform/ItaliaMap'
+import { ActivationsChart } from '@/components/platform/ActivationsChart'
 
 export default async function PlatformPage() {
   const session = await requireRole(['platform_owner'])
@@ -22,6 +24,40 @@ export default async function PlatformPage() {
     .select('id, name, slug, plan, is_active, created_at')
     .order('created_at', { ascending: false })
     .limit(10)
+
+  // Tutti i tenant con coordinate, per mappa.
+  // Cast via unknown perché i tipi Supabase generati non includono ancora
+  // latitude/longitude/last_active_at (vedi migration 018, da applicare).
+  const { data: mapTenantsRaw } = await (supabase as unknown as {
+    from: (t: string) => {
+      select: (s: string) => {
+        not: (col: string, op: string, val: null) => {
+          not: (col: string, op: string, val: null) => Promise<{ data: MapTenant[] | null }>
+        }
+      }
+    }
+  })
+    .from('tenants')
+    .select('id, name, city, latitude, longitude, last_active_at')
+    .not('latitude', 'is', null)
+    .not('longitude', 'is', null)
+  const mapTenants: MapTenant[] = mapTenantsRaw ?? []
+
+  // Attivazioni ultimi 90 giorni: tutti i tenants created_at >= 90gg, raggruppati per giorno.
+  const ninetyDaysAgo = new Date()
+  ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 89)
+  ninetyDaysAgo.setHours(0, 0, 0, 0)
+
+  const { data: activationsRaw } = await supabase
+    .from('tenants')
+    .select('created_at')
+    .gte('created_at', ninetyDaysAgo.toISOString())
+
+  const activationsPoints = buildDailySeries(
+    (activationsRaw ?? []).map((r) => r.created_at),
+    ninetyDaysAgo,
+    90,
+  )
 
   return (
     <div className="min-h-full bg-background px-6 py-8 lg:px-8 space-y-6">
@@ -53,6 +89,16 @@ export default async function PlatformPage() {
           <KpiCell label="Sartorie attive" value={totalTenants ?? 0} />
           <KpiCell label="Clienti totali" value={totalClients ?? 0} />
           <KpiCell label="Abiti configurati" value={totalGarments ?? 0} />
+        </div>
+      </div>
+
+      {/* Mappa Italia + Chart attivazioni */}
+      <div className="grid gap-6 lg:grid-cols-5">
+        <div className="lg:col-span-2">
+          <ItaliaMap tenants={mapTenants} />
+        </div>
+        <div className="lg:col-span-3">
+          <ActivationsChart points={activationsPoints} />
         </div>
       </div>
 
@@ -127,6 +173,25 @@ function KpiCell({ label, value }: { label: string; value: number }) {
       </p>
     </div>
   )
+}
+
+// Raggruppa gli ISO datetime in conteggi per giorno (UTC) e riempie i buchi a zero.
+function buildDailySeries(
+  isoDates: string[],
+  start: Date,
+  days: number,
+): { date: string; count: number }[] {
+  const buckets = new Map<string, number>()
+  for (let i = 0; i < days; i++) {
+    const d = new Date(start)
+    d.setDate(start.getDate() + i)
+    buckets.set(d.toISOString().slice(0, 10), 0)
+  }
+  for (const iso of isoDates) {
+    const key = iso.slice(0, 10)
+    if (buckets.has(key)) buckets.set(key, (buckets.get(key) ?? 0) + 1)
+  }
+  return [...buckets.entries()].map(([date, count]) => ({ date, count }))
 }
 
 function ActiveBadge({ active }: { active: boolean }) {
