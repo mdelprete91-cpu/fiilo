@@ -196,32 +196,73 @@ export function WhatsAppMessageCard({ message, clientId }: Props) {
   )
 }
 
+interface ReprocessResponse {
+  applied?: boolean
+  message_type?: string
+  had_media?: boolean
+  changes?: Record<string, unknown>
+  errors?: Record<string, string>
+  error?: string
+}
+
 function ReprocessButton({ messageId }: { messageId: string }) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
-  const [error, setError] = useState<string | null>(null)
+  const [errorMsg, setErrorMsg] = useState<string | null>(null)
 
   function handleClick(e: React.MouseEvent) {
     e.stopPropagation()
-    setError(null)
+    setErrorMsg(null)
     startTransition(async () => {
-      const res = await fetch(`/api/admin/reprocess-message/${messageId}`, {
-        method: 'POST',
-      })
-      if (!res.ok) {
-        const data = (await res.json().catch(() => ({}))) as { error?: string }
-        setError(data.error ?? `HTTP ${res.status}`)
+      let res: Response
+      try {
+        res = await fetch(`/api/admin/reprocess-message/${messageId}`, {
+          method: 'POST',
+        })
+      } catch (err) {
+        setErrorMsg(`network: ${err instanceof Error ? err.message : 'error'}`)
         return
       }
+
+      const data = (await res.json().catch(() => ({}))) as ReprocessResponse
+
+      if (!res.ok) {
+        setErrorMsg(data.error ?? `HTTP ${res.status}`)
+        return
+      }
+
+      // 200 ma niente è stato applicato: mostra gli errori dettagliati
+      if (data.applied === false) {
+        const errs = data.errors ?? {}
+        const summary = Object.entries(errs)
+          .map(([k, v]) => `${k}: ${String(v).slice(0, 80)}`)
+          .join(' · ')
+        setErrorMsg(
+          summary
+            ? `applied=false → ${summary}`
+            : `applied=false (had_media=${data.had_media}, type=${data.message_type})`,
+        )
+        // Log completo in console per debug
+        console.warn('[reprocess] full response:', data)
+        return
+      }
+
       router.refresh()
     })
   }
 
-  if (error) {
+  if (errorMsg) {
     return (
-      <span className="inline-flex items-center gap-1 text-[11px] text-destructive">
-        {error}
-      </span>
+      <button
+        onClick={(e) => {
+          e.stopPropagation()
+          setErrorMsg(null)
+        }}
+        className="inline-flex items-start gap-1 text-left text-[10px] text-destructive hover:text-destructive/80"
+        title="Clicca per chiudere"
+      >
+        {errorMsg}
+      </button>
     )
   }
 
