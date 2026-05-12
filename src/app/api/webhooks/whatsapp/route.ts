@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { categorize } from '@/lib/whatsapp/categorize'
 import { transcribeWhatsAppAudio } from '@/lib/whatsapp/transcribe'
+import { analyzePhoto } from '@/lib/whatsapp/analyze-photo'
 import { normalizePhone, phonesMatch } from '@/lib/whatsapp/normalize-phone'
 import type { WhatsappMsgType } from '@/types/database'
 
@@ -213,24 +214,48 @@ async function processWebhook(payload: WebhookPayload) {
           caption,
         })
 
-        await supabase.from('whatsapp_messages').insert({
-          tenant_id: tenant.id,
-          client_id: clientId,
-          wa_message_id: msg.id,
-          wa_phone_number_id: phoneNumberId,
-          from_phone: fromPhone,
-          from_name: fromName,
-          message_type: messageType,
-          body,
-          media_url: mediaUrl,
-          media_mime_type: mediaMimeType,
-          category: cat.category,
-          category_summary: cat.category_summary,
-          detected_language: detectedLanguage ?? cat.detected_language,
-          transcript_confidence: transcriptConfidence,
-          ai_processed: cat.ai_processed,
-          sent_at: sentAt,
-        })
+        const { data: inserted } = await supabase
+          .from('whatsapp_messages')
+          .insert({
+            tenant_id: tenant.id,
+            client_id: clientId,
+            wa_message_id: msg.id,
+            wa_phone_number_id: phoneNumberId,
+            from_phone: fromPhone,
+            from_name: fromName,
+            message_type: messageType,
+            body,
+            media_url: mediaUrl,
+            media_mime_type: mediaMimeType,
+            category: cat.category,
+            category_summary: cat.category_summary,
+            detected_language: detectedLanguage ?? cat.detected_language,
+            transcript_confidence: transcriptConfidence,
+            ai_processed: cat.ai_processed,
+            sent_at: sentAt,
+          })
+          .select('id')
+          .single()
+
+        // Fire-and-forget vision analysis per immagini con URL caricato
+        if (
+          inserted?.id &&
+          messageType === 'image' &&
+          mediaUrl &&
+          (rawMime ?? '').startsWith('image/')
+        ) {
+          analyzePhoto(mediaUrl, caption ?? null)
+            .then(async (result) => {
+              if (!result) return
+              await supabase
+                .from('whatsapp_messages')
+                .update({ photo_analysis: result })
+                .eq('id', inserted.id)
+            })
+            .catch((err) =>
+              console.error('[whatsapp] analyzePhoto error', err),
+            )
+        }
       }
     }
   }

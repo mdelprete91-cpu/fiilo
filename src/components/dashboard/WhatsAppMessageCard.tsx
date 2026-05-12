@@ -159,6 +159,11 @@ export function WhatsAppMessageCard({ message, clientId }: Props) {
           </p>
         )}
 
+        {/* Photo analysis tags (Llama Vision via Groq) */}
+        {message.photo_analysis && (
+          <PhotoTags analysis={message.photo_analysis} />
+        )}
+
         {/* Footer */}
         <div className="mt-1.5 flex items-center justify-between">
           {message.media_url ? (
@@ -181,6 +186,34 @@ export function WhatsAppMessageCard({ message, clientId }: Props) {
           </a>
         </div>
       </div>
+    </div>
+  )
+}
+
+function PhotoTags({
+  analysis,
+}: {
+  analysis: NonNullable<WhatsappMessage['photo_analysis']>
+}) {
+  const tags = [
+    analysis.garment_type,
+    analysis.pattern,
+    ...(analysis.colors ?? []).slice(0, 2),
+    ...(analysis.details ?? []).slice(0, 2),
+  ].filter((t): t is string => Boolean(t))
+
+  if (tags.length === 0) return null
+
+  return (
+    <div className="mt-1 flex flex-wrap items-center gap-1">
+      {tags.slice(0, 5).map((tag, i) => (
+        <span
+          key={i}
+          className="inline-flex items-center rounded-full bg-secondary px-2 py-0.5 text-[10px] font-medium text-foreground/70 dark:bg-muted"
+        >
+          {tag}
+        </span>
+      ))}
     </div>
   )
 }

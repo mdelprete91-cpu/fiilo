@@ -15,6 +15,14 @@ export type EmailEventType = 'sent' | 'delivered' | 'opened' | 'clicked' | 'boun
 export type WhatsappCategory = 'misura' | 'ispirazione' | 'riferimento_dettaglio' | 'richiesta' | 'approvazione' | 'altro'
 export type WhatsappMsgType = 'text' | 'image' | 'audio' | 'document' | 'video' | 'sticker'
 
+export interface PhotoAnalysisJson {
+  garment_type: string | null
+  colors: string[]
+  pattern: string | null
+  details: string[]
+  description: string
+}
+
 export type Json =
   | string
   | number
@@ -654,6 +662,7 @@ export type Database = {
           detected_language: string | null
           transcript_confidence: number | null
           ai_processed: boolean
+          photo_analysis: PhotoAnalysisJson | null
           is_read: boolean
           sent_at: string
         }
@@ -675,6 +684,7 @@ export type Database = {
           detected_language?: string | null
           transcript_confidence?: number | null
           ai_processed?: boolean
+          photo_analysis?: PhotoAnalysisJson | null
           is_read?: boolean
           sent_at: string
         }
@@ -696,6 +706,7 @@ export type Database = {
           detected_language?: string | null
           transcript_confidence?: number | null
           ai_processed?: boolean
+          photo_analysis?: PhotoAnalysisJson | null
           is_read?: boolean
           sent_at?: string
         }

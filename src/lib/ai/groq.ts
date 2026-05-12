@@ -92,26 +92,33 @@ export async function chatJson<T>(
 /**
  * Trascrive un audio file. Usa Whisper Large V3 Turbo via Groq.
  *
- * @param audioBlob Buffer dell'audio (m4a/mp3/ogg/wav supportati)
- * @param filename nome del file (Whisper richiede l'estensione corretta per detecting format)
+ * @param audioBuffer Buffer dell'audio (m4a/mp3/ogg/wav supportati)
+ * @param filename nome del file (estensione importante per Whisper)
+ * @param mimeType opzionale, settato sul File così Whisper riconosce il formato
  * @returns oggetto { text, language, durationSec } o null su errore
  */
 export async function transcribeAudio(
   audioBuffer: Buffer,
   filename: string,
+  mimeType?: string | null,
 ): Promise<{ text: string; language: string | null; durationSec: number | null } | null> {
   const g = client()
-  if (!g) return null
+  if (!g) {
+    console.warn('[groq.transcribeAudio] skipped: GROQ_API_KEY not set')
+    return null
+  }
 
   try {
-    const file = new File([new Uint8Array(audioBuffer)], filename)
+    const file = new File([new Uint8Array(audioBuffer)], filename, {
+      type: mimeType ?? 'audio/ogg',
+    })
     const transcription = await g.audio.transcriptions.create(
       {
         file,
         model: 'whisper-large-v3-turbo',
         response_format: 'verbose_json',
       },
-      { timeout: 15000 },
+      { timeout: 20000 },
     )
     // verbose_json returns { text, language, duration, segments, ... }
     const t = transcription as unknown as {
@@ -119,13 +126,20 @@ export async function transcribeAudio(
       language?: string
       duration?: number
     }
+    const text = (t.text ?? '').trim()
+    console.log(
+      `[groq.transcribeAudio] ok: ${text.length} chars, lang=${t.language ?? '?'}, dur=${t.duration ?? '?'}s, mime=${mimeType ?? '?'}`,
+    )
     return {
-      text: t.text ?? '',
+      text,
       language: t.language ?? null,
       durationSec: t.duration ?? null,
     }
   } catch (err) {
-    console.error('[groq.transcribeAudio] error:', err instanceof Error ? err.message : err)
+    console.error(
+      '[groq.transcribeAudio] error:',
+      err instanceof Error ? `${err.name}: ${err.message}` : err,
+    )
     return null
   }
 }

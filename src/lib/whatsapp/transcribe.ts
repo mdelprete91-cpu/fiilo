@@ -20,7 +20,7 @@ export async function transcribeWhatsAppAudio(
   const ext = filenameExtFromMime(mimeType)
   const filename = `audio.${ext}`
 
-  const result = await transcribeAudio(audioBuffer, filename)
+  const result = await transcribeAudio(audioBuffer, filename, mimeType)
   if (!result) return null
 
   return {
