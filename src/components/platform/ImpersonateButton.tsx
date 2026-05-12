@@ -15,10 +15,10 @@ export function ImpersonateButton({ tenantId, tenantName }: { tenantId: string; 
   }
 
   return (
-    <Button onClick={handle} disabled={isPending} variant="outline" size="sm">
+    <Button onClick={handle} disabled={isPending}>
       {isPending
-        ? <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
-        : <LogIn className="mr-2 h-3.5 w-3.5" />}
+        ? <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        : <LogIn className="mr-2 h-4 w-4" />}
       Entra nella dashboard di {tenantName}
     </Button>
   )
