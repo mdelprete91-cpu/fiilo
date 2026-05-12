@@ -37,7 +37,7 @@ const COPY = {
   it: {
     nav: { product: 'Prodotto', useCases: 'Per chi', login: 'Accedi', cta: 'Richiedi una demo' },
     hero: {
-      badge: 'Early access · primi atelier italiani',
+      badge: 'In fase di lancio',
       title1: 'La sartoria,',
       title2: 'organizzata.',
       subhead:
@@ -76,6 +76,7 @@ const COPY = {
       },
     },
     steps: {
+      marker: 'II.',
       eyebrow: 'Come funziona',
       title: 'Tre passi. Zero attriti.',
       items: [
@@ -100,6 +101,7 @@ const COPY = {
       ],
     },
     useCases: {
+      marker: 'III.',
       eyebrow: 'Per chi',
       titleLine1: 'Per ogni mestiere',
       titleLine2: 'della sartoria.',
@@ -124,6 +126,7 @@ const COPY = {
       footnote: 'Altre lavorazioni in arrivo: scrivici per discuterne durante la demo.',
     },
     features: {
+      marker: 'IV.',
       eyebrow: 'Funzionalità',
       title: 'Tutto quello che serve. Niente di più.',
       cards: [
@@ -153,9 +156,13 @@ const COPY = {
       ],
     },
     finalCta: {
-      title: 'Pronto a cucire il prossimo capo?',
-      subhead:
-        'Stiamo aprendo l’early access agli atelier italiani. Scrivici per una demo personalizzata.',
+      marker: 'V.',
+      eyebrow: 'Nota dal fondatore',
+      line1: 'Stiamo aprendo filo un capo alla volta.',
+      line2: 'Se cercate uno strumento che vi somigli, scriveteci.',
+      line3: 'Vediamo insieme se c’è terreno comune.',
+      signatureName: 'Mario Del Prete',
+      signatureRole: 'fondatore',
       cta: 'Richiedi una demo',
     },
     footer: { tagline: 'Gestionale per sartorie su misura', emailLabel: 'Email' },
@@ -163,7 +170,7 @@ const COPY = {
   en: {
     nav: { product: 'Product', useCases: 'Use cases', login: 'Log in', cta: 'Request a demo' },
     hero: {
-      badge: 'Early access · first Italian ateliers',
+      badge: 'Launching soon',
       title1: 'Tailoring,',
       title2: 'organised.',
       subhead:
@@ -202,6 +209,7 @@ const COPY = {
       },
     },
     steps: {
+      marker: 'II.',
       eyebrow: 'How it works',
       title: 'Three steps. Zero friction.',
       items: [
@@ -226,6 +234,7 @@ const COPY = {
       ],
     },
     useCases: {
+      marker: 'III.',
       eyebrow: 'Use cases',
       titleLine1: 'For every craft',
       titleLine2: 'of tailoring.',
@@ -250,6 +259,7 @@ const COPY = {
       footnote: 'More crafts coming: tell us during the demo.',
     },
     features: {
+      marker: 'IV.',
       eyebrow: 'Features',
       title: 'Everything you need. Nothing more.',
       cards: [
@@ -279,9 +289,13 @@ const COPY = {
       ],
     },
     finalCta: {
-      title: 'Ready to sew the next piece?',
-      subhead:
-        'We’re opening early access to Italian ateliers. Write to us for a personal demo.',
+      marker: 'V.',
+      eyebrow: 'A note from the founder',
+      line1: 'We are opening filo one piece at a time.',
+      line2: 'If you are looking for a tool that resembles you, write to us.',
+      line3: 'Let us meet, and see if there is common ground.',
+      signatureName: 'Mario Del Prete',
+      signatureRole: 'founder',
       cta: 'Request a demo',
     },
     footer: { tagline: 'Software for bespoke tailoring', emailLabel: 'Email' },
@@ -705,8 +719,16 @@ function Steps({ t }: { t: Copy }) {
           transition={REVEAL_T}
           className="mb-16 max-w-2xl"
         >
-          <div className="mb-4 text-xs font-medium uppercase tracking-[0.2em] text-foreground/55">
-            {t.steps.eyebrow}
+          <div className="mb-5 flex items-baseline gap-3">
+            <span
+              className="text-2xl italic leading-none text-foreground/30"
+              style={{ fontFamily: 'var(--font-serif), Georgia, serif' }}
+            >
+              {t.steps.marker}
+            </span>
+            <span className="text-xs font-medium uppercase tracking-[0.2em] text-foreground/55">
+              {t.steps.eyebrow}
+            </span>
           </div>
           <h2 className="text-4xl font-normal leading-[1] tracking-[-0.02em] font-[family-name:var(--font-serif)] text-ink md:text-5xl">
             {t.steps.title}
@@ -753,8 +775,16 @@ function UseCases({ t }: { t: Copy }) {
           className="mb-16 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end"
         >
           <div>
-            <div className="mb-4 text-xs font-medium uppercase tracking-[0.2em] text-foreground/55">
-              {t.useCases.eyebrow}
+            <div className="mb-5 flex items-baseline gap-3">
+              <span
+                className="text-2xl italic leading-none text-foreground/30"
+                style={{ fontFamily: 'var(--font-serif), Georgia, serif' }}
+              >
+                {t.useCases.marker}
+              </span>
+              <span className="text-xs font-medium uppercase tracking-[0.2em] text-foreground/55">
+                {t.useCases.eyebrow}
+              </span>
             </div>
             <h2 className="max-w-3xl text-4xl font-normal leading-[1] tracking-[-0.02em] font-[family-name:var(--font-serif)] text-ink md:text-5xl">
               {t.useCases.titleLine1}
@@ -812,8 +842,16 @@ function Features({ t }: { t: Copy }) {
           transition={REVEAL_T}
           className="mb-16 max-w-3xl"
         >
-          <div className="mb-4 text-xs font-medium uppercase tracking-[0.2em] text-foreground/55">
-            {t.features.eyebrow}
+          <div className="mb-5 flex items-baseline gap-3">
+            <span
+              className="text-2xl italic leading-none text-foreground/30"
+              style={{ fontFamily: 'var(--font-serif), Georgia, serif' }}
+            >
+              {t.features.marker}
+            </span>
+            <span className="text-xs font-medium uppercase tracking-[0.2em] text-foreground/55">
+              {t.features.eyebrow}
+            </span>
           </div>
           <h2 className="text-4xl font-normal leading-[1] tracking-[-0.02em] font-[family-name:var(--font-serif)] text-ink md:text-5xl">
             {t.features.title}
@@ -861,25 +899,57 @@ function FinalCTA({ t, mailto }: { t: Copy; mailto: string }) {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-100px' }}
         transition={REVEAL_T}
-        className="relative mx-auto max-w-7xl overflow-hidden rounded-3xl bg-primary px-8 py-20 text-center md:px-16 md:py-28"
+        className="relative mx-auto max-w-7xl overflow-hidden rounded-3xl bg-primary px-8 py-20 md:px-16 md:py-28"
       >
         <div className="pointer-events-none absolute -left-32 -top-32 h-96 w-96 rounded-full bg-accent/20 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-32 -right-32 h-96 w-96 rounded-full bg-primary-foreground/5 blur-3xl" />
 
-        <h2 className="relative text-4xl font-normal leading-[1] tracking-[-0.02em] font-[family-name:var(--font-serif)] text-primary-foreground md:text-6xl">
-          {t.finalCta.title}
-        </h2>
-        <p className="relative mx-auto mt-6 max-w-md text-[15px] text-primary-foreground/65">
-          {t.finalCta.subhead}
-        </p>
-        <div className="relative mt-10 flex justify-center">
-          <a
-            href={mailto}
-            className="group inline-flex items-center gap-2 rounded-full bg-card px-6 py-3.5 text-sm font-medium text-foreground shadow-lg transition-transform hover:scale-[1.02]"
+        <div className="relative mx-auto max-w-2xl">
+          <div className="mb-12 flex items-baseline gap-3">
+            <span
+              className="text-2xl italic leading-none text-primary-foreground/30"
+              style={{ fontFamily: 'var(--font-serif), Georgia, serif' }}
+            >
+              {t.finalCta.marker}
+            </span>
+            <span className="text-xs font-medium uppercase tracking-[0.2em] text-primary-foreground/55">
+              {t.finalCta.eyebrow}
+            </span>
+          </div>
+
+          <div
+            className="space-y-7 text-3xl font-normal leading-[1.25] tracking-[-0.015em] text-primary-foreground md:text-4xl"
+            style={{ fontFamily: 'var(--font-serif), Georgia, serif' }}
           >
-            {t.finalCta.cta}
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </a>
+            <p>{t.finalCta.line1}</p>
+            <p className="text-primary-foreground/85">{t.finalCta.line2}</p>
+            <p className="italic text-primary-foreground/70">{t.finalCta.line3}</p>
+          </div>
+
+          <div className="mt-14 flex items-center gap-4">
+            <div className="h-px w-10 bg-primary-foreground/30" />
+            <div className="leading-tight">
+              <div className="text-sm font-medium text-primary-foreground">
+                {t.finalCta.signatureName}
+              </div>
+              <div
+                className="text-xs italic text-primary-foreground/55"
+                style={{ fontFamily: 'var(--font-serif), Georgia, serif' }}
+              >
+                {t.finalCta.signatureRole}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-12">
+            <a
+              href={mailto}
+              className="group inline-flex items-center gap-2 rounded-full bg-card px-6 py-3.5 text-sm font-medium text-foreground shadow-lg transition-transform hover:scale-[1.02]"
+            >
+              {t.finalCta.cta}
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </a>
+          </div>
         </div>
       </motion.div>
     </section>
