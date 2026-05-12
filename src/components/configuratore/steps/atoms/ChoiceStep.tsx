@@ -71,7 +71,7 @@ export function ChoiceStep<T extends string | number>({
                 onClick={() => select(opt.value)}
                 aria-pressed={selected}
                 className={cn(
-                  'group/choice relative flex w-full items-start gap-3 rounded-md border bg-card px-4 py-3 text-left transition-all',
+                  'group/choice relative flex h-full min-h-[68px] w-full items-center gap-3 rounded-md border bg-card px-4 py-3 text-left transition-all',
                   'hover:border-primary/40 hover:bg-muted/30',
                   selected
                     ? 'border-primary bg-primary/5 ring-2 ring-primary/30'
@@ -80,7 +80,7 @@ export function ChoiceStep<T extends string | number>({
               >
                 <span
                   className={cn(
-                    'mt-0.5 inline-flex size-6 shrink-0 items-center justify-center rounded-full border text-[11px] font-medium transition-colors',
+                    'inline-flex size-6 shrink-0 items-center justify-center rounded-full border text-[11px] font-medium transition-colors',
                     selected
                       ? 'border-primary bg-primary text-primary-foreground'
                       : 'border-border bg-background text-muted-foreground',
@@ -89,11 +89,11 @@ export function ChoiceStep<T extends string | number>({
                 >
                   {selected ? <Check className="size-3.5" /> : i + 1}
                 </span>
-                {Icon && <Icon className="mt-0.5 size-5 shrink-0 text-foreground" />}
+                {Icon && <Icon className="size-5 shrink-0 text-foreground" />}
                 <span className="flex flex-1 flex-col gap-0.5">
-                  <span className="text-sm font-medium text-foreground">{opt.label}</span>
+                  <span className="text-sm font-medium leading-tight text-foreground">{opt.label}</span>
                   {opt.description && (
-                    <span className="text-xs text-muted-foreground">{opt.description}</span>
+                    <span className="text-xs leading-tight text-muted-foreground">{opt.description}</span>
                   )}
                 </span>
               </button>
