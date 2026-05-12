@@ -39,12 +39,12 @@ const COPY = {
   it: {
     nav: { product: 'Prodotto', useCases: 'Per chi è', login: 'Accedi', cta: 'Prenota una dimostrazione' },
     hero: {
-      badge: 'In arrivo presto',
-      title1: 'Un gestionale',
-      titleEm: 'cucito su misura',
-      title2: 'per i sarti.',
+      badge: 'In fase di lancio',
+      title1: 'Il gestionale',
+      titleEm: 'su misura',
+      title2: 'per le sartorie.',
       subhead:
-        'Disegno dell’abito, preventivo in PDF, messaggi WhatsApp, lavorazioni in corso: pensato per le sartorie vere, non riadattato da un programma qualunque. Apriamo i primi posti nel 2026.',
+        'Configuratore d’abito, preventivo PDF, WhatsApp, produzione: pensati per atelier su misura, non riadattati da un CRM generico. Apriamo i primi accessi nel 2026.',
       cta: 'Prenota una dimostrazione',
     },
     mockup: {
