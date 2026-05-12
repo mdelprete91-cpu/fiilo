@@ -86,38 +86,42 @@ export default async function PlatformPage() {
         </Link>
       </div>
 
-      {/* KPI strip — data block editoriale (no outer card) */}
-      <div className="grid grid-cols-1 divide-y divide-border border-y border-border animate-fade-up sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-        <KpiCell
-          label="Sartorie attive"
-          value={totalTenants ?? 0}
-          sub={formatActivationsSub(activationsCount, activationsDelta)}
-          subTone={
-            activationsDelta != null && activationsDelta > 0
-              ? 'positive'
-              : activationsDelta != null && activationsDelta < 0
-                ? 'negative'
-                : 'neutral'
-          }
-        />
-        <KpiCell
-          label="Clienti totali"
-          value={totalClients ?? 0}
-          sub={
-            (clientsLast30 ?? 0) > 0
-              ? `+${clientsLast30} negli ultimi 30 giorni`
-              : 'Nessun nuovo cliente'
-          }
-        />
-        <KpiCell
-          label="Abiti configurati"
-          value={totalGarments ?? 0}
-          sub={
-            (garmentsInProduction ?? 0) > 0
-              ? `${garmentsInProduction} in produzione`
-              : 'Niente in produzione'
-          }
-        />
+      {/* KPI strip — card bianca con accenti colorati sulle delta */}
+      <div className="overflow-hidden rounded-xl border border-border bg-card animate-fade-up">
+        <div className="grid grid-cols-1 divide-y divide-border sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+          <KpiCell
+            label="Sartorie attive"
+            value={totalTenants ?? 0}
+            sub={formatDeltaSub(activationsDelta)}
+            subTone={
+              activationsDelta != null && activationsDelta > 0
+                ? 'positive'
+                : activationsDelta != null && activationsDelta < 0
+                  ? 'negative'
+                  : 'neutral'
+            }
+          />
+          <KpiCell
+            label="Clienti totali"
+            value={totalClients ?? 0}
+            sub={
+              (clientsLast30 ?? 0) > 0
+                ? `+${clientsLast30} ultimi 30gg`
+                : 'Nessun nuovo cliente'
+            }
+            subTone={(clientsLast30 ?? 0) > 0 ? 'positive' : 'neutral'}
+          />
+          <KpiCell
+            label="Abiti configurati"
+            value={totalGarments ?? 0}
+            sub={
+              (garmentsInProduction ?? 0) > 0
+                ? `${garmentsInProduction} in produzione`
+                : 'Niente in produzione'
+            }
+            subTone={(garmentsInProduction ?? 0) > 0 ? 'warning' : 'neutral'}
+          />
+        </div>
       </div>
 
       {/* Sartorie — registro editoriale */}
@@ -194,6 +198,19 @@ export default async function PlatformPage() {
   )
 }
 
+type SubTone = 'neutral' | 'positive' | 'negative' | 'warning'
+
+const SUB_TONE_CLASSES: Record<SubTone, string> = {
+  positive:
+    'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300',
+  negative:
+    'bg-rose-50 text-rose-700 dark:bg-rose-950/50 dark:text-rose-300',
+  warning:
+    'bg-amber-50 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300',
+  neutral:
+    'bg-secondary text-muted-foreground dark:bg-muted/60',
+}
+
 function KpiCell({
   label,
   value,
@@ -203,7 +220,7 @@ function KpiCell({
   label: string
   value: number
   sub?: string
-  subTone?: 'neutral' | 'positive' | 'negative'
+  subTone?: SubTone
 }) {
   return (
     <div className="px-6 py-7">
@@ -214,17 +231,11 @@ function KpiCell({
         {value}
       </p>
       {sub && (
-        <p
-          className={`mt-3 text-[11px] leading-none tabular-nums ${
-            subTone === 'positive'
-              ? 'font-medium text-emerald-700 dark:text-emerald-400'
-              : subTone === 'negative'
-                ? 'font-medium text-rose-700 dark:text-rose-400'
-                : 'text-muted-foreground'
-          }`}
+        <span
+          className={`mt-3 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium leading-none tabular-nums ${SUB_TONE_CLASSES[subTone]}`}
         >
           {sub}
-        </p>
+        </span>
       )}
     </div>
   )
@@ -255,13 +266,12 @@ function ActiveBadge({ active }: { active: boolean }) {
   )
 }
 
-function formatActivationsSub(count: number, deltaPct: number | null): string {
-  if (count === 0) return 'Nessuna attivazione in 30gg'
-  const unit = count === 1 ? 'nuova in 30gg' : 'nuove in 30gg'
-  if (deltaPct == null) return `↑ ${count} ${unit}`
-  if (deltaPct === 0) return `${count} ${unit}, stabile vs mese scorso`
+function formatDeltaSub(deltaPct: number | null): string {
+  if (deltaPct == null) return 'Nuova attività'
+  if (deltaPct === 0) return 'Stabile vs mese scorso'
   const arrow = deltaPct > 0 ? '↑' : '↓'
-  return `${arrow} ${count} ${unit}, ${deltaPct > 0 ? '+' : ''}${deltaPct}% vs mese scorso`
+  const sign = deltaPct > 0 ? '+' : ''
+  return `${arrow} ${sign}${deltaPct}% vs mese scorso`
 }
 
 function capitalize(s: string): string {
