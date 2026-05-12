@@ -329,18 +329,18 @@ export function LandingPage({ locale }: LandingPageProps) {
 
 function Nav({ t, mailto }: { t: Copy; mailto: string }) {
   return (
-    <div className="sticky top-0 z-50 w-full px-3 pt-3 md:px-6 md:pt-4">
-      <nav
-        className="mx-auto flex h-12 max-w-5xl items-center justify-between gap-3 rounded-full bg-card/70 px-2 pl-4 shadow-[0_8px_30px_-12px_rgb(0,0,0,0.18)] ring-1 ring-foreground/10 backdrop-blur-xl backdrop-saturate-150 md:h-[52px] md:pl-5"
-        style={{
-          // Safari-friendly fallback when backdrop-filter isn't supported
-          backgroundColor: 'color-mix(in srgb, var(--card) 70%, transparent)',
-        }}
-      >
+    <header
+      className="fixed inset-x-0 top-0 z-50 border-b border-foreground/10 bg-card/70 backdrop-blur-xl backdrop-saturate-150"
+      style={{
+        // Safari-friendly fallback when backdrop-filter isn't supported
+        backgroundColor: 'color-mix(in srgb, var(--card) 70%, transparent)',
+      }}
+    >
+      <nav className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-3 px-4 md:h-16 md:px-6">
         <Link href="/" aria-label="filo home" className="inline-flex items-center">
           <FiloLogo className="h-[18px] w-auto text-ink md:h-5" />
         </Link>
-        <div className="hidden items-center gap-7 text-sm font-medium text-foreground/75 md:flex">
+        <div className="hidden items-center gap-8 text-sm font-medium text-foreground/75 md:flex">
           <a href="#prodotto" className="transition-colors hover:text-foreground">
             {t.nav.product}
           </a>
@@ -363,7 +363,7 @@ function Nav({ t, mailto }: { t: Copy; mailto: string }) {
           </a>
         </div>
       </nav>
-    </div>
+    </header>
   )
 }
 
