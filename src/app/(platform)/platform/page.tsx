@@ -58,10 +58,6 @@ export default async function PlatformPage() {
     .order('created_at', { ascending: false })
     .limit(10)
 
-  const periodLabel = capitalize(
-    new Intl.DateTimeFormat('it-IT', { month: 'long', year: 'numeric' }).format(new Date()),
-  )
-
   return (
     <div className="min-h-full bg-background px-6 py-8 lg:px-8 space-y-8">
 
@@ -71,12 +67,6 @@ export default async function PlatformPage() {
           <TopBar role={session.role} userName={session.fullName ?? session.email} />
           <div>
             <h1 className="font-heading text-5xl text-ink leading-none">Overview</h1>
-            <p
-              className="mt-3 text-sm italic text-muted-foreground/80 leading-none"
-              style={{ fontFamily: 'var(--font-serif)' }}
-            >
-              {periodLabel}
-            </p>
           </div>
         </div>
         <Link
@@ -280,8 +270,4 @@ function formatDeltaPill(deltaPct: number | null): string {
   if (deltaPct === 0) return '0%'
   const sign = deltaPct > 0 ? '+' : ''
   return `${sign}${deltaPct}%`
-}
-
-function capitalize(s: string): string {
-  return s.charAt(0).toUpperCase() + s.slice(1)
 }
