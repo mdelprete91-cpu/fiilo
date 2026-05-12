@@ -93,32 +93,29 @@ export default async function PlatformPage() {
           <KpiCell
             label="Sartorie attive"
             value={totalTenants ?? 0}
-            sub={formatDeltaSub(activationsDelta)}
-            subTone={
+            pill={formatDeltaPill(activationsDelta)}
+            pillTone={
               activationsDelta != null && activationsDelta > 0
                 ? 'positive'
                 : activationsDelta != null && activationsDelta < 0
                   ? 'negative'
                   : 'neutral'
             }
+            context={activationsDelta != null ? 'vs mese scorso' : undefined}
           />
           <KpiCell
             label="Clienti totali"
             value={totalClients ?? 0}
-            sub={
-              (clientsLast30 ?? 0) > 0 ? `+${clientsLast30} · 30gg` : '—'
-            }
-            subTone={(clientsLast30 ?? 0) > 0 ? 'positive' : 'neutral'}
+            pill={(clientsLast30 ?? 0) > 0 ? `+${clientsLast30}` : '0'}
+            pillTone={(clientsLast30 ?? 0) > 0 ? 'positive' : 'neutral'}
+            context="ultimi 30 giorni"
           />
           <KpiCell
             label="Abiti configurati"
             value={totalGarments ?? 0}
-            sub={
-              (garmentsInProduction ?? 0) > 0
-                ? `${garmentsInProduction} in produzione`
-                : 'Nessuno in produzione'
-            }
-            subTone="neutral"
+            pill={`${garmentsInProduction ?? 0}`}
+            pillTone="neutral"
+            context="in produzione"
           />
         </div>
       </div>
@@ -199,46 +196,56 @@ export default async function PlatformPage() {
 
 type SubTone = 'neutral' | 'positive' | 'negative'
 
-const SUB_TONE_CLASSES: Record<SubTone, string> = {
-  positive: 'text-emerald-700 dark:text-emerald-400',
-  negative: 'text-rose-700 dark:text-rose-400',
-  neutral: 'text-muted-foreground',
+const PILL_TONE_CLASSES: Record<SubTone, string> = {
+  positive:
+    'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/50 dark:text-emerald-300',
+  negative:
+    'border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-900 dark:bg-rose-950/50 dark:text-rose-300',
+  neutral:
+    'border-border bg-secondary text-foreground/70 dark:bg-muted/60',
 }
 
 function KpiCell({
   label,
   value,
-  sub,
-  subTone = 'neutral',
+  pill,
+  pillTone = 'neutral',
+  context,
 }: {
   label: string
   value: number
-  sub?: string
-  subTone?: SubTone
+  /** Valore conciso dentro la pill (es. "+75%", "+76", "17"). */
+  pill?: string
+  pillTone?: SubTone
+  /** Testo muted a fianco della pill (es. "vs mese scorso"). */
+  context?: string
 }) {
   return (
     <div className="px-6 py-7">
-      <div className="flex items-baseline justify-between gap-3">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
-          {label}
-        </p>
-        {sub && (
-          <span
-            className={`inline-flex items-center gap-1 text-[11px] font-medium tabular-nums ${SUB_TONE_CLASSES[subTone]}`}
-          >
-            {subTone === 'positive' && (
-              <TrendingUp className="h-3 w-3" aria-hidden />
-            )}
-            {subTone === 'negative' && (
-              <TrendingDown className="h-3 w-3" aria-hidden />
-            )}
-            {sub}
-          </span>
-        )}
-      </div>
-      <p className="font-heading mt-4 text-5xl leading-none tabular-nums text-ink">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+        {label}
+      </p>
+      <p className="font-heading mt-3 text-5xl leading-none tabular-nums text-ink">
         {value}
       </p>
+      {pill && (
+        <div className="mt-4 flex flex-wrap items-center gap-2 text-xs">
+          <span
+            className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 font-medium tabular-nums ${PILL_TONE_CLASSES[pillTone]}`}
+          >
+            {pillTone === 'positive' && (
+              <TrendingUp className="h-3 w-3" aria-hidden />
+            )}
+            {pillTone === 'negative' && (
+              <TrendingDown className="h-3 w-3" aria-hidden />
+            )}
+            {pill}
+          </span>
+          {context && (
+            <span className="text-muted-foreground">{context}</span>
+          )}
+        </div>
+      )}
     </div>
   )
 }
@@ -268,11 +275,11 @@ function ActiveBadge({ active }: { active: boolean }) {
   )
 }
 
-function formatDeltaSub(deltaPct: number | null): string {
-  if (deltaPct == null) return 'nuove'
-  if (deltaPct === 0) return 'stabile'
+function formatDeltaPill(deltaPct: number | null): string {
+  if (deltaPct == null) return '—'
+  if (deltaPct === 0) return '0%'
   const sign = deltaPct > 0 ? '+' : ''
-  return `${sign}${deltaPct}% MoM`
+  return `${sign}${deltaPct}%`
 }
 
 function capitalize(s: string): string {
