@@ -11,9 +11,11 @@ export default function LoginPage({
   searchParams: Promise<{ error?: string }>
 }) {
   return (
-    <div className="space-y-6">
-      <div className="space-y-1.5">
-        <h1 className="font-heading text-2xl text-ink">Accedi</h1>
+    <div className="space-y-7">
+      <div className="space-y-2">
+        <h1 className="font-heading text-5xl leading-[1] text-ink md:text-6xl">
+          Accedi
+        </h1>
         <p className="text-sm text-muted-foreground">
           Inserisci le credenziali per entrare in fiilo.
         </p>

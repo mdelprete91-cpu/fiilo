@@ -12,7 +12,7 @@ interface StatCardProps {
 export function StatCard({ label, value, trend, className }: StatCardProps) {
   return (
     <div className={cn('flex flex-col justify-between p-5 lg:p-6', className)}>
-      <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
         {label}
       </p>
       <div className="mt-3">

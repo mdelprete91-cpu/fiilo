@@ -113,9 +113,19 @@ export function WhatsAppMessageCard({ message, clientId }: Props) {
             <span
               className="shrink-0 text-[10px] px-1.5 py-0.5 rounded-sm font-semibold uppercase tracking-wide leading-none"
               style={CATEGORY_STYLE[message.category]}
+              title={message.ai_processed ? 'Categorizzato da AI' : 'Categorizzato da regole'}
             >
+              {message.ai_processed && <span className="mr-1 opacity-70" aria-hidden>✨</span>}
               {CATEGORY_LABELS[message.category]}
             </span>
+            {message.detected_language && message.detected_language !== 'it' && (
+              <span
+                className="shrink-0 text-[9px] px-1 py-0.5 rounded-sm font-semibold uppercase tracking-wide leading-none border border-border text-muted-foreground"
+                title={`Lingua rilevata: ${message.detected_language}`}
+              >
+                {message.detected_language}
+              </span>
+            )}
           </div>
           <span className="shrink-0 text-[11px] text-muted-foreground whitespace-nowrap">{timeAgo}</span>
         </div>

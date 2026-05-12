@@ -37,7 +37,7 @@ const D = {
   border:   'oklch(0.24 0.010 80)',
   ink:      'oklch(0.94 0.006 80)',
   fg:       'oklch(0.92 0.008 80)',
-  fgMuted:  'oklch(0.50 0.008 80)',
+  fgMuted:  'oklch(0.66 0.008 80)',
   hover:    'oklch(0.22 0.012 80)',
   active:   'oklch(0.24 0.014 80)',
 }

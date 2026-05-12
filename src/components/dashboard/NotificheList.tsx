@@ -140,7 +140,7 @@ export function NotificheList({ messages: initial, unreadCount: initialCount, te
             <button
               key={f.value}
               onClick={() => setActiveFilter(f.value)}
-              className="text-xs px-3 py-1.5 rounded-sm font-medium transition-colors flex items-center gap-1.5"
+              className="text-xs px-3 py-1.5 rounded-full font-medium transition-colors flex items-center gap-1.5"
               style={
                 activeFilter === f.value
                   ? { background: 'var(--color-ink)', color: 'var(--background)' }
@@ -157,7 +157,7 @@ export function NotificheList({ messages: initial, unreadCount: initialCount, te
       </div>
 
       {/* List */}
-      <div className="rounded-sm border border-border bg-card">
+      <div className="rounded-xl border border-border bg-card">
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 gap-3 text-center">
             <MessageCircle className="h-8 w-8 text-muted-foreground/30" />

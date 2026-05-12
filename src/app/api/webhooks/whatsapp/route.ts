@@ -2,6 +2,7 @@ import { createHmac } from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { categorize } from '@/lib/whatsapp/categorize'
+import { transcribeWhatsAppAudio } from '@/lib/whatsapp/transcribe'
 import { normalizePhone, phonesMatch } from '@/lib/whatsapp/normalize-phone'
 import type { WhatsappMsgType } from '@/types/database'
 
@@ -141,12 +142,14 @@ async function processWebhook(payload: WebhookPayload) {
           ? (rawType as WhatsappMsgType)
           : 'text'
 
-        const body = msg.text?.body ?? null
+        let body = msg.text?.body ?? null
         const caption = msg.image?.caption ?? msg.video?.caption ?? null
 
-        // Download media to Supabase Storage
+        // Download media to Supabase Storage + transcribe audio
         let mediaUrl: string | null = null
         let mediaMimeType: string | null = null
+        let transcriptConfidence: number | null = null
+        let detectedLanguage: string | null = null
 
         const mediaId =
           msg.image?.id ?? msg.video?.id ?? msg.audio?.id ?? msg.document?.id ?? msg.sticker?.id
@@ -157,19 +160,32 @@ async function processWebhook(payload: WebhookPayload) {
         if (mediaId && WA_TOKEN) {
           mediaMimeType = rawMime ?? null
           try {
-            // Step 1: get URL
             const metaRes = await fetch(`${WA_API}/${mediaId}`, {
               headers: { Authorization: `Bearer ${WA_TOKEN}` },
             })
             if (metaRes.ok) {
               const { url } = await metaRes.json() as { url?: string }
               if (url) {
-                // Step 2: download binary
                 const mediaRes = await fetch(url, {
                   headers: { Authorization: `Bearer ${WA_TOKEN}` },
                 })
                 if (mediaRes.ok) {
                   const buffer = Buffer.from(await mediaRes.arrayBuffer())
+
+                  // Trascrivi audio prima di salvare in Storage (Whisper su Groq, free)
+                  if (messageType === 'audio') {
+                    try {
+                      const transcript = await transcribeWhatsAppAudio(buffer, rawMime ?? null)
+                      if (transcript && transcript.text.trim()) {
+                        body = transcript.text.trim()
+                        detectedLanguage = transcript.language
+                        transcriptConfidence = transcript.confidence
+                      }
+                    } catch (err) {
+                      console.error('[whatsapp] transcribe error', err)
+                    }
+                  }
+
                   const ext = (rawMime ?? 'image/jpeg').split('/')[1]?.split(';')[0] ?? 'bin'
                   const storagePath = `whatsapp/${tenant.id}/${mediaId}.${ext}`
                   const { error: uploadErr } = await supabase.storage
@@ -190,8 +206,8 @@ async function processWebhook(payload: WebhookPayload) {
           }
         }
 
-        // Categorize
-        const { category, category_summary } = categorize({
+        // Categorize (AI con fallback rule-based)
+        const cat = await categorize({
           message_type: messageType,
           body: body ?? caption,
           caption,
@@ -208,8 +224,11 @@ async function processWebhook(payload: WebhookPayload) {
           body,
           media_url: mediaUrl,
           media_mime_type: mediaMimeType,
-          category,
-          category_summary,
+          category: cat.category,
+          category_summary: cat.category_summary,
+          detected_language: detectedLanguage ?? cat.detected_language,
+          transcript_confidence: transcriptConfidence,
+          ai_processed: cat.ai_processed,
           sent_at: sentAt,
         })
       }

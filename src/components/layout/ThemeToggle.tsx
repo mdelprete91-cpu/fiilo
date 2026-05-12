@@ -42,15 +42,16 @@ export function ThemeToggle() {
               type="button"
               onClick={() => setTheme(opt.value)}
               aria-pressed={selected}
+              aria-label={opt.label}
+              title={opt.label}
               className={cn(
-                'flex flex-1 items-center justify-center gap-1 rounded-sm px-2 py-1 text-[11px] font-medium transition-colors',
+                'flex flex-1 items-center justify-center rounded-sm py-1.5 transition-colors',
                 selected
                   ? 'bg-card text-foreground shadow-xs'
                   : 'text-muted-foreground hover:text-foreground',
               )}
             >
-              <Icon className="size-3" />
-              {opt.label}
+              <Icon className="size-3.5" />
             </button>
           )
         })}

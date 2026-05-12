@@ -159,9 +159,9 @@ export function GarmentSidebar({ garment, client }: Props) {
     <div className="space-y-3">
 
       {/* ── Stato & Consegna ─────────────────────────────────────────────────── */}
-      <div className="rounded-sm border border-border bg-card overflow-hidden shadow-card">
+      <div className="rounded-xl border border-border bg-card overflow-hidden shadow-card">
         <div className="px-5 py-4 border-b border-border">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
             Stato produzione
           </p>
         </div>
@@ -187,7 +187,7 @@ export function GarmentSidebar({ garment, client }: Props) {
 
         {/* Delivery row */}
         <div className="px-5 py-4">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground mb-2">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground mb-2">
             Consegna
           </p>
           {editingEta ? (
@@ -196,12 +196,12 @@ export function GarmentSidebar({ garment, client }: Props) {
                 type="date"
                 value={etaValue}
                 onChange={(e) => setEtaValue(e.target.value)}
-                className="rounded-sm border border-border bg-background px-2.5 py-1.5 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                className="rounded-md border border-border bg-background px-2.5 py-1.5 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
               />
               <button
                 onClick={saveEta}
                 disabled={etaSaving}
-                className="inline-flex items-center gap-1 rounded-sm border border-border bg-card px-2.5 py-1.5 text-[11px] font-medium text-foreground hover:bg-muted/40 transition-colors disabled:opacity-50"
+                className="inline-flex items-center gap-1 rounded-xl border border-border bg-card px-2.5 py-1.5 text-[11px] font-medium text-foreground hover:bg-muted/40 transition-colors disabled:opacity-50"
               >
                 <Check className="h-3 w-3" />
                 {etaSaving ? 'Salvo…' : 'Salva'}
@@ -228,9 +228,9 @@ export function GarmentSidebar({ garment, client }: Props) {
       </div>
 
       {/* ── Pagamento ─────────────────────────────────────────────────────────── */}
-      <div className="rounded-sm border border-border bg-card overflow-hidden shadow-card">
+      <div className="rounded-xl border border-border bg-card overflow-hidden shadow-card">
         <div className="px-5 py-4 border-b border-border">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
             Pagamento
           </p>
         </div>
@@ -255,13 +255,13 @@ export function GarmentSidebar({ garment, client }: Props) {
                     }}
                     autoFocus
                     placeholder="0"
-                    className="w-full rounded-sm border border-border bg-background pl-7 pr-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring tabular-nums"
+                    className="w-full rounded-md border border-border bg-background pl-7 pr-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring tabular-nums"
                   />
                 </div>
                 <button
                   onClick={savePrice}
                   disabled={priceSaving}
-                  className="inline-flex items-center gap-1 rounded-sm border border-border bg-card px-2.5 py-1.5 text-[11px] font-medium text-foreground hover:bg-muted/40 transition-colors disabled:opacity-50 shrink-0"
+                  className="inline-flex items-center gap-1 rounded-xl border border-border bg-card px-2.5 py-1.5 text-[11px] font-medium text-foreground hover:bg-muted/40 transition-colors disabled:opacity-50 shrink-0"
                 >
                   <Check className="h-3 w-3" />{priceSaving ? 'Salvo…' : 'Salva'}
                 </button>
@@ -288,7 +288,7 @@ export function GarmentSidebar({ garment, client }: Props) {
           {/* Stato pagamento */}
           <div>
             <p className="text-xs text-muted-foreground mb-2">Stato</p>
-            <div className="flex rounded-sm overflow-hidden border border-border">
+            <div className="flex rounded-full overflow-hidden border border-border">
               {PAYMENT_STATUS_OPTIONS.map((opt) => {
                 const isActive = optimisticPaymentStatus === opt.value
                 return (
@@ -320,13 +320,13 @@ export function GarmentSidebar({ garment, client }: Props) {
                     onChange={(e) => setDepositInput(e.target.value)}
                     onKeyDown={(e) => { if (e.key === 'Enter') saveDeposit() }}
                     placeholder="0"
-                    className="w-full rounded-sm border border-border bg-background pl-7 pr-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring tabular-nums"
+                    className="w-full rounded-md border border-border bg-background pl-7 pr-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring tabular-nums"
                   />
                 </div>
                 <button
                   onClick={saveDeposit}
                   disabled={depositSaving}
-                  className="inline-flex items-center gap-1 rounded-sm border border-border bg-card px-2.5 py-1.5 text-[11px] font-medium text-foreground hover:bg-muted/40 transition-colors disabled:opacity-50 shrink-0"
+                  className="inline-flex items-center gap-1 rounded-xl border border-border bg-card px-2.5 py-1.5 text-[11px] font-medium text-foreground hover:bg-muted/40 transition-colors disabled:opacity-50 shrink-0"
                 >
                   <Check className="h-3 w-3" />{depositSaving ? 'Salvo…' : 'Salva'}
                 </button>
@@ -354,9 +354,9 @@ export function GarmentSidebar({ garment, client }: Props) {
       </div>
 
       {/* ── Cliente ───────────────────────────────────────────────────────────── */}
-      <div className="rounded-sm border border-border bg-card overflow-hidden shadow-card">
+      <div className="rounded-xl border border-border bg-card overflow-hidden shadow-card">
         <div className="px-5 py-4 border-b border-border">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
             Cliente
           </p>
         </div>
@@ -413,9 +413,9 @@ export function GarmentSidebar({ garment, client }: Props) {
       </div>
 
       {/* ── Note interne ──────────────────────────────────────────────────────── */}
-      <div className="rounded-sm border border-border bg-card overflow-hidden shadow-card">
+      <div className="rounded-xl border border-border bg-card overflow-hidden shadow-card">
         <div className="px-5 py-4 border-b border-border">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
             Note interne
           </p>
         </div>
@@ -425,7 +425,7 @@ export function GarmentSidebar({ garment, client }: Props) {
             onChange={(e) => { setNotes(e.target.value); setNotesSaved(false) }}
             rows={4}
             placeholder="Aggiungi note per uso interno…"
-            className="w-full rounded-sm border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-ring resize-none"
+            className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-ring resize-none"
           />
           <div className="flex items-center justify-between">
             <span
@@ -437,7 +437,7 @@ export function GarmentSidebar({ garment, client }: Props) {
             <button
               onClick={saveNotes}
               disabled={notesSaving}
-              className="inline-flex items-center gap-1.5 rounded-sm border border-border bg-card px-3 py-1.5 text-[11px] font-medium text-foreground hover:bg-muted/40 transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-3 py-1.5 text-[11px] font-medium text-foreground hover:bg-muted/40 transition-colors disabled:opacity-50"
             >
               {notesSaving ? 'Salvo…' : 'Salva note'}
             </button>

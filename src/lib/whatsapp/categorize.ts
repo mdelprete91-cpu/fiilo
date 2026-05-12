@@ -1,4 +1,5 @@
 import type { WhatsappCategory, WhatsappMsgType } from '@/types/database'
+import { categorizeWithAI } from './categorize-ai'
 
 interface CategorizeInput {
   message_type: WhatsappMsgType
@@ -6,10 +7,44 @@ interface CategorizeInput {
   caption?: string | null
 }
 
-interface CategorizeResult {
+export interface CategorizeResult {
   category: WhatsappCategory
   category_summary: string
+  detected_language: string | null
+  /** true se la classificazione viene da AI, false se da fallback rule-based. */
+  ai_processed: boolean
 }
+
+/**
+ * Categorizza un messaggio WhatsApp.
+ *
+ * Strategia:
+ * 1. Prova AI (Groq Llama 3.3 70B) — capisce frasi naturali italiane + altre lingue
+ * 2. Fallback rule-based (keyword matching) se AI non disponibile o fallisce
+ *
+ * Sincrona dal punto di vista del caller — async perché AI può richiedere fino a 8s.
+ */
+export async function categorize(input: CategorizeInput): Promise<CategorizeResult> {
+  const aiResult = await categorizeWithAI(input)
+  if (aiResult) {
+    return {
+      category: aiResult.category,
+      category_summary: aiResult.category_summary,
+      detected_language: aiResult.detected_language,
+      ai_processed: true,
+    }
+  }
+
+  const rule = categorizeRuleBased(input)
+  return {
+    category: rule.category,
+    category_summary: rule.category_summary,
+    detected_language: null,
+    ai_processed: false,
+  }
+}
+
+// ─── Fallback rule-based (logica originale, intatta) ───
 
 const DETAIL_KEYWORDS = ['botto', 'taschino', 'rever', 'risvolto', 'manica', 'polso', 'alamaro', 'occhiello', 'cucitura', 'contrastin', 'filetto']
 const MEASURE_KEYWORDS = ['misur', 'cm', 'vita', 'spall', 'petto', 'manica', 'girovita', 'coscia', 'cavallo', 'inseam', 'fianch', 'collo', 'polso', 'altezza', 'peso']
@@ -21,7 +56,12 @@ function matchesAny(text: string, keywords: string[]): boolean {
   return keywords.some((k) => lower.includes(k))
 }
 
-export function categorize({ message_type, body, caption }: CategorizeInput): CategorizeResult {
+interface RuleResult {
+  category: WhatsappCategory
+  category_summary: string
+}
+
+export function categorizeRuleBased({ message_type, body, caption }: CategorizeInput): RuleResult {
   if (message_type === 'image' || message_type === 'video') {
     const text = (caption ?? body ?? '').toLowerCase()
     if (text && matchesAny(text, DETAIL_KEYWORDS)) {
@@ -44,7 +84,6 @@ export function categorize({ message_type, body, caption }: CategorizeInput): Ca
     return { category: 'altro', category_summary: 'Documento ricevuto' }
   }
 
-  // text
   const text = body ?? ''
 
   if (matchesAny(text, MEASURE_KEYWORDS)) {

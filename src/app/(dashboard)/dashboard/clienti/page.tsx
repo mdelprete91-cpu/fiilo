@@ -66,7 +66,7 @@ export default async function ClientiPage({ searchParams }: PageProps) {
         </div>
         <Link
           href="/dashboard/clienti/nuovo"
-          className="shrink-0 inline-flex items-center gap-2 rounded-sm bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 active:scale-[0.97] transition-colors will-change-transform"
+          className="shrink-0 inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 active:scale-[0.97] transition-colors will-change-transform"
         >
           <Plus className="h-4 w-4" />
           Nuovo cliente
@@ -80,37 +80,37 @@ export default async function ClientiPage({ searchParams }: PageProps) {
           name="q"
           defaultValue={q}
           placeholder="Cerca per nome o email…"
-          className="w-full rounded-sm border border-border bg-card py-2.5 pl-9 pr-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 transition-shadow"
+          className="w-full rounded-xl border border-border bg-card py-2.5 pl-9 pr-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 transition-shadow"
         />
       </form>
 
       {/* Tabella */}
-      <div className="rounded-sm border border-border bg-card overflow-hidden animate-fade-up">
+      <div className="rounded-xl border border-border bg-card overflow-hidden animate-fade-up">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border">
-              <th className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+              <th className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
                 Cliente
               </th>
-              <th className="hidden px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground md:table-cell">
+              <th className="hidden px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground md:table-cell">
                 Email
               </th>
-              <th className="hidden px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground lg:table-cell">
+              <th className="hidden px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground lg:table-cell">
                 Telefono
               </th>
-              <th className="hidden px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground lg:table-cell">
+              <th className="hidden px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground lg:table-cell">
                 Città
               </th>
-              <th className="hidden px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground md:table-cell">
+              <th className="hidden px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground md:table-cell">
                 Cliente dal
               </th>
-              <th className="hidden px-5 py-3.5 text-right text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground xl:table-cell">
+              <th className="hidden px-5 py-3.5 text-right text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground xl:table-cell">
                 Abiti richiesti
               </th>
-              <th className="hidden px-5 py-3.5 text-right text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground xl:table-cell">
+              <th className="hidden px-5 py-3.5 text-right text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground xl:table-cell">
                 Abiti consegnati
               </th>
-              <th className="hidden px-5 py-3.5 text-right text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground xl:table-cell">
+              <th className="hidden px-5 py-3.5 text-right text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground xl:table-cell">
                 Fatturato
               </th>
               <th className="px-5 py-3.5" />

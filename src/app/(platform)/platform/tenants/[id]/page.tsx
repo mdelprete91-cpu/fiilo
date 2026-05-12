@@ -90,14 +90,14 @@ export default async function TenantDetailPage({ params }: PageProps) {
 
           {/* Left: KPI + details */}
           <div className="space-y-4 lg:col-span-1">
-            <div className="rounded-sm border border-border bg-card overflow-hidden">
+            <div className="rounded-xl border border-border bg-card overflow-hidden">
               <div className="grid grid-cols-2 divide-x divide-border">
                 <div className="flex flex-col justify-between p-5">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">Clienti</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">Clienti</p>
                   <p className="mt-3 text-3xl font-bold tracking-tight text-ink tabular-nums leading-none">{clientCount ?? 0}</p>
                 </div>
                 <div className="flex flex-col justify-between p-5">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">Abiti</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">Abiti</p>
                   <p className="mt-3 text-3xl font-bold tracking-tight text-ink tabular-nums leading-none">{garmentCount ?? 0}</p>
                 </div>
               </div>

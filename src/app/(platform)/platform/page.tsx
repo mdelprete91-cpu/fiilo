@@ -41,14 +41,14 @@ export default async function PlatformPage() {
         </div>
         <Link
           href="/platform/tenants/nuova"
-          className="shrink-0 inline-flex items-center gap-2 rounded-sm bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 active:scale-[0.97] transition-colors will-change-transform"
+          className="shrink-0 inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 active:scale-[0.97] transition-colors will-change-transform"
         >
           + Nuova sartoria
         </Link>
       </div>
 
       {/* KPI strip */}
-      <div className="rounded-sm border border-border bg-card overflow-hidden">
+      <div className="rounded-xl border border-border bg-card overflow-hidden">
         <div className="grid grid-cols-3 divide-x divide-border animate-fade-up">
           <KpiCell label="Sartorie attive" value={totalTenants ?? 0} />
           <KpiCell label="Clienti totali" value={totalClients ?? 0} />
@@ -57,9 +57,9 @@ export default async function PlatformPage() {
       </div>
 
       {/* Tenants table */}
-      <div className="rounded-sm border border-border bg-card overflow-hidden animate-fade-up">
+      <div className="rounded-xl border border-border bg-card overflow-hidden animate-fade-up">
         <div className="border-b border-border px-5 py-4">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
             Sartorie
           </p>
         </div>
@@ -67,11 +67,11 @@ export default async function PlatformPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">
-                <th className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">Nome</th>
-                <th className="hidden px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground md:table-cell">Slug</th>
-                <th className="hidden px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground lg:table-cell">Piano</th>
-                <th className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">Stato</th>
-                <th className="hidden px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground md:table-cell">Creata</th>
+                <th className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">Nome</th>
+                <th className="hidden px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground md:table-cell">Slug</th>
+                <th className="hidden px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground lg:table-cell">Piano</th>
+                <th className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">Stato</th>
+                <th className="hidden px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground md:table-cell">Creata</th>
                 <th className="px-5 py-3.5" />
               </tr>
             </thead>
@@ -119,7 +119,7 @@ export default async function PlatformPage() {
 function KpiCell({ label, value }: { label: string; value: number }) {
   return (
     <div className="flex flex-col justify-between p-5">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{label}</p>
+      <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">{label}</p>
       <p className="mt-3 text-3xl font-bold tracking-tight text-ink tabular-nums leading-none">{value}</p>
     </div>
   )

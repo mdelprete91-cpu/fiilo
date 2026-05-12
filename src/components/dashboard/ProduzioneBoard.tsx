@@ -212,7 +212,7 @@ function Column({
   return (
     <div
       ref={setNodeRef}
-      className="rounded-sm border bg-card"
+      className="rounded-xl border bg-card"
       style={{
         borderColor: isOver && isDragging ? 'oklch(0.28 0.07 155)' : 'var(--color-border)',
         backgroundColor: isOver && isDragging ? 'oklch(0.93 0.05 155 / 0.07)' : undefined,
@@ -222,7 +222,7 @@ function Column({
       <div className="flex items-center justify-between px-4 py-3 border-b border-border">
         <div className="flex items-center gap-2">
           <span className="h-2 w-2 rounded-full shrink-0" style={{ backgroundColor: meta.dot }} />
-          <h3 className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+          <h3 className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
             {meta.label}
           </h3>
         </div>
@@ -386,7 +386,7 @@ function GarmentCard({ garment: g, staffList, onEditPrice }: { garment: GarmentR
             </button>
           </div>
           <div className="text-right shrink-0">
-            <p className="text-[9px] leading-none font-semibold uppercase tracking-[0.08em] text-muted-foreground/35 mb-0.5">
+            <p className="text-[9px] leading-none font-semibold uppercase tracking-[0.15em] text-muted-foreground/35 mb-0.5">
               Consegna
             </p>
             <p className="text-[11px] font-mono tabular-nums text-muted-foreground/60">
@@ -493,7 +493,7 @@ function AssigneePicker({
           ref={dropdownRef}
           role="listbox"
           aria-label="Seleziona assegnatario"
-          className="fixed z-50 min-w-[168px] rounded-sm border border-border bg-card py-1 overflow-hidden"
+          className="fixed z-50 min-w-[168px] rounded-xl border border-border bg-card py-1 overflow-hidden"
           style={{
             top: pos.top,
             left: pos.left,
@@ -551,7 +551,7 @@ function AssigneePicker({
 function CardOverlay({ garment: g }: { garment: GarmentRow }) {
   return (
     <div
-      className="rounded-sm bg-card px-4 py-3.5 w-60 space-y-2.5"
+      className="rounded-xl bg-card px-4 py-3.5 w-60 space-y-2.5"
       style={{
         border: '1px solid oklch(0.28 0.07 155 / 0.18)',
         boxShadow: '0 12px 28px oklch(0 0 0 / 0.12), 0 3px 8px oklch(0 0 0 / 0.06)',
@@ -625,13 +625,13 @@ function PriceModal({
       onMouseDown={(e) => { if (e.target === e.currentTarget) onClose() }}
     >
       <div
-        className="w-full max-w-xs rounded-sm border border-border bg-card"
+        className="w-full max-w-xs rounded-xl border border-border bg-card"
         style={{ boxShadow: '0 16px 48px oklch(0 0 0 / 0.13), 0 4px 12px oklch(0 0 0 / 0.07)' }}
         onMouseDown={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="px-5 py-4 border-b border-border">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
             Pagamento
           </p>
           <p className="mt-1 text-sm font-medium text-foreground leading-tight">{garmentLabel}</p>
@@ -642,7 +642,7 @@ function PriceModal({
         <form onSubmit={handleSubmit} className="px-5 py-4 space-y-4">
           {/* Prezzo totale */}
           <div>
-            <label className="block text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground mb-1.5">
+            <label className="block text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground mb-1.5">
               Prezzo totale
             </label>
             <div className="relative">
@@ -661,7 +661,7 @@ function PriceModal({
 
           {/* Stato pagamento */}
           <div>
-            <label className="block text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground mb-1.5">
+            <label className="block text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground mb-1.5">
               Pagamento
             </label>
             <div className="grid grid-cols-3 rounded-[2px] border border-border overflow-hidden">
@@ -685,7 +685,7 @@ function PriceModal({
           {/* Acconto versato — solo se partial */}
           {status === 'partial' && (
             <div>
-              <label className="block text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground mb-1.5">
+              <label className="block text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground mb-1.5">
                 Acconto versato
               </label>
               <div className="relative">

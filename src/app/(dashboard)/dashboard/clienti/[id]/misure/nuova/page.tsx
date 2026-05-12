@@ -29,7 +29,7 @@ export default async function NuovaMisuraPage({ params }: PageProps) {
         userName={session.fullName ?? session.email}
         title={`Misure — ${client.first_name} ${client.last_name}`}
       />
-      <div className="rounded-sm border border-border bg-card p-6">
+      <div className="rounded-xl border border-border bg-card p-6">
         <MeasurementForm clientId={id} />
       </div>
     </div>

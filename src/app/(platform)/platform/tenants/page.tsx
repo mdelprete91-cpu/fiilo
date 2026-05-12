@@ -51,7 +51,7 @@ export default async function PlatformTenantsPage({ searchParams }: PageProps) {
         </div>
         <Link
           href="/platform/tenants/nuova"
-          className="shrink-0 inline-flex items-center gap-2 rounded-sm bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 active:scale-[0.97] transition-colors will-change-transform"
+          className="shrink-0 inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 active:scale-[0.97] transition-colors will-change-transform"
         >
           + Nuova sartoria
         </Link>
@@ -64,12 +64,12 @@ export default async function PlatformTenantsPage({ searchParams }: PageProps) {
           type="search"
           defaultValue={q ?? ''}
           placeholder="Cerca per nome o slug..."
-          className="flex-1 min-w-48 rounded-sm border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-ring/30 transition-shadow"
+          className="flex-1 min-w-48 rounded-xl border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-ring/30 transition-shadow"
         />
         <select
           name="plan"
           defaultValue={plan ?? ''}
-          className="rounded-sm border border-border bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 transition-shadow"
+          className="rounded-xl border border-border bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 transition-shadow"
         >
           <option value="">Tutti i piani</option>
           <option value="starter">Starter</option>
@@ -79,7 +79,7 @@ export default async function PlatformTenantsPage({ searchParams }: PageProps) {
         <select
           name="status"
           defaultValue={status ?? ''}
-          className="rounded-sm border border-border bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 transition-shadow"
+          className="rounded-xl border border-border bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 transition-shadow"
         >
           <option value="">Tutti gli stati</option>
           <option value="active">Attive</option>
@@ -87,14 +87,14 @@ export default async function PlatformTenantsPage({ searchParams }: PageProps) {
         </select>
         <button
           type="submit"
-          className="rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+          className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
         >
           Filtra
         </button>
         {hasFilters && (
           <a
             href="/platform/tenants"
-            className="rounded-sm border border-border px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            className="rounded-full border border-border px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
           >
             Reimposta
           </a>
@@ -102,9 +102,9 @@ export default async function PlatformTenantsPage({ searchParams }: PageProps) {
       </form>
 
       {/* Table */}
-      <div className="rounded-sm border border-border bg-card overflow-hidden animate-fade-up">
+      <div className="rounded-xl border border-border bg-card overflow-hidden animate-fade-up">
         <div className="border-b border-border px-5 py-4 flex items-center justify-between">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
             Sartorie
           </p>
           {count != null && (
@@ -117,11 +117,11 @@ export default async function PlatformTenantsPage({ searchParams }: PageProps) {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">
-                <th className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">Nome</th>
-                <th className="hidden px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground md:table-cell">Slug</th>
-                <th className="hidden px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground lg:table-cell">Piano</th>
-                <th className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">Stato</th>
-                <th className="hidden px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground md:table-cell">Creata</th>
+                <th className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">Nome</th>
+                <th className="hidden px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground md:table-cell">Slug</th>
+                <th className="hidden px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground lg:table-cell">Piano</th>
+                <th className="px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">Stato</th>
+                <th className="hidden px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground md:table-cell">Creata</th>
                 <th className="px-5 py-3.5" />
               </tr>
             </thead>

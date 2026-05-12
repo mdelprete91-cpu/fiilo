@@ -1,28 +1,41 @@
+import Image from 'next/image'
 import Link from 'next/link'
 
 import { FiloLogo } from '@/components/layout/FiloLogo'
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      {/* Top nav — sticky cream bar with wordmark left */}
-      <header className="flex items-center justify-between px-6 py-5 lg:px-12">
-        <Link href="/" aria-label="filo home" className="inline-flex">
-          <FiloLogo className="h-6 w-auto text-ink" />
-        </Link>
-      </header>
+    <div className="min-h-screen bg-background lg:grid lg:grid-cols-2">
+      {/* Left column — form */}
+      <div className="flex min-h-screen flex-col lg:min-h-0">
+        <header className="flex items-center justify-between px-6 py-5 lg:px-12">
+          <Link href="/" aria-label="filo home" className="inline-flex">
+            <FiloLogo className="h-6 w-auto text-ink" />
+          </Link>
+        </header>
 
-      {/* Centered card on canvas */}
-      <main className="flex flex-1 items-center justify-center px-6 py-12">
-        <div className="w-full max-w-sm rounded-lg border border-border bg-card p-8">
-          {children}
+        <main className="flex flex-1 items-center justify-center px-6 py-12">
+          <div className="w-full max-w-sm">{children}</div>
+        </main>
+
+        <footer className="px-6 py-6 text-center text-xs text-muted-foreground">
+          © {new Date().getFullYear()} fiilo · Gestionale per sartorie su misura
+        </footer>
+      </div>
+
+      {/* Right column — image (lg+) */}
+      <div className="hidden p-3 lg:block">
+        <div className="relative h-full w-full overflow-hidden rounded-xl">
+          <Image
+            src="/auth-tailor.jpg"
+            alt=""
+            fill
+            priority
+            sizes="50vw"
+            className="object-cover"
+          />
         </div>
-      </main>
-
-      {/* Quiet footer */}
-      <footer className="px-6 py-6 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} fiilo · Gestionale per sartorie su misura
-      </footer>
+      </div>
     </div>
   )
 }

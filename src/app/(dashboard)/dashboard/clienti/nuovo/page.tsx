@@ -8,7 +8,7 @@ export default async function NuovoClientePage() {
   return (
     <div className="space-y-6 p-6 lg:p-8 max-w-3xl">
       <TopBar role={session.role} userName={session.fullName ?? session.email} title="Nuovo cliente" />
-      <div className="rounded-sm border border-border bg-card p-6">
+      <div className="rounded-xl border border-border bg-card p-6">
         <ClientForm />
       </div>
     </div>

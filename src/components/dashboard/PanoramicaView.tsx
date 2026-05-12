@@ -202,12 +202,12 @@ export function PanoramicaView({ garments }: { garments: PanoramicaGarment[] }) 
     <div className="h-full flex flex-col gap-5">
 
       {/* Period selector */}
-      <div className="shrink-0 flex items-center gap-0.5 rounded-sm bg-muted p-0.5 w-fit">
+      <div className="shrink-0 flex items-center gap-0.5 rounded-full bg-muted p-0.5 w-fit">
         {PERIODS.map((p) => (
           <button
             key={p.value}
             onClick={() => setPeriod(p.value)}
-            className={`px-4 py-1.5 text-[11px] font-semibold rounded-sm transition-all duration-150 active:scale-[0.97] will-change-transform ${
+            className={`px-4 py-1.5 text-[11px] font-semibold rounded-full transition-all duration-150 active:scale-[0.97] will-change-transform ${
               period === p.value
                 ? 'bg-card text-foreground shadow-card'
                 : 'text-muted-foreground hover:text-foreground'
@@ -222,7 +222,7 @@ export function PanoramicaView({ garments }: { garments: PanoramicaGarment[] }) 
       <div className="flex-1 min-h-0 grid gap-5 lg:grid-cols-5">
 
         {/* ── Card sinistra: Produzione ── */}
-        <div className="lg:col-span-2 rounded-sm border border-border bg-card overflow-hidden flex flex-col shadow-card">
+        <div className="lg:col-span-2 rounded-xl border border-border bg-card overflow-hidden flex flex-col shadow-card">
 
           {/* Card header — titolo + link */}
           <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-border">
@@ -239,7 +239,7 @@ export function PanoramicaView({ garments }: { garments: PanoramicaGarment[] }) 
 
           {/* Consegnati — stesso livello gerarchico dei KPI finanziari */}
           <div className="shrink-0 px-6 py-5 border-b border-border">
-            <p className="text-[10px] uppercase tracking-[0.08em] text-muted-foreground/70 mb-2.5">
+            <p className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground/70 mb-2.5">
               Consegnati
             </p>
             <p className="font-heading text-4xl leading-none tabular-nums text-ink">
@@ -335,7 +335,7 @@ export function PanoramicaView({ garments }: { garments: PanoramicaGarment[] }) 
         </div>
 
         {/* ── Card destra: Andamento ── */}
-        <div className="lg:col-span-3 rounded-sm border border-border bg-card overflow-hidden flex flex-col shadow-card">
+        <div className="lg:col-span-3 rounded-xl border border-border bg-card overflow-hidden flex flex-col shadow-card">
 
           {/* Card header */}
           <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-border">
@@ -357,33 +357,33 @@ export function PanoramicaView({ garments }: { garments: PanoramicaGarment[] }) 
           {/* KPI finanziari */}
           <div className="shrink-0 grid grid-cols-3 divide-x divide-border border-b border-border">
             <div className="px-6 py-5">
-              <p className="text-[10px] uppercase tracking-[0.08em] text-muted-foreground/70 mb-2.5">
+              <p className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground/70 mb-2.5">
                 Fatturato
               </p>
               <p className="font-heading text-4xl leading-none tabular-nums"
-                 style={{ color: 'oklch(0.30 0.08 155)' }}>
+                 style={{ color: 'var(--kpi-fatturato)' }}>
                 {kpis.hasPrices ? fmt(kpis.fatturato) : '—'}
               </p>
               <p className="mt-1.5 text-[10px] text-muted-foreground/60">{periodLabel(period)}</p>
             </div>
 
             <div className="px-6 py-5">
-              <p className="text-[10px] uppercase tracking-[0.08em] text-muted-foreground/70 mb-2.5">
+              <p className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground/70 mb-2.5">
                 Incassato
               </p>
               <p className="font-heading text-4xl leading-none tabular-nums"
-                 style={{ color: 'oklch(0.32 0.07 250)' }}>
+                 style={{ color: 'var(--kpi-incassato)' }}>
                 {kpis.hasPrices ? fmt(kpis.incassato) : '—'}
               </p>
               <p className="mt-1.5 text-[10px] text-muted-foreground/60">{periodLabel(period)}</p>
             </div>
 
             <div className="px-6 py-5">
-              <p className="text-[10px] uppercase tracking-[0.08em] text-muted-foreground/70 mb-2.5">
+              <p className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground/70 mb-2.5">
                 Da incassare
               </p>
               <p className="font-heading text-4xl leading-none tabular-nums"
-                 style={{ color: 'oklch(0.55 0.12 55)' }}>
+                 style={{ color: 'var(--kpi-due)' }}>
                 {kpis.hasPrices ? fmt(kpis.daIncassare) : '—'}
               </p>
               <p className="mt-1.5 text-[10px] text-muted-foreground/60">saldo residuo</p>

@@ -83,8 +83,8 @@ function computeKPIs(garments: GarmentStat[], period: Period) {
 function CustomTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null
   return (
-    <div className="rounded-sm border border-border bg-card px-3 py-2 shadow-md">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground mb-2">{label}</p>
+    <div className="rounded-xl border border-border bg-card px-3 py-2 shadow-md">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground mb-2">{label}</p>
       {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
       {payload.map((p: any) => (
         <p key={p.dataKey} className="text-xs flex items-center gap-2">
@@ -104,19 +104,19 @@ export function PerformanceSection({ garments }: { garments: GarmentStat[] }) {
   const kpis = useMemo(() => computeKPIs(garments, period), [garments, period])
 
   return (
-    <div className="rounded-sm border border-border bg-card overflow-hidden shadow-card">
+    <div className="rounded-xl border border-border bg-card overflow-hidden shadow-card">
 
       {/* Header row */}
       <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
           Performance produzione
         </p>
-        <div className="flex items-center gap-0.5 rounded-sm bg-muted p-0.5">
+        <div className="flex items-center gap-0.5 rounded-full bg-muted p-0.5">
           {PERIODS.map((p) => (
             <button
               key={p.value}
               onClick={() => setPeriod(p.value)}
-              className={`px-3 py-1 text-[11px] font-semibold rounded-sm transition-all duration-150 active:scale-[0.97] will-change-transform ${
+              className={`px-3 py-1 text-[11px] font-semibold rounded-full transition-all duration-150 active:scale-[0.97] will-change-transform ${
                 period === p.value
                   ? 'bg-card text-foreground shadow-sm'
                   : 'text-muted-foreground hover:text-foreground'
@@ -192,7 +192,7 @@ export function PerformanceSection({ garments }: { garments: GarmentStat[] }) {
 function KpiCell({ label, value }: { label: string; value: number | string }) {
   return (
     <div className="px-6 py-5">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground mb-2">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground mb-2">
         {label}
       </p>
       <p

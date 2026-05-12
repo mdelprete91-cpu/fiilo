@@ -102,7 +102,7 @@ export function NuovoAbitoModal({ clients }: Props) {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors active:scale-[0.97] will-change-transform"
+        className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors active:scale-[0.97] will-change-transform"
       >
         <Plus className="h-4 w-4" />
         Nuovo abito
@@ -116,7 +116,7 @@ export function NuovoAbitoModal({ clients }: Props) {
           <div className="absolute inset-0 bg-foreground/20 backdrop-blur-[2px]" />
 
           <div
-            className="relative z-10 w-full max-w-md rounded-sm border border-border bg-card shadow-xl flex flex-col"
+            className="relative z-10 w-full max-w-md rounded-xl border border-border bg-card shadow-xl flex flex-col"
             style={{ maxHeight: 'calc(100vh - 8rem)' }}
           >
             {/* Header */}
@@ -130,7 +130,7 @@ export function NuovoAbitoModal({ clients }: Props) {
                 </div>
                 <button
                   onClick={handleClose}
-                  className="rounded-sm p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                  className="rounded-full p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -140,10 +140,10 @@ export function NuovoAbitoModal({ clients }: Props) {
             {/* Body */}
             <div className="flex-1 overflow-y-auto">
               <div className="px-6 pt-5">
-                <div className="flex gap-0.5 rounded-sm bg-muted p-0.5 w-fit">
+                <div className="flex gap-0.5 rounded-full bg-muted p-0.5 w-fit">
                   <button
                     onClick={() => setMode('search')}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold rounded-sm transition-all ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold rounded-full transition-all ${
                       mode === 'search' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
                     }`}
                   >
@@ -152,7 +152,7 @@ export function NuovoAbitoModal({ clients }: Props) {
                   </button>
                   <button
                     onClick={() => setMode('new')}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold rounded-sm transition-all ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold rounded-full transition-all ${
                       mode === 'new' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
                     }`}
                   >
@@ -170,9 +170,9 @@ export function NuovoAbitoModal({ clients }: Props) {
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
                       placeholder="Cerca per nome o cognome…"
-                      className="w-full rounded-sm border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-ring/30 transition-shadow"
+                      className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-ring/30 transition-shadow"
                     />
-                    <ul className="divide-y divide-border rounded-sm border border-border overflow-hidden max-h-64 overflow-y-auto">
+                    <ul className="divide-y divide-border rounded-lg border border-border overflow-hidden max-h-64 overflow-y-auto">
                       {filtered.length === 0 ? (
                         <li className="px-4 py-6 text-center text-xs text-muted-foreground/60">
                           Nessun cliente trovato
@@ -202,36 +202,36 @@ export function NuovoAbitoModal({ clients }: Props) {
                   <form id="client-form" onSubmit={handleNewClientSubmit} className="space-y-4">
                     <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+                        <label className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
                           Nome *
                         </label>
                         <input
                           ref={firstNameRef}
                           name="first_name"
                           required
-                          className="w-full rounded-sm border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring/30 transition-shadow"
+                          className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring/30 transition-shadow"
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+                        <label className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
                           Cognome *
                         </label>
                         <input
                           name="last_name"
                           required
-                          className="w-full rounded-sm border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring/30 transition-shadow"
+                          className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring/30 transition-shadow"
                         />
                       </div>
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+                      <label className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
                         Telefono
                       </label>
                       <input
                         name="phone"
                         type="tel"
                         placeholder="+39 …"
-                        className="w-full rounded-sm border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-ring/30 transition-shadow"
+                        className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-ring/30 transition-shadow"
                       />
                     </div>
                   </form>
@@ -248,7 +248,7 @@ export function NuovoAbitoModal({ clients }: Props) {
                   type="submit"
                   form="client-form"
                   disabled={isPending}
-                  className="w-full inline-flex items-center justify-center gap-2 rounded-sm bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-colors active:scale-[0.97] will-change-transform"
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-colors active:scale-[0.97] will-change-transform"
                 >
                   {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
                   Crea cliente e configura abito

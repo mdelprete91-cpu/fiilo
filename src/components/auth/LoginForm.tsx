@@ -76,7 +76,7 @@ export function LoginForm() {
       <Button
         type="submit"
         size="lg"
-        className="h-11 w-full rounded-md text-sm font-medium"
+        className="h-11 w-full rounded-full text-sm font-medium"
         disabled={isPending}
       >
         {isPending && <Loader2 className="size-4 animate-spin" />}

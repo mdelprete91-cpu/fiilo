@@ -3,7 +3,7 @@
 import { useOptimistic, useTransition, useState, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { ArrowRight, Pencil, Check } from 'lucide-react'
+import { ArrowRight, Download, Pencil, Check } from 'lucide-react'
 import { updateGarmentStatusAction, updatePaymentStatusAction, updateGarmentDetailsAction } from '@/lib/actions/garments'
 
 interface Props {
@@ -136,26 +136,40 @@ export function OrdinePanel({ garment, client, tenantId: _tenantId, className, b
         >
           ← {resolvedBackLabel}
         </Link>
-        <h1 className="font-heading text-4xl text-ink leading-tight">{garmentTitle}</h1>
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">
-            {client.first_name} {client.last_name}
-          </span>
-          <span className="text-muted-foreground/30">·</span>
-          <div className="flex items-center gap-1.5">
-            <span
-              className="h-2 w-2 rounded-full shrink-0"
-              style={{ backgroundColor: meta.dot }}
-            />
-            <span className="text-sm text-muted-foreground">{meta.label}</span>
+        <div className="flex items-start justify-between gap-4">
+          <div className="space-y-2">
+            <h1 className="font-heading text-4xl text-ink leading-tight">{garmentTitle}</h1>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">
+                {client.first_name} {client.last_name}
+              </span>
+              <span className="text-muted-foreground/30">·</span>
+              <div className="flex items-center gap-1.5">
+                <span
+                  className="h-2 w-2 rounded-full shrink-0"
+                  style={{ backgroundColor: meta.dot }}
+                />
+                <span className="text-sm text-muted-foreground">{meta.label}</span>
+              </div>
+            </div>
           </div>
+          <a
+            href={`/api/pdf/preventivo/${garment.id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-border bg-card px-3.5 py-2 text-xs font-medium text-foreground transition-colors hover:bg-secondary"
+            title="Scarica preventivo in PDF"
+          >
+            <Download className="h-3.5 w-3.5" />
+            Preventivo PDF
+          </a>
         </div>
       </div>
 
       {/* Stato produzione */}
-      <div className="rounded-sm border border-border bg-card overflow-hidden shadow-card">
+      <div className="rounded-xl border border-border bg-card overflow-hidden shadow-card">
         <div className="px-6 py-4 border-b border-border">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">Stato produzione</p>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">Stato produzione</p>
         </div>
         <div className="px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -177,9 +191,9 @@ export function OrdinePanel({ garment, client, tenantId: _tenantId, className, b
       </div>
 
       {/* Pagamento */}
-      <div className="rounded-sm border border-border bg-card overflow-hidden shadow-card">
+      <div className="rounded-xl border border-border bg-card overflow-hidden shadow-card">
         <div className="px-6 py-4 border-b border-border">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">Pagamento</p>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">Pagamento</p>
         </div>
         <div className="px-6 py-5 space-y-4">
           <div className="flex items-center justify-between">
@@ -194,7 +208,7 @@ export function OrdinePanel({ garment, client, tenantId: _tenantId, className, b
           </div>
           <div className="flex items-start justify-between gap-4">
             <span className="text-xs text-muted-foreground pt-2">Stato pagamento</span>
-            <div className="flex rounded-sm overflow-hidden border border-border">
+            <div className="flex rounded-full overflow-hidden border border-border">
               {PAYMENT_STATUS_OPTIONS.map((opt) => {
                 const isActive = optimisticPaymentStatus === opt.value
                 return (
@@ -214,9 +228,9 @@ export function OrdinePanel({ garment, client, tenantId: _tenantId, className, b
       </div>
 
       {/* Consegna */}
-      <div className="rounded-sm border border-border bg-card overflow-hidden shadow-card">
+      <div className="rounded-xl border border-border bg-card overflow-hidden shadow-card">
         <div className="px-6 py-4 border-b border-border">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">Consegna</p>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">Consegna</p>
         </div>
         <div className="px-6 py-5">
           {editingEta ? (
@@ -225,12 +239,12 @@ export function OrdinePanel({ garment, client, tenantId: _tenantId, className, b
                 type="date"
                 value={etaValue}
                 onChange={(e) => setEtaValue(e.target.value)}
-                className="rounded-sm border border-border bg-background px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                className="rounded-md border border-border bg-background px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
               />
               <button
                 onClick={saveEta}
                 disabled={etaSaving}
-                className="inline-flex items-center gap-1.5 rounded-sm border border-border bg-card px-3 py-1.5 text-[11px] font-medium text-foreground hover:bg-muted/40 transition-colors disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-3 py-1.5 text-[11px] font-medium text-foreground hover:bg-muted/40 transition-colors disabled:opacity-50"
               >
                 <Check className="h-3 w-3" />
                 {etaSaving ? 'Salvo…' : 'Salva'}
@@ -257,9 +271,9 @@ export function OrdinePanel({ garment, client, tenantId: _tenantId, className, b
       </div>
 
       {/* Note interne */}
-      <div className="rounded-sm border border-border bg-card overflow-hidden shadow-card">
+      <div className="rounded-xl border border-border bg-card overflow-hidden shadow-card">
         <div className="px-6 py-4 border-b border-border">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">Note interne</p>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">Note interne</p>
         </div>
         <div className="px-6 py-5 space-y-3">
           <textarea
@@ -267,7 +281,7 @@ export function OrdinePanel({ garment, client, tenantId: _tenantId, className, b
             onChange={(e) => { setNotes(e.target.value); setNotesSaved(false) }}
             rows={4}
             placeholder="Aggiungi note per uso interno…"
-            className="w-full rounded-sm border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-ring resize-none"
+            className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-ring resize-none"
           />
           <div className="flex items-center justify-between">
             <span className="text-[11px] text-muted-foreground transition-opacity" style={{ opacity: notesSaved ? 1 : 0 }}>
@@ -276,7 +290,7 @@ export function OrdinePanel({ garment, client, tenantId: _tenantId, className, b
             <button
               onClick={saveNotes}
               disabled={notesSaving}
-              className="inline-flex items-center gap-1.5 rounded-sm border border-border bg-card px-3 py-1.5 text-[11px] font-medium text-foreground hover:bg-muted/40 transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-3 py-1.5 text-[11px] font-medium text-foreground hover:bg-muted/40 transition-colors disabled:opacity-50"
             >
               {notesSaving ? 'Salvo…' : 'Salva note'}
             </button>

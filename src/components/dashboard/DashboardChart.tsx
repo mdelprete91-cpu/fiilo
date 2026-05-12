@@ -169,7 +169,7 @@ function KPIItem({ label, value, color }: { label: string; value: number; color:
     <div>
       <div className="flex items-center gap-1.5 mb-1">
         <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: color }} />
-        <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{label}</p>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">{label}</p>
       </div>
       <p className="animate-fade-up will-change-[opacity,transform] font-heading text-4xl text-ink tabular-nums leading-none">
         {value}

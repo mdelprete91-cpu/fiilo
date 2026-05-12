@@ -1,19 +1,25 @@
 import type { Metadata } from 'next'
-import { Inter, JetBrains_Mono } from 'next/font/google'
+import { Geist, Instrument_Serif, JetBrains_Mono } from 'next/font/google'
 import { ThemeProvider } from '@/components/layout/ThemeProvider'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import './globals.css'
 
-const inter = Inter({
+const geist = Geist({
   variable: '--font-sans',
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600'],
 })
 
 const jetbrainsMono = JetBrains_Mono({
   variable: '--font-mono',
   subsets: ['latin'],
   weight: ['400', '500', '600'],
+})
+
+const instrumentSerif = Instrument_Serif({
+  variable: '--font-serif',
+  subsets: ['latin'],
+  weight: ['400'],
+  style: ['normal', 'italic'],
 })
 
 export const metadata: Metadata = {
@@ -27,7 +33,7 @@ export default function RootLayout({
   return (
     <html
       lang="it"
-      className={`${inter.variable} ${jetbrainsMono.variable} h-full`}
+      className={`${geist.variable} ${jetbrainsMono.variable} ${instrumentSerif.variable} h-full`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-background text-foreground antialiased">

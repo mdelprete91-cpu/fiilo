@@ -42,21 +42,30 @@ interface Props {
   preferredLanguage: string
 }
 
-export function SettingsForm({ tenant, profile, isAdmin, plan, memberSince, currentUserId, team, preferredLanguage }: Props) {
+export function SettingsForm({
+  tenant,
+  profile,
+  isAdmin,
+  plan,
+  memberSince,
+  currentUserId,
+  team,
+  preferredLanguage,
+}: Props) {
   return (
-    <div className="space-y-12">
-      {isAdmin && <SartoriaSection tenant={tenant} />}
-      {isAdmin && <TeamSection team={team} currentUserId={currentUserId} />}
-      <ProfiloSection profile={profile} />
-      <LinguaSection currentLanguage={preferredLanguage} />
-      <AccountSection plan={plan} memberSince={memberSince} />
+    <div className="space-y-5">
+      {isAdmin && <SartoriaCard tenant={tenant} />}
+      {isAdmin && <TeamCard team={team} currentUserId={currentUserId} />}
+      <ProfiloCard profile={profile} />
+      <LinguaCard currentLanguage={preferredLanguage} />
+      <AccountCard plan={plan} memberSince={memberSince} />
     </div>
   )
 }
 
-// ─── Sezione sartoria ────────────────────────────────────────────────────────
+/* ────────────────────  SARTORIA  ──────────────────── */
 
-function SartoriaSection({ tenant }: { tenant: TenantData }) {
+function SartoriaCard({ tenant }: { tenant: TenantData }) {
   const [isPending, startTransition] = useTransition()
   const [result, setResult] = useState<{ success: boolean; error?: string } | null>(null)
 
@@ -71,39 +80,57 @@ function SartoriaSection({ tenant }: { tenant: TenantData }) {
   }
 
   return (
-    <section>
-      <SectionHeader
-        title="La sartoria"
+    <Card>
+      <CardHeader
+        label="La sartoria"
         description="Informazioni di contatto visibili ai clienti."
       />
-      <div className="rounded-sm border border-border bg-card shadow-card">
-        <form onSubmit={handleSubmit} className="p-6 space-y-5">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Nome sartoria *" name="name" defaultValue={tenant.name} required />
-            <Field label="Email di contatto" name="email" type="email" defaultValue={tenant.email ?? ''} />
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Telefono" name="phone" type="tel" defaultValue={tenant.phone ?? ''} />
+      <form onSubmit={handleSubmit}>
+        <div className="space-y-5 p-6">
+          <div className="grid gap-5 sm:grid-cols-2">
+            <Field label="Nome sartoria" name="name" defaultValue={tenant.name} required />
+            <Field
+              label="Email di contatto"
+              name="email"
+              type="email"
+              defaultValue={tenant.email ?? ''}
+            />
+            <Field
+              label="Telefono"
+              name="phone"
+              type="tel"
+              defaultValue={tenant.phone ?? ''}
+            />
             <Field label="Città" name="city" defaultValue={tenant.city ?? ''} />
           </div>
           <Field label="Indirizzo" name="address" defaultValue={tenant.address ?? ''} />
-          <FormFooter isPending={isPending} result={result} label="Salva modifiche" />
-        </form>
-      </div>
-    </section>
+        </div>
+        <CardFooter isPending={isPending} result={result} label="Salva modifiche" />
+      </form>
+    </Card>
   )
 }
 
-// ─── Sezione team ─────────────────────────────────────────────────────────────
+/* ────────────────────  TEAM  ──────────────────── */
 
 const ROLE_LABEL: Record<string, string> = {
   tenant_admin: 'Admin',
   tenant_staff: 'Staff',
 }
 
-function TeamSection({ team, currentUserId }: { team: TeamMember[]; currentUserId: string }) {
+function TeamCard({
+  team,
+  currentUserId,
+}: {
+  team: TeamMember[]
+  currentUserId: string
+}) {
   const [invitePending, startInvite] = useTransition()
-  const [inviteResult, setInviteResult] = useState<{ success: boolean; error?: string; email?: string } | null>(null)
+  const [inviteResult, setInviteResult] = useState<{
+    success: boolean
+    error?: string
+    email?: string
+  } | null>(null)
   const [removingId, setRemovingId] = useState<string | null>(null)
   const formRef = useRef<HTMLFormElement>(null)
 
@@ -129,26 +156,29 @@ function TeamSection({ team, currentUserId }: { team: TeamMember[]; currentUserI
   }
 
   return (
-    <section>
-      <SectionHeader
-        title="Team"
-        description="Gestisci chi ha accesso al gestionale."
+    <Card>
+      <CardHeader
+        label="Team"
+        description="Chi ha accesso al gestionale."
       />
-      <div className="rounded-sm border border-border bg-card divide-y divide-border">
-
-        {/* Lista membri */}
+      <ul className="divide-y divide-border">
         {team.map((member) => (
-          <div key={member.roleId} className="flex items-center justify-between px-6 py-4">
+          <li
+            key={member.roleId}
+            className="flex items-center justify-between px-6 py-4"
+          >
             <div className="min-w-0">
-              <p className="text-sm font-medium text-foreground leading-tight truncate">
+              <p className="truncate text-sm font-medium leading-tight text-foreground">
                 {member.name ?? member.email ?? '—'}
               </p>
               {member.name && member.email && (
-                <p className="text-xs text-muted-foreground mt-0.5 truncate">{member.email}</p>
+                <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                  {member.email}
+                </p>
               )}
             </div>
-            <div className="flex items-center gap-3 shrink-0 ml-4">
-              <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+            <div className="ml-4 flex shrink-0 items-center gap-4">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
                 {ROLE_LABEL[member.role] ?? member.role}
               </span>
               {member.userId !== currentUserId && (
@@ -156,67 +186,71 @@ function TeamSection({ team, currentUserId }: { team: TeamMember[]; currentUserI
                   onClick={() => handleRemove(member.roleId)}
                   disabled={removingId === member.roleId}
                   title="Rimuovi dal team"
-                  className="rounded-sm p-1 text-muted-foreground/40 hover:text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-40"
+                  className="rounded-full p-1.5 text-muted-foreground/50 transition-colors hover:bg-destructive/10 hover:text-destructive disabled:opacity-40"
                 >
-                  {removingId === member.roleId
-                    ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                    : <Trash2 className="h-3.5 w-3.5" />
-                  }
+                  {removingId === member.roleId ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Trash2 className="h-3.5 w-3.5" />
+                  )}
                 </button>
               )}
             </div>
-          </div>
+          </li>
         ))}
+      </ul>
 
-        {/* Form invito */}
-        <form ref={formRef} onSubmit={handleInvite} className="px-6 py-5 space-y-4 bg-muted/30">
-          <p className="text-xs font-medium text-muted-foreground">
-            Invita un nuovo membro
+      <form
+        ref={formRef}
+        onSubmit={handleInvite}
+        className="space-y-3 border-t border-border bg-muted/30 p-6"
+      >
+        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+          Invita un membro
+        </p>
+        <div className="flex flex-wrap gap-2 sm:flex-nowrap">
+          <input
+            name="email"
+            type="email"
+            required
+            placeholder="email@esempio.com"
+            className="min-w-0 flex-1 rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 transition-shadow focus:outline-none focus:ring-2 focus:ring-ring/30"
+          />
+          <select
+            name="role"
+            defaultValue="tenant_staff"
+            className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground transition-shadow focus:outline-none focus:ring-2 focus:ring-ring/30"
+          >
+            <option value="tenant_staff">Staff</option>
+            <option value="tenant_admin">Admin</option>
+          </select>
+          <button
+            type="submit"
+            disabled={invitePending}
+            className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 active:scale-[0.97] disabled:opacity-50"
+          >
+            {invitePending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+            Invia invito
+          </button>
+        </div>
+
+        {inviteResult?.success && (
+          <p className="flex items-center gap-1.5 text-xs text-emerald-700">
+            <Check className="h-3.5 w-3.5" />
+            Invito inviato a <strong>{inviteResult.email}</strong>
           </p>
-          <div className="flex gap-3 flex-wrap sm:flex-nowrap">
-            <input
-              name="email"
-              type="email"
-              required
-              placeholder="email@esempio.com"
-              className="flex-1 min-w-0 rounded-sm border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-ring/30 transition-shadow"
-            />
-            <select
-              name="role"
-              defaultValue="tenant_staff"
-              className="rounded-sm border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 transition-shadow"
-            >
-              <option value="tenant_staff">Staff</option>
-              <option value="tenant_admin">Admin</option>
-            </select>
-            <button
-              type="submit"
-              disabled={invitePending}
-              className="inline-flex items-center gap-2 rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-colors active:scale-[0.97] will-change-transform whitespace-nowrap"
-            >
-              {invitePending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-              Invia invito
-            </button>
-          </div>
-
-          {inviteResult?.success && (
-            <p className="flex items-center gap-1.5 text-xs text-primary">
-              <Check className="h-3.5 w-3.5" />
-              Invito inviato a <strong>{inviteResult.email}</strong>
-            </p>
-          )}
-          {inviteResult?.error && (
-            <p className="text-xs text-destructive">{inviteResult.error}</p>
-          )}
-        </form>
-      </div>
-    </section>
+        )}
+        {inviteResult?.error && (
+          <p className="text-xs text-destructive">{inviteResult.error}</p>
+        )}
+      </form>
+    </Card>
   )
 }
 
-// ─── Sezione profilo personale ────────────────────────────────────────────────
+/* ────────────────────  PROFILO  ──────────────────── */
 
-function ProfiloSection({ profile }: { profile: ProfileData }) {
+function ProfiloCard({ profile }: { profile: ProfileData }) {
   const [isPending, startTransition] = useTransition()
   const [result, setResult] = useState<{ success: boolean; error?: string } | null>(null)
 
@@ -231,43 +265,43 @@ function ProfiloSection({ profile }: { profile: ProfileData }) {
   }
 
   return (
-    <section>
-      <SectionHeader
-        title="Profilo personale"
+    <Card>
+      <CardHeader
+        label="Profilo"
         description="Il tuo nome visibile all'interno del gestionale."
       />
-      <div className="rounded-sm border border-border bg-card shadow-card">
-        <form onSubmit={handleSubmit} className="p-6 space-y-5">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Nome completo" name="full_name" defaultValue={profile.full_name ?? ''} />
-            <div className="space-y-1.5">
-              <p className="text-xs font-medium text-muted-foreground">
-                Email account
-              </p>
-              <p className="text-sm text-muted-foreground py-2 border-b border-border/60">
-                {profile.email ?? '—'}
-              </p>
-              <p className="text-[10px] text-muted-foreground/60">
-                Per cambiare l&apos;email contatta il supporto.
-              </p>
-            </div>
+      <form onSubmit={handleSubmit}>
+        <div className="grid gap-5 p-6 sm:grid-cols-2">
+          <Field
+            label="Nome completo"
+            name="full_name"
+            defaultValue={profile.full_name ?? ''}
+          />
+          <div className="space-y-1.5">
+            <label className="block text-xs font-medium text-muted-foreground">
+              Email account
+            </label>
+            <p className="py-2.5 text-sm text-foreground">{profile.email ?? '—'}</p>
+            <p className="text-[10px] text-muted-foreground/70">
+              Per cambiarla contatta il supporto.
+            </p>
           </div>
-          <FormFooter isPending={isPending} result={result} label="Salva profilo" />
-        </form>
-      </div>
-    </section>
+        </div>
+        <CardFooter isPending={isPending} result={result} label="Salva profilo" />
+      </form>
+    </Card>
   )
 }
 
-// ─── Sezione lingua ───────────────────────────────────────────────────────────
+/* ────────────────────  LINGUA  ──────────────────── */
 
 const LANGUAGES = [
   { code: 'it', label: 'Italiano', flag: '🇮🇹' },
-  { code: 'en', label: 'English',  flag: '🇬🇧' },
-  { code: 'es', label: 'Español',  flag: '🇪🇸' },
+  { code: 'en', label: 'English', flag: '🇬🇧' },
+  { code: 'es', label: 'Español', flag: '🇪🇸' },
 ]
 
-function LinguaSection({ currentLanguage }: { currentLanguage: string }) {
+function LinguaCard({ currentLanguage }: { currentLanguage: string }) {
   const [selected, setSelected] = useState(currentLanguage)
   const [saved, setSaved] = useState(false)
   const [isPending, startTransition] = useTransition()
@@ -283,43 +317,41 @@ function LinguaSection({ currentLanguage }: { currentLanguage: string }) {
   }
 
   return (
-    <section>
-      <SectionHeader
-        title="Lingua"
+    <Card>
+      <CardHeader
+        label="Lingua"
         description="La lingua dell'interfaccia del gestionale."
       />
-      <div className="rounded-sm border border-border bg-card shadow-card">
-        <div className="p-6 space-y-4">
-          <div className="flex gap-2 flex-wrap">
-            {LANGUAGES.map((lang) => (
-              <button
-                key={lang.code}
-                type="button"
-                onClick={() => handleSelect(lang.code)}
-                disabled={isPending}
-                className={`flex items-center gap-2.5 px-4 py-2.5 rounded-sm border text-sm font-medium transition-all disabled:opacity-50 ${
-                  selected === lang.code
-                    ? 'bg-ink border-ink text-background'
-                    : 'border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground'
-                }`}
-              >
-                <span className="text-base leading-none">{lang.flag}</span>
-                {lang.label}
-              </button>
-            ))}
-          </div>
-          {saved && (
-            <p className="flex items-center gap-1.5 text-xs text-primary">
-              <Check className="h-3.5 w-3.5" /> Salvato
-            </p>
-          )}
+      <div className="space-y-3 p-6">
+        <div className="flex flex-wrap gap-2">
+          {LANGUAGES.map((lang) => (
+            <button
+              key={lang.code}
+              type="button"
+              onClick={() => handleSelect(lang.code)}
+              disabled={isPending}
+              className={`inline-flex items-center gap-2.5 rounded-full border px-4 py-2 text-sm font-medium transition-all disabled:opacity-50 ${
+                selected === lang.code
+                  ? 'border-foreground bg-foreground text-background'
+                  : 'border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground'
+              }`}
+            >
+              <span className="text-base leading-none">{lang.flag}</span>
+              {lang.label}
+            </button>
+          ))}
         </div>
+        {saved && (
+          <p className="flex items-center gap-1.5 text-xs text-emerald-700">
+            <Check className="h-3.5 w-3.5" /> Salvato
+          </p>
+        )}
       </div>
-    </section>
+    </Card>
   )
 }
 
-// ─── Sezione account (read-only) ─────────────────────────────────────────────
+/* ────────────────────  ACCOUNT  ──────────────────── */
 
 const PLAN_LABEL: Record<string, string> = {
   starter: 'Starter',
@@ -327,33 +359,97 @@ const PLAN_LABEL: Record<string, string> = {
   enterprise: 'Enterprise',
 }
 
-function AccountSection({ plan, memberSince }: { plan: string; memberSince: string }) {
+function AccountCard({ plan, memberSince }: { plan: string; memberSince: string }) {
   return (
-    <section>
-      <SectionHeader title="Account" />
-      <div className="rounded-sm border border-border bg-card divide-y divide-border">
-        <ReadRow label="Piano" value={PLAN_LABEL[plan] ?? plan} accent />
-        <ReadRow label="Attivo dal" value={memberSince} />
-      </div>
+    <Card>
+      <CardHeader label="Account" />
+      <dl className="divide-y divide-border">
+        <Row label="Piano" value={PLAN_LABEL[plan] ?? plan} />
+        <Row label="Attivo dal" value={memberSince} />
+      </dl>
+    </Card>
+  )
+}
+
+function Row({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between px-6 py-4">
+      <dt className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+        {label}
+      </dt>
+      <dd className="text-sm font-medium text-foreground">{value}</dd>
+    </div>
+  )
+}
+
+/* ────────────────────  PRIMITIVES  ──────────────────── */
+
+function Card({ children }: { children: React.ReactNode }) {
+  return (
+    <section className="overflow-hidden rounded-xl border border-border bg-card">
+      {children}
     </section>
   )
 }
 
-// ─── Componenti atomici ───────────────────────────────────────────────────────
-
-function SectionHeader({ title, description }: { title: string; description?: string }) {
+function CardHeader({
+  label,
+  description,
+}: {
+  label: string
+  description?: string
+}) {
   return (
-    <div className="mb-6">
-      <h2 className="text-base font-semibold text-ink">{title}</h2>
+    <div className="border-b border-border px-6 pb-4 pt-5">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+        {label}
+      </p>
       {description && (
-        <p className="mt-1 text-sm text-muted-foreground">{description}</p>
+        <p className="mt-1.5 text-sm text-muted-foreground">{description}</p>
       )}
     </div>
   )
 }
 
+function CardFooter({
+  isPending,
+  result,
+  label,
+}: {
+  isPending: boolean
+  result: { success: boolean; error?: string } | null
+  label: string
+}) {
+  return (
+    <div className="flex items-center justify-between gap-3 border-t border-border bg-muted/30 px-6 py-3">
+      <div className="text-xs">
+        {result?.success && (
+          <span className="flex items-center gap-1.5 text-emerald-700">
+            <Check className="h-3.5 w-3.5" /> Salvato
+          </span>
+        )}
+        {result?.error && (
+          <span className="text-destructive">{result.error}</span>
+        )}
+      </div>
+      <button
+        type="submit"
+        disabled={isPending}
+        className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 active:scale-[0.97] disabled:opacity-50"
+      >
+        {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+        {label}
+      </button>
+    </div>
+  )
+}
+
 function Field({
-  label, name, type = 'text', defaultValue, required,
+  label,
+  name,
+  type = 'text',
+  defaultValue,
+  required,
 }: {
   label: string
   name: string
@@ -365,9 +461,10 @@ function Field({
     <div className="space-y-1.5">
       <label
         htmlFor={name}
-        className="text-xs font-medium text-muted-foreground"
+        className="block text-xs font-medium text-muted-foreground"
       >
         {label}
+        {required && <span aria-hidden className="ml-0.5 text-foreground/40">*</span>}
       </label>
       <input
         id={name}
@@ -375,53 +472,8 @@ function Field({
         type={type}
         defaultValue={defaultValue}
         required={required}
-        className="w-full rounded-sm border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-ring/30 transition-shadow"
+        className="w-full rounded-md border border-border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 transition-shadow focus:outline-none focus:ring-2 focus:ring-ring/30"
       />
-    </div>
-  )
-}
-
-function FormFooter({
-  isPending,
-  result,
-  label,
-}: {
-  isPending: boolean
-  result: { success: boolean; error?: string } | null
-  label: string
-}) {
-  return (
-    <div className="flex items-center justify-between pt-4 border-t border-border">
-      {result?.success && (
-        <span className="flex items-center gap-1.5 text-xs text-primary">
-          <Check className="h-3.5 w-3.5" /> Salvato
-        </span>
-      )}
-      {result?.error && (
-        <span className="text-xs text-destructive">{result.error}</span>
-      )}
-      {!result && <span />}
-      <button
-        type="submit"
-        disabled={isPending}
-        className="inline-flex items-center gap-2 rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-colors active:scale-[0.97] will-change-transform"
-      >
-        {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-        {label}
-      </button>
-    </div>
-  )
-}
-
-function ReadRow({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
-  return (
-    <div className="flex items-center justify-between px-6 py-4">
-      <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-        {label}
-      </span>
-      <span className={accent ? 'text-sm font-semibold text-primary' : 'text-sm text-foreground'}>
-        {value}
-      </span>
     </div>
   )
 }

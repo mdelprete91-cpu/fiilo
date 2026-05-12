@@ -24,7 +24,7 @@ export function NuovoAbitoButton({ clientId }: { clientId: string }) {
     <button
       onClick={handle}
       disabled={isPending}
-      className="inline-flex items-center gap-1.5 rounded-sm bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90 transition-colors active:scale-[0.97] disabled:opacity-60 will-change-transform"
+      className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90 transition-colors active:scale-[0.97] disabled:opacity-60 will-change-transform"
     >
       {isPending
         ? <Loader2 className="h-3.5 w-3.5 animate-spin" />

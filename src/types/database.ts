@@ -651,6 +651,9 @@ export type Database = {
           media_mime_type: string | null
           category: WhatsappCategory
           category_summary: string | null
+          detected_language: string | null
+          transcript_confidence: number | null
+          ai_processed: boolean
           is_read: boolean
           sent_at: string
         }
@@ -669,6 +672,9 @@ export type Database = {
           media_mime_type?: string | null
           category?: WhatsappCategory
           category_summary?: string | null
+          detected_language?: string | null
+          transcript_confidence?: number | null
+          ai_processed?: boolean
           is_read?: boolean
           sent_at: string
         }
@@ -687,6 +693,9 @@ export type Database = {
           media_mime_type?: string | null
           category?: WhatsappCategory
           category_summary?: string | null
+          detected_language?: string | null
+          transcript_confidence?: number | null
+          ai_processed?: boolean
           is_read?: boolean
           sent_at?: string
         }

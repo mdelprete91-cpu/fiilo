@@ -44,7 +44,7 @@ export function UserMenu({ userName, role }: UserMenuProps) {
         </div>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent side="top" align="start" sideOffset={6} className="rounded-sm p-1.5">
+      <DropdownMenuContent side="top" align="start" sideOffset={6} className="rounded-xl p-1.5">
         {/* User identity header */}
         <div className="flex items-center gap-2.5 px-2 py-2 mb-0.5">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-ink text-[11px] font-bold text-background">
@@ -59,7 +59,7 @@ export function UserMenu({ userName, role }: UserMenuProps) {
         <DropdownMenuSeparator />
 
         <DropdownMenuItem
-          className="cursor-pointer gap-2.5 rounded-sm px-2 py-2 text-xs"
+          className="cursor-pointer gap-2.5 rounded-md px-2 py-2 text-xs"
           onClick={() => router.push(settingsHref)}
         >
           <User className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
@@ -67,7 +67,7 @@ export function UserMenu({ userName, role }: UserMenuProps) {
         </DropdownMenuItem>
 
         <DropdownMenuItem
-          className="cursor-pointer gap-2.5 rounded-sm px-2 py-2 text-xs"
+          className="cursor-pointer gap-2.5 rounded-md px-2 py-2 text-xs"
           onClick={() => router.push(settingsHref)}
         >
           <Settings className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
@@ -82,7 +82,7 @@ export function UserMenu({ userName, role }: UserMenuProps) {
 
         <DropdownMenuItem
           variant="destructive"
-          className="cursor-pointer gap-2.5 rounded-sm px-2 py-2 text-xs"
+          className="cursor-pointer gap-2.5 rounded-md px-2 py-2 text-xs"
           onClick={() => logoutAction()}
         >
           <LogOut className="h-3.5 w-3.5 shrink-0" />

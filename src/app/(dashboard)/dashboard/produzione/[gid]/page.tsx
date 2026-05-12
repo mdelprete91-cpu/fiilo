@@ -134,9 +134,9 @@ export default async function ProduzioneDettaglioPage({ params }: PageProps) {
 
           {/* ── Specifica tecnica (colonna principale) ───────────────────────── */}
           <div>
-            <div className="rounded-sm border border-border bg-card overflow-hidden shadow-card">
+            <div className="rounded-xl border border-border bg-card overflow-hidden shadow-card">
               <div className="px-5 py-4 border-b border-border flex items-center justify-between">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
                   Specifica tecnica
                 </p>
                 <Link

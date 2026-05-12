@@ -73,7 +73,7 @@ export default async function ClienteDetailPage({ params, searchParams }: PagePr
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Anagrafica */}
         <div className="lg:col-span-1 space-y-4">
-          <div className="rounded-sm border border-border bg-card p-5">
+          <div className="rounded-xl border border-border bg-card p-5">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-ink text-base font-bold text-background uppercase">
@@ -126,14 +126,14 @@ export default async function ClienteDetailPage({ params, searchParams }: PagePr
           </div>
 
           {/* KPI strip */}
-          <div className="rounded-sm border border-border bg-card overflow-hidden">
+          <div className="rounded-xl border border-border bg-card overflow-hidden">
             <div className="grid grid-cols-2 divide-x divide-border">
               <div className="flex flex-col justify-between p-5">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">Abiti</p>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">Abiti</p>
                 <p className="mt-3 text-3xl font-bold tracking-tight text-ink tabular-nums leading-none">{garments?.length ?? 0}</p>
               </div>
               <div className="flex flex-col justify-between p-5">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">Rilevazioni</p>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">Rilevazioni</p>
                 <p className="mt-3 text-3xl font-bold tracking-tight text-ink tabular-nums leading-none">{measurements?.length ?? 0}</p>
               </div>
             </div>
@@ -143,9 +143,9 @@ export default async function ClienteDetailPage({ params, searchParams }: PagePr
         {/* Colonna principale */}
         <div className="lg:col-span-2 space-y-6">
           {/* Abiti */}
-          <div className="rounded-sm border border-border bg-card">
+          <div className="rounded-xl border border-border bg-card">
             <div className="flex items-center justify-between border-b border-border px-5 py-4">
-              <h3 className="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground flex items-center gap-2">
+              <h3 className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground flex items-center gap-2">
                 <Scissors className="h-3.5 w-3.5" /> Abiti configurati
               </h3>
               <NuovoAbitoButton clientId={id} />
@@ -189,14 +189,14 @@ export default async function ClienteDetailPage({ params, searchParams }: PagePr
           </div>
 
           {/* Misure */}
-          <div className="rounded-sm border border-border bg-card">
+          <div className="rounded-xl border border-border bg-card">
             <div className="flex items-center justify-between border-b border-border px-5 py-4">
-              <h3 className="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground flex items-center gap-2">
+              <h3 className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground flex items-center gap-2">
                 <Ruler className="h-3.5 w-3.5" /> Misure
               </h3>
               <Link
                 href={`/dashboard/clienti/${id}/misure/nuova`}
-                className="inline-flex items-center gap-1.5 rounded-sm border border-border px-3 py-1.5 text-xs font-medium hover:bg-muted transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium hover:bg-muted transition-colors"
               >
                 <Plus className="h-3.5 w-3.5" /> Nuova rilevazione
               </Link>
