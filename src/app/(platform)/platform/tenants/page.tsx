@@ -179,15 +179,16 @@ export default async function PlatformTenantsPage({ searchParams }: PageProps) {
 }
 
 function ActiveBadge({ active }: { active: boolean }) {
-  const style = active
-    ? { background: 'oklch(0.93 0.05 155)', color: 'oklch(0.28 0.07 155)' }
-    : { background: 'oklch(0.94 0.005 85)', color: 'oklch(0.55 0.02 85)' }
+  if (active) {
+    return (
+      <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-medium text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/50 dark:text-emerald-300">
+        <span className="h-1 w-1 rounded-full bg-emerald-500" /> Attiva
+      </span>
+    )
+  }
   return (
-    <span
-      className="text-[10px] px-2.5 py-0.5 rounded-sm font-semibold uppercase tracking-wide"
-      style={style}
-    >
-      {active ? 'Attiva' : 'Inattiva'}
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+      <span className="h-1 w-1 rounded-full bg-muted-foreground/50" /> Inattiva
     </span>
   )
 }
