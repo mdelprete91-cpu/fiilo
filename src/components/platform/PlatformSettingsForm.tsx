@@ -53,7 +53,7 @@ export function PlatformSettingsForm({
     <div className="space-y-5">
       <ProfiloCard profile={profile} />
       <SuperAdminCard owners={owners} currentUserId={currentUserId} />
-      <PiattaformaCard stats={stats} joinedAt={joinedAt} />
+      <OverviewCard stats={stats} joinedAt={joinedAt} />
     </div>
   )
 }
@@ -256,10 +256,10 @@ function SuperAdminCard({
 
 /* ────────────────────  PIATTAFORMA (read-only)  ──────────────────── */
 
-function PiattaformaCard({ stats, joinedAt }: { stats: Stats; joinedAt: string }) {
+function OverviewCard({ stats, joinedAt }: { stats: Stats; joinedAt: string }) {
   return (
     <Card>
-      <CardHeader label="Piattaforma" description="Riepilogo attività." />
+      <CardHeader label="Overview" description="Riepilogo attività." />
       <dl className="divide-y divide-border">
         <Row label="Attivo dal" value={joinedAt} />
         <Row label="Sartorie registrate" value={stats.totalTenants.toString()} accent />

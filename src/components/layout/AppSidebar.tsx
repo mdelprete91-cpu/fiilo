@@ -22,7 +22,7 @@ const dashboardNav: NavItem[] = [
 ]
 
 const platformNav: NavItem[] = [
-  { label: 'Dashboard', href: '/platform' },
+  { label: 'Overview', href: '/platform' },
   { label: 'Sartorie', href: '/platform/tenants' },
   { label: 'Impostazioni', href: '/platform/settings' },
 ]

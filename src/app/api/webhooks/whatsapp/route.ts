@@ -13,6 +13,25 @@ const APP_SECRET = process.env.META_APP_SECRET ?? ''
 const WA_TOKEN = process.env.WHATSAPP_CLOUD_API_TOKEN ?? ''
 const WA_API = 'https://graph.facebook.com/v19.0'
 
+// Whisper restituisce nomi estesi ("italian"); il resto del prodotto si aspetta ISO.
+const LANGUAGE_TO_ISO: Record<string, string> = {
+  italian: 'it', italiano: 'it',
+  english: 'en',
+  spanish: 'es', español: 'es',
+  french: 'fr', français: 'fr',
+  german: 'de', deutsch: 'de',
+  portuguese: 'pt', português: 'pt',
+  arabic: 'ar',
+  chinese: 'zh',
+}
+
+function normalizeLanguage(lang: string | null | undefined): string | null {
+  if (!lang) return null
+  const l = lang.toLowerCase().trim()
+  if (LANGUAGE_TO_ISO[l]) return LANGUAGE_TO_ISO[l]
+  return l.length <= 3 ? l : l.slice(0, 2)
+}
+
 // Service-role client — bypasses RLS for webhook inserts
 function adminClient() {
   return createClient(
@@ -187,7 +206,7 @@ async function processWebhook(payload: WebhookPayload) {
                       const transcript = await transcribeWhatsAppAudio(buffer, rawMime ?? null)
                       if (transcript && transcript.text.trim()) {
                         body = transcript.text.trim()
-                        detectedLanguage = transcript.language
+                        detectedLanguage = normalizeLanguage(transcript.language)
                         transcriptConfidence = transcript.confidence
                       }
                     } catch (err) {
@@ -237,7 +256,7 @@ async function processWebhook(payload: WebhookPayload) {
             media_mime_type: mediaMimeType,
             category: cat.category,
             category_summary: cat.category_summary,
-            detected_language: detectedLanguage ?? cat.detected_language,
+            detected_language: detectedLanguage ?? normalizeLanguage(cat.detected_language),
             transcript_confidence: transcriptConfidence,
             ai_processed: cat.ai_processed,
             sent_at: sentAt,
@@ -259,7 +278,7 @@ async function processWebhook(payload: WebhookPayload) {
             if (result) {
               await supabase
                 .from('whatsapp_messages')
-                .update({ photo_analysis: result })
+                .update({ photo_analysis: result, ai_processed: true })
                 .eq('id', inserted.id)
               console.log(
                 `[whatsapp] photo_analysis saved for msg ${inserted.id}`,

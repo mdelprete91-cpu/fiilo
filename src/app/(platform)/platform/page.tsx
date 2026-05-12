@@ -31,7 +31,7 @@ export default async function PlatformPage() {
         <div className="flex items-start gap-3">
           <TopBar role={session.role} userName={session.fullName ?? session.email} />
           <div>
-            <h1 className="font-heading text-5xl text-ink leading-none">Piattaforma</h1>
+            <h1 className="font-heading text-5xl text-ink leading-none">Overview</h1>
             <p className="mt-2 text-sm text-muted-foreground">
               {totalTenants != null
                 ? `${totalTenants} sartor${totalTenants === 1 ? 'ia' : 'ie'} attiv${totalTenants === 1 ? 'a' : 'e'}`

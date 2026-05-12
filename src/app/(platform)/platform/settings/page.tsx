@@ -55,7 +55,7 @@ export default async function PlatformSettingsPage() {
         <TopBar role={session.role} userName={session.fullName ?? session.email} />
         <div>
           <h1 className="font-heading text-5xl leading-none text-ink">Impostazioni</h1>
-          <p className="mt-2 text-sm text-muted-foreground">Piattaforma</p>
+          <p className="mt-2 text-sm text-muted-foreground">Overview</p>
         </div>
       </div>
 

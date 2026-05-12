@@ -40,6 +40,26 @@ const CATEGORY_CLASS: Record<WhatsappCategory, string> = {
   altro: 'bg-secondary text-muted-foreground',
 }
 
+// Whisper può ritornare il nome esteso ("italian", "english") invece del codice ISO.
+// Normalizziamo qui per la UI così possiamo nascondere il chip quando la lingua è
+// l'italiano (default atteso).
+const LANGUAGE_TO_ISO: Record<string, string> = {
+  italian: 'it', italiano: 'it', it: 'it',
+  english: 'en', en: 'en',
+  spanish: 'es', español: 'es', spagnolo: 'es', es: 'es',
+  french: 'fr', francese: 'fr', français: 'fr', fr: 'fr',
+  german: 'de', deutsch: 'de', tedesco: 'de', de: 'de',
+  portuguese: 'pt', português: 'pt', portoghese: 'pt', pt: 'pt',
+  arabic: 'ar', arabo: 'ar', ar: 'ar',
+  chinese: 'zh', cinese: 'zh', zh: 'zh',
+}
+
+function normalizeLanguage(lang: string | null | undefined): string | null {
+  if (!lang) return null
+  const l = lang.toLowerCase().trim()
+  return LANGUAGE_TO_ISO[l] ?? l.slice(0, 2)
+}
+
 const AVATAR_CLASSES = [
   'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-200',
   'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200',
@@ -74,6 +94,11 @@ export function WhatsAppMessageCard({ message, clientId }: Props) {
   })
   const avatarPalette = avatarClass(clientName)
   const isUnread = !message.is_read
+  const detectedLangIso = normalizeLanguage(message.detected_language)
+  const isTranscribedAudio = message.message_type === 'audio' && Boolean(message.body)
+  const summaryText = isTranscribedAudio
+    ? 'Trascrizione di messaggio vocale con AI'
+    : message.category_summary ?? CATEGORY_LABELS[message.category]
 
   async function handleRead() {
     if (isUnread) await markAsRead(message.id)
@@ -136,12 +161,12 @@ export function WhatsAppMessageCard({ message, clientId }: Props) {
               )}
               {CATEGORY_LABELS[message.category]}
             </span>
-            {message.detected_language && message.detected_language !== 'it' && (
+            {detectedLangIso && detectedLangIso !== 'it' && (
               <span
                 className="shrink-0 rounded-sm border border-border px-1 py-0.5 text-[9px] font-semibold uppercase leading-none tracking-wide text-muted-foreground"
                 title={`Lingua rilevata: ${message.detected_language}`}
               >
-                {message.detected_language}
+                {detectedLangIso}
               </span>
             )}
           </div>
@@ -151,8 +176,11 @@ export function WhatsAppMessageCard({ message, clientId }: Props) {
         </div>
 
         {/* Summary */}
-        <p className="mt-0.5 text-xs font-medium leading-snug text-foreground/70">
-          {message.category_summary ?? CATEGORY_LABELS[message.category]}
+        <p className="mt-0.5 flex items-center gap-1 text-xs font-medium leading-snug text-foreground/70">
+          {isTranscribedAudio && (
+            <Sparkles className="h-3 w-3 shrink-0 opacity-60" aria-hidden />
+          )}
+          <span className="truncate">{summaryText}</span>
         </p>
 
         {/* Body preview */}
