@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'motion/react'
 import {
@@ -116,6 +117,7 @@ const COPY = {
           body:
             'Configurazione capo, misure storiche per cliente, prove in calendario, stato di lavorazione vivo. Pensato per chi parte sempre dalla persona.',
           tint: 'bg-[#FFF4ED]',
+          image: undefined as string | undefined,
         },
         {
           label: 'Camicerie',
@@ -123,6 +125,7 @@ const COPY = {
           body:
             'Collo, polso, spalla salvati per stagione. WhatsApp del cliente integrato alla scheda: continuità tra una rivisitazione e la successiva.',
           tint: 'bg-[#F2F2F2]',
+          image: '/use-camicerie.jpg' as string | undefined,
         },
       ],
       footnote: 'Pellicceria, cravatteria, modisteria: in roadmap. Scriveteci durante la demo per parlarne.',
@@ -247,6 +250,7 @@ const COPY = {
           body:
             'Garment configuration, per-client measurement history, scheduled fittings, live work-in-progress. Built for ateliers that start from the person.',
           tint: 'bg-[#FFF4ED]',
+          image: undefined as string | undefined,
         },
         {
           label: 'Shirtmakers',
@@ -254,6 +258,7 @@ const COPY = {
           body:
             'Collar, cuff and shoulder saved by season. The client’s WhatsApp wired right to the record: continuity from one revision to the next.',
           tint: 'bg-[#F2F2F2]',
+          image: '/use-camicerie.jpg' as string | undefined,
         },
       ],
       footnote: 'Furriers, tie-makers, milliners: on the roadmap. Tell us during the demo.',
@@ -861,31 +866,62 @@ function UseCases({ t }: { t: Copy }) {
         </motion.div>
 
         <div className="grid gap-5 md:grid-cols-2">
-          {t.useCases.items.map((c, i) => (
-            <motion.div
-              key={c.label}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{ ...REVEAL_T, delay: i * 0.08 }}
-              className={`group relative flex aspect-[4/5] flex-col justify-between overflow-hidden rounded-3xl p-8 md:p-10 ${c.tint}`}
-            >
-              <span className="text-xs font-medium uppercase tracking-[0.18em] text-foreground/55">
-                {c.label}
-              </span>
-              <div className="space-y-4">
-                <h3
-                  className="text-3xl font-normal leading-[1.05] tracking-[-0.02em] text-ink md:text-4xl"
-                  style={{ fontFamily: 'var(--font-serif), Georgia, serif' }}
+          {t.useCases.items.map((c, i) => {
+            const hasImage = Boolean(c.image)
+            return (
+              <motion.div
+                key={c.label}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-60px' }}
+                transition={{ ...REVEAL_T, delay: i * 0.08 }}
+                className={`group relative flex aspect-[4/5] flex-col justify-between overflow-hidden rounded-3xl p-8 md:p-10 ${
+                  hasImage ? 'bg-ink' : c.tint
+                }`}
+              >
+                {hasImage && (
+                  <>
+                    <Image
+                      src={c.image!}
+                      alt=""
+                      fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      className="absolute inset-0 object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                      priority={false}
+                    />
+                    {/* Gradient overlay editoriale: scuro in alto e in basso per
+                        reggere eyebrow e titolo, leggera ombra mid-tone per coesione. */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/10 to-black/70" />
+                  </>
+                )}
+
+                <span
+                  className={`relative z-10 text-xs font-medium uppercase tracking-[0.18em] ${
+                    hasImage ? 'text-white/85' : 'text-foreground/55'
+                  }`}
                 >
-                  {c.title}
-                </h3>
-                <p className="max-w-sm text-[15px] leading-relaxed text-foreground/65">
-                  {c.body}
-                </p>
-              </div>
-            </motion.div>
-          ))}
+                  {c.label}
+                </span>
+                <div className="relative z-10 space-y-4">
+                  <h3
+                    className={`text-3xl font-normal leading-[1.05] tracking-[-0.02em] md:text-4xl ${
+                      hasImage ? 'text-white drop-shadow-sm' : 'text-ink'
+                    }`}
+                    style={{ fontFamily: 'var(--font-serif), Georgia, serif' }}
+                  >
+                    {c.title}
+                  </h3>
+                  <p
+                    className={`max-w-sm text-[15px] leading-relaxed ${
+                      hasImage ? 'text-white/80' : 'text-foreground/65'
+                    }`}
+                  >
+                    {c.body}
+                  </p>
+                </div>
+              </motion.div>
+            )
+          })}
         </div>
 
         <p className="mt-10 text-sm text-foreground/55">{t.useCases.footnote}</p>
