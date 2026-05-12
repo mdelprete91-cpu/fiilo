@@ -43,7 +43,7 @@ const C_DA_INCASSARE = '#C8712A'
 /* Pipeline status colors */
 const DOT_CONFERMATI   = 'oklch(0.58 0.15 225)'  /* azzurro */
 const DOT_LAVORAZIONE  = 'oklch(0.58 0.14 55)'   /* arancione */
-const DOT_PRONTI       = 'oklch(0.40 0.10 155)'  /* verde */
+const DOT_PRONTI       = 'oklch(0.60 0.20 155)'  /* verde — più chroma e lightness per leggibilità anche con daltonismo */
 
 function periodStart(period: Period): Date {
   const now = new Date()

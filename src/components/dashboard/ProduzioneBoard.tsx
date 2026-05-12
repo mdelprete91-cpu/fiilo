@@ -53,7 +53,7 @@ const TYPE_LABEL: Record<string, string> = {
 const STATUS_META: Record<string, { label: string; dot: string; next: string | null }> = {
   confirmed:     { label: 'Richiesti',      dot: 'oklch(0.58 0.15 225)',         next: 'in_production' },
   in_production: { label: 'In lavorazione', dot: 'oklch(0.58 0.13 55)',          next: 'ready' },
-  ready:         { label: 'Pronti',         dot: 'oklch(0.40 0.10 155)',         next: 'delivered' },
+  ready:         { label: 'Pronti',         dot: 'oklch(0.60 0.20 155)',         next: 'delivered' },
   delivered:     { label: 'Consegnati',     dot: 'oklch(0.55 0.005 80 / 0.35)', next: null },
 }
 
