@@ -117,7 +117,7 @@ const COPY = {
           body:
             'Configurazione capo, misure storiche per cliente, prove in calendario, stato di lavorazione vivo. Pensato per chi parte sempre dalla persona.',
           tint: 'bg-[#FFF4ED]',
-          image: undefined as string | undefined,
+          image: '/use-atelier.jpg' as string | undefined,
         },
         {
           label: 'Camicerie',
@@ -250,7 +250,7 @@ const COPY = {
           body:
             'Garment configuration, per-client measurement history, scheduled fittings, live work-in-progress. Built for ateliers that start from the person.',
           tint: 'bg-[#FFF4ED]',
-          image: undefined as string | undefined,
+          image: '/use-atelier.jpg' as string | undefined,
         },
         {
           label: 'Shirtmakers',
