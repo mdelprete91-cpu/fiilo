@@ -116,7 +116,7 @@ export function ReviewStep({ clientName }: Props) {
       <Section label="Tessuto">
         <div className="space-y-1 rounded-sm border border-border bg-card px-5 py-4">
           <Row label="Tessuto principale" value={primaryFabric?.name ?? '—'} />
-          {primaryFabric?.mill && <Row label="Mulino" value={primaryFabric.mill} />}
+          {primaryFabric?.mill && <Row label="Brand" value={primaryFabric.mill} />}
           {primaryFabric?.composition && <Row label="Composizione" value={primaryFabric.composition} />}
         </div>
       </Section>

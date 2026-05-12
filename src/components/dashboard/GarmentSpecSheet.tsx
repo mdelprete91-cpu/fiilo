@@ -117,7 +117,7 @@ export function GarmentSpecSheet({ configuration, fabrics, linings, buttons, thr
       <p className="font-heading text-xl text-ink leading-tight mb-4">{primaryFabric.name}</p>
     ) : undefined,
     rows: rows(
-      row('Mulino',           primaryFabric?.mill ?? null),
+      row('Brand',            primaryFabric?.mill ?? null),
       row('Composizione',     primaryFabric?.composition ?? null),
       row('Peso',             primaryFabric?.weight_grams ? `${primaryFabric.weight_grams} g/m²` : null),
       row('Armatura',         primaryFabric?.pattern ? (PATTERN_LABELS[primaryFabric.pattern] ?? primaryFabric.pattern) : null),

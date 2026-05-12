@@ -46,7 +46,7 @@ export function FabricsTable({ fabrics }: { fabrics: Fabric[] }) {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border bg-muted/30">
-              {['Nome', 'Mulino', 'Composizione', 'Peso', 'Colore', 'Pattern', 'Stagione', 'Prezzo/m', ''].map((h) => (
+              {['Nome', 'Brand', 'Composizione', 'Peso', 'Colore', 'Pattern', 'Stagione', 'Prezzo/m', ''].map((h) => (
                 <th key={h} className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground first:pl-5 last:pr-5">
                   {h}
                 </th>
@@ -129,7 +129,7 @@ function FabricFormDialog({ fabric, onClose }: { fabric: Fabric | null; onClose:
         {errors.root && <p className="text-sm text-destructive">{errors.root.message}</p>}
         <div className="grid grid-cols-2 gap-4">
           <F label="Nome *"><Input {...register('name')} /></F>
-          <F label="Mulino"><Input placeholder="Loro Piana, VBC…" {...register('mill')} /></F>
+          <F label="Brand"><Input placeholder="Loro Piana, VBC…" {...register('mill')} /></F>
           <F label="Codice"><Input {...register('code')} /></F>
           <F label="Composizione"><Input placeholder="100% Lana Vergine" {...register('composition')} /></F>
           <F label="Peso (g/m²)"><Input type="number" {...register('weight_grams')} /></F>
