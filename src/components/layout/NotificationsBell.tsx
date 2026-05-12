@@ -36,8 +36,7 @@ export function NotificationsBell({ href, unreadCount, className, style }: Props
       {hasUnread && (
         <span
           aria-hidden
-          className="absolute -right-0.5 -top-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[9px] font-bold leading-none tabular-nums text-white"
-          style={{ background: 'oklch(0.50 0.18 250)' }}
+          className="absolute -right-0.5 -top-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[9px] font-bold leading-none tabular-nums text-accent-foreground"
         >
           {display}
         </span>
