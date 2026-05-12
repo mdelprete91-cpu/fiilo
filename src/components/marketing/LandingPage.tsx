@@ -329,12 +329,18 @@ export function LandingPage({ locale }: LandingPageProps) {
 
 function Nav({ t, mailto }: { t: Copy; mailto: string }) {
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-border bg-card/85 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 md:px-6">
+    <div className="sticky top-0 z-50 w-full px-3 pt-3 md:px-6 md:pt-4">
+      <nav
+        className="mx-auto flex h-12 max-w-5xl items-center justify-between gap-3 rounded-full bg-card/70 px-2 pl-4 shadow-[0_8px_30px_-12px_rgb(0,0,0,0.18)] ring-1 ring-foreground/10 backdrop-blur-xl backdrop-saturate-150 md:h-[52px] md:pl-5"
+        style={{
+          // Safari-friendly fallback when backdrop-filter isn't supported
+          backgroundColor: 'color-mix(in srgb, var(--card) 70%, transparent)',
+        }}
+      >
         <Link href="/" aria-label="filo home" className="inline-flex items-center">
-          <FiloLogo className="h-5 w-auto text-ink" />
+          <FiloLogo className="h-[18px] w-auto text-ink md:h-5" />
         </Link>
-        <div className="hidden items-center gap-8 text-sm font-medium text-foreground/80 md:flex">
+        <div className="hidden items-center gap-7 text-sm font-medium text-foreground/75 md:flex">
           <a href="#prodotto" className="transition-colors hover:text-foreground">
             {t.nav.product}
           </a>
@@ -342,22 +348,22 @@ function Nav({ t, mailto }: { t: Copy; mailto: string }) {
             {t.nav.useCases}
           </a>
         </div>
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1 sm:gap-2">
           <Link
             href="/login"
-            className="text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
+            className="rounded-full px-3 py-1.5 text-sm font-medium text-foreground/75 transition-colors hover:bg-foreground/5 hover:text-foreground"
           >
             {t.nav.login}
           </Link>
           <a
             href={mailto}
-            className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-primary px-3.5 py-2 text-sm font-medium text-primary-foreground transition-transform hover:scale-[1.02] sm:px-4"
+            className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-primary px-3.5 py-1.5 text-sm font-medium text-primary-foreground transition-transform hover:scale-[1.02] sm:px-4"
           >
             {t.nav.cta}
           </a>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </div>
   )
 }
 
