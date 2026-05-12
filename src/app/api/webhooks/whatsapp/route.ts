@@ -1,5 +1,6 @@
 import { createHmac } from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
+import { waitUntil } from '@vercel/functions'
 import { createClient } from '@supabase/supabase-js'
 import { categorize } from '@/lib/whatsapp/categorize'
 import { transcribeWhatsAppAudio } from '@/lib/whatsapp/transcribe'
@@ -55,8 +56,15 @@ export async function POST(req: NextRequest) {
     return new NextResponse('Bad Request', { status: 400 })
   }
 
-  // Process async — respond immediately to Meta
-  processWebhook(payload as WebhookPayload).catch(console.error)
+  // Vercel termina la funzione appena ritorniamo la response, quindi un
+  // fire-and-forget puro perde le chiamate AI a metà. waitUntil() dice a
+  // Vercel di tenere viva la funzione finché la promise risolve, mentre
+  // Meta riceve subito il 200.
+  waitUntil(
+    processWebhook(payload as WebhookPayload).catch((err) =>
+      console.error('[whatsapp.webhook] processing error', err),
+    ),
+  )
 
   return new NextResponse('OK', { status: 200 })
 }
@@ -237,24 +245,33 @@ async function processWebhook(payload: WebhookPayload) {
           .select('id')
           .single()
 
-        // Fire-and-forget vision analysis per immagini con URL caricato
+        // Vision analysis per immagini — awaited così Vercel non termina
+        // la funzione prima che il risultato sia salvato (waitUntil esterno
+        // copre tutto il processWebhook)
         if (
           inserted?.id &&
           messageType === 'image' &&
           mediaUrl &&
           (rawMime ?? '').startsWith('image/')
         ) {
-          analyzePhoto(mediaUrl, caption ?? null)
-            .then(async (result) => {
-              if (!result) return
+          try {
+            const result = await analyzePhoto(mediaUrl, caption ?? null)
+            if (result) {
               await supabase
                 .from('whatsapp_messages')
                 .update({ photo_analysis: result })
                 .eq('id', inserted.id)
-            })
-            .catch((err) =>
-              console.error('[whatsapp] analyzePhoto error', err),
-            )
+              console.log(
+                `[whatsapp] photo_analysis saved for msg ${inserted.id}`,
+              )
+            } else {
+              console.warn(
+                `[whatsapp] analyzePhoto returned null for msg ${inserted.id}`,
+              )
+            }
+          } catch (err) {
+            console.error('[whatsapp] analyzePhoto error', err)
+          }
         }
       }
     }
