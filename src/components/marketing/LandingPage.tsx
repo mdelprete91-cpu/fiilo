@@ -416,7 +416,11 @@ function Nav({ t, mailto }: { t: Copy; mailto: string }) {
           </Link>
           <a
             href={mailto}
-            className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-primary px-3.5 py-1.5 text-sm font-medium text-primary-foreground transition-transform hover:scale-[1.02] sm:px-4"
+            className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-1.5 text-sm font-medium hover:scale-[1.02] sm:px-4 ${trans} transition-transform ${
+              isOverHero
+                ? 'bg-white text-foreground hover:bg-white/95'
+                : 'bg-primary text-primary-foreground hover:bg-primary/90'
+            }`}
           >
             {t.nav.cta}
           </a>
