@@ -37,15 +37,15 @@ const MAILTO: Record<Locale, string> = {
 
 const COPY = {
   it: {
-    nav: { product: 'Prodotto', useCases: 'Per chi', login: 'Accedi', cta: 'Richiedi una demo' },
+    nav: { product: 'Prodotto', useCases: 'Per chi è', login: 'Accedi', cta: 'Prenota una dimostrazione' },
     hero: {
-      badge: 'In fase di lancio',
-      title1: 'Il gestionale',
-      titleEm: 'su misura',
-      title2: 'per le sartorie.',
+      badge: 'In arrivo presto',
+      title1: 'Un gestionale',
+      titleEm: 'cucito su misura',
+      title2: 'per i sarti.',
       subhead:
-        'Configuratore d’abito, preventivo PDF, WhatsApp, produzione: pensati per atelier su misura, non riadattati da un CRM generico. Apriamo i primi accessi nel 2026.',
-      cta: 'Richiedi una demo',
+        'Disegno dell’abito, preventivo in PDF, messaggi WhatsApp, lavorazioni in corso: pensato per le sartorie vere, non riadattato da un programma qualunque. Apriamo i primi posti nel 2026.',
+      cta: 'Prenota una dimostrazione',
     },
     mockup: {
       marker: 'I.',
@@ -54,12 +54,12 @@ const COPY = {
       titleLine1Em: 'digitale',
       titleLine2: 'al servizio della tradizione.',
       lede:
-        'Tessuto, taglio, dettagli: si scelgono davanti al cliente. Il preventivo PDF parte già firmato con il vostro logo. Niente più stime perse nei thread WhatsApp.',
-      chip1: 'Configuratore + preventivo PDF',
-      chip2: 'WhatsApp categorizzato con AI',
-      chip3: 'Misure storiche per cliente',
+        'Tessuto, taglio, dettagli: si scelgono al bancone, davanti al cliente. Il preventivo in PDF esce firmato con il vostro logo. Niente più appunti persi tra le chat di WhatsApp.',
+      chip1: 'Disegno dell’abito + preventivo in PDF',
+      chip2: 'WhatsApp che si ordina da solo',
+      chip3: 'Storico misure cliente per cliente',
       app: {
-        header: 'Ordini · FW 2026',
+        header: 'Ordini, autunno inverno 2026',
         statusPill: 'In corso',
         col1: 'Cliente',
         col2: 'Capo',
@@ -68,54 +68,54 @@ const COPY = {
         exportBtn: 'Esporta',
         newOrderBtn: 'Nuovo ordine',
         rows: [
-          { name: 'Marco Bianchi', capo: 'Abito due bottoni · gessato', delivery: '12 mag' },
-          { name: 'Giovanna Esposito', capo: 'Cappotto cammello', delivery: '18 mag' },
-          { name: 'Carlo De Luca', capo: 'Smoking nero · revers a punta', delivery: '25 mag' },
+          { name: 'Marco Bianchi', capo: 'Abito due bottoni gessato', delivery: '12 maggio' },
+          { name: 'Giovanna Esposito', capo: 'Cappotto color cammello', delivery: '18 maggio' },
+          { name: 'Carlo De Luca', capo: 'Smoking nero punta di lancia', delivery: '25 maggio' },
         ],
         statusDone: 'Consegnato',
         statusProcessing: 'In lavorazione',
-        pending: 'Altri 24 ordini in attesa…',
-        waNotif: 'Nuovo messaggio WhatsApp',
+        pending: 'Altri 24 ordini da gestire',
+        waNotif: 'Nuovo messaggio su WhatsApp',
       },
     },
     steps: {
       marker: 'II.',
       eyebrow: 'Come funziona',
-      title: 'Dal preventivo alla consegna, in continuità.',
+      title: 'Dal preventivo alla consegna, senza interruzioni.',
       items: [
         {
           n: '1',
-          title: 'Cliente, misure, contesto',
+          title: 'Il cliente, le misure, la sua storia',
           body:
-            'Scheda cliente con misure, foto, preferenze. Anche foto e audio WhatsApp ci finiscono dentro, già categorizzati dall’AI.',
+            'Una scheda per ogni cliente con misure, foto e preferenze. Anche le foto e i vocali che arrivano su WhatsApp finiscono qui, ordinati in automatico.',
         },
         {
           n: '2',
-          title: 'Configura insieme al cliente',
+          title: 'Si disegna l’abito insieme al cliente',
           body:
-            'Tessuto, taglio, finiture, bottoni: scelti al banco. Il preventivo PDF parte prima che il cliente esca dall’atelier.',
+            'Tessuto, taglio, finiture, bottoni: si decide al bancone. Il preventivo in PDF è pronto prima che il cliente esca dal negozio.',
         },
         {
           n: '3',
-          title: 'Produzione sotto controllo',
+          title: 'La lavorazione sempre sotto controllo',
           body:
-            'Pipeline visiva, stati e date chiari. Quando il capo è pronto, il cliente lo sa: nessun follow-up dimenticato.',
+            'Una bacheca chiara con tutti gli ordini in corso, ognuno con il suo stato e la sua data. Quando l’abito è pronto, il cliente viene avvisato. Niente sfugge più.',
         },
       ],
     },
     useCases: {
       marker: 'III.',
-      eyebrow: 'Per chi',
-      titleLine1: 'Per chi vive',
-      titleLine2: 'di misura.',
+      eyebrow: 'Per chi è',
+      titleLine1: 'Per tutti quelli',
+      titleLine2: 'che lavorano su misura.',
       lede:
-        'fiilo si adatta al vostro flusso. Nomi, stati, finiture: tutto modellato sul mestiere reale, non su quello immaginato da un product manager.',
+        'fiilo si adatta al vostro modo di lavorare. Nomi, fasi, finiture: tutto modellato sul mestiere vero, non su quello immaginato a tavolino.',
       items: [
         {
-          label: 'Atelier su misura',
+          label: 'Sartorie',
           title: 'Abiti, cappotti, smoking',
           body:
-            'Configurazione capo, misure storiche per cliente, prove in calendario, stato di lavorazione vivo. Pensato per chi parte sempre dalla persona.',
+            'Disegno dell’abito, storico delle misure cliente per cliente, prove fissate in agenda, lavorazioni in corso visibili in ogni momento. Pensato per chi parte dalla persona.',
           tint: 'bg-[#FFF4ED]',
           image: '/use-atelier.jpg' as string | undefined,
         },
@@ -123,49 +123,49 @@ const COPY = {
           label: 'Camicerie',
           title: 'Camicie su misura',
           body:
-            'Collo, polso, spalla salvati per stagione. WhatsApp del cliente integrato alla scheda: continuità tra una rivisitazione e la successiva.',
+            'Colletto, polsino e spalla salvati stagione per stagione. WhatsApp del cliente collegato direttamente alla sua scheda: ogni nuova camicia parte da dove si era arrivati con l’ultima.',
           tint: 'bg-[#F2F2F2]',
           image: '/use-camicerie.jpg' as string | undefined,
         },
       ],
-      footnote: 'Pellicceria, cravatteria, modisteria: in roadmap. Scriveteci durante la demo per parlarne.',
+      footnote: 'Pellicciai, cravattai, cappellai: stiamo arrivando. Parlatecene durante la dimostrazione.',
     },
     features: {
       marker: 'IV.',
-      eyebrow: 'Funzionalità',
-      title: 'Quattro pilastri. Zero gimmick.',
+      eyebrow: 'Cosa fa fiilo',
+      title: 'Quattro cose fatte bene. Niente fronzoli.',
       cards: [
         {
           colSpan: 2 as 1 | 2,
-          title: 'Configuratore + preventivo PDF',
+          title: 'Disegno dell’abito e preventivo in PDF',
           body:
-            'Tessuto, taglio, dettagli, bottoni: scelti al banco insieme al cliente. Il PDF firmato col vostro logo esce in un click. È l’esperienza di vendita che la sartoria su misura merita.',
+            'Tessuto, taglio, dettagli, bottoni: si scelgono al bancone insieme al cliente. Il preventivo firmato, con il vostro logo, esce in un attimo. L’esperienza che la sartoria su misura merita.',
           accent: true,
         },
         {
           colSpan: 1 as 1 | 2,
-          title: 'WhatsApp categorizzato',
-          body: 'AI legge foto, audio, misure, conferme. Tutto finisce nella scheda giusta.',
+          title: 'WhatsApp che si ordina da solo',
+          body: 'Le foto, i vocali, le misure e le conferme che arrivano dai clienti finiscono nella scheda giusta. Senza che dobbiate copiare nulla.',
         },
         {
           colSpan: 1 as 1 | 2,
-          title: 'Misure storiche',
-          body: 'Ogni prova archiviata. Confronti stagione su stagione, anno su anno.',
+          title: 'Storico delle misure',
+          body: 'Ogni prova rimane archiviata. Si confronta una stagione con l’altra, un anno con l’altro, per vedere come cambia il cliente.',
         },
         {
           colSpan: 2 as 1 | 2,
-          title: 'Pipeline produzione',
+          title: 'Lavorazioni in corso',
           body:
-            'Bozza, conferma, prova, lavorazione, consegna. Una timeline pulita per ogni capo. Niente più ritardi che vi sfuggono fino al giorno della consegna.',
+            'Bozza, conferma, prova, lavorazione, consegna. Una linea pulita per ogni capo. I ritardi non vi prendono più di sorpresa.',
         },
       ],
     },
     finalCta: {
-      headlineBefore: 'Scopri un futuro che non dimentica la ',
+      headlineBefore: 'Un futuro che non dimentica la ',
       headlineEm: 'tradizione',
       headlineAfter: '.',
-      subtext: 'Una demo di 20 minuti per capire se fiilo fa al caso vostro.',
-      cta: 'Richiedi una demo',
+      subtext: 'Venti minuti di dimostrazione per capire se fiilo fa al caso vostro.',
+      cta: 'Prenota una dimostrazione',
     },
     footer: { tagline: 'Gestionale per sartorie su misura', emailLabel: 'Email' },
   },

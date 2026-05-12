@@ -22,9 +22,9 @@ const instrumentSerif = Instrument_Serif({
   style: ['normal', 'italic'],
 })
 
-const TITLE = 'fiilo — gestionale per sartorie italiane'
+const TITLE = 'fiilo, gestionale per sartorie'
 const DESC =
-  'Clienti, misure, ordini, WhatsApp in un solo gestionale per atelier su misura italiani. In fase di lancio.'
+  'Clienti, misure, ordini e WhatsApp riuniti in un solo posto, pensato per chi cuce su misura. In arrivo nel 2026.'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://fiilo.it'),
