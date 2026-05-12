@@ -25,14 +25,29 @@ export async function loginAction(formData: FormData): Promise<ActionResult> {
   }
 
   const supabase = await createClient()
-  const { error } = await supabase.auth.signInWithPassword(parsed.data)
+  const { error, data } = await supabase.auth.signInWithPassword(parsed.data)
 
   if (error) {
     return { success: false, error: 'Credenziali errate. Riprova.' }
   }
 
+  // Determina il ruolo per smistare al landing corretto. Senza questo,
+  // un platform_owner finisce su /dashboard → bocciato dal layout →
+  // /login → middleware lo rimanda a /dashboard → loop infinito.
+  let target = '/dashboard'
+  if (data.user?.id) {
+    const { data: roleRow } = await supabase
+      .from('user_tenant_roles')
+      .select('role')
+      .eq('user_id', data.user.id)
+      .order('created_at', { ascending: true })
+      .limit(1)
+      .maybeSingle()
+    if (roleRow?.role === 'platform_owner') target = '/platform'
+  }
+
   revalidatePath('/', 'layout')
-  redirect('/dashboard')
+  redirect(target)
 }
 
 export async function logoutAction(): Promise<void> {

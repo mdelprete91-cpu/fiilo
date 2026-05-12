@@ -44,8 +44,12 @@ export async function updateSession(request: NextRequest) {
   }
 
   if (user && isAuthPage) {
+    // Redirigi alla root: src/app/page.tsx ha la logica role-based che
+    // smista platform_owner → /platform, tenant → /dashboard.
+    // Mandare direttamente a /dashboard creava loop per i platform_owner,
+    // perché /dashboard rifiuta il loro ruolo e rimanda a /login.
     const url = request.nextUrl.clone()
-    url.pathname = '/dashboard'
+    url.pathname = '/'
     return NextResponse.redirect(url)
   }
 
