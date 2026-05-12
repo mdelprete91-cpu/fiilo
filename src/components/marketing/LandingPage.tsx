@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'motion/react'
 import {
@@ -328,30 +329,88 @@ export function LandingPage({ locale }: LandingPageProps) {
 /* ─────────────────  NAV  ───────────────── */
 
 function Nav({ t, mailto }: { t: Copy; mailto: string }) {
+  // Stato "over hero": nav trasparente in negativo. Quando si scrolla oltre,
+  // il piatto di vetro fade in e i colori swappano in positivo.
+  const [isOverHero, setIsOverHero] = useState(true)
+
+  useEffect(() => {
+    let ticking = false
+    const check = () => {
+      const navH = window.innerWidth >= 768 ? 64 : 56
+      const threshold = window.innerHeight - navH
+      setIsOverHero(window.scrollY < threshold)
+      ticking = false
+    }
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(check)
+        ticking = true
+      }
+    }
+    check()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  const trans = 'transition-colors duration-300 ease-out motion-reduce:transition-none'
+
   return (
     <header
-      className="fixed inset-x-0 top-0 z-50 border-b border-foreground/10 bg-card/70 backdrop-blur-xl backdrop-saturate-150"
-      style={{
-        // Safari-friendly fallback when backdrop-filter isn't supported
-        backgroundColor: 'color-mix(in srgb, var(--card) 70%, transparent)',
-      }}
+      className={`fixed inset-x-0 top-0 z-50 border-b ${trans} ${
+        isOverHero ? 'border-transparent' : 'border-foreground/10'
+      }`}
     >
+      {/* Glass plate — opacity fade so backdrop-filter doesn't pop in */}
+      <div
+        aria-hidden
+        className={`absolute inset-0 -z-10 bg-card/90 backdrop-blur-xl backdrop-saturate-150 transition-opacity duration-300 ease-out motion-reduce:transition-none ${
+          isOverHero ? 'opacity-0' : 'opacity-100'
+        }`}
+        style={{ backgroundColor: 'color-mix(in srgb, var(--card) 90%, transparent)' }}
+      />
+
       <nav className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-3 px-4 md:h-16 md:px-6">
         <Link href="/" aria-label="filo home" className="inline-flex items-center">
-          <FiloLogo className="h-[18px] w-auto text-ink md:h-5" />
+          <FiloLogo
+            className={`h-[18px] w-auto md:h-5 ${trans} ${
+              isOverHero ? 'text-white' : 'text-ink'
+            }`}
+          />
         </Link>
-        <div className="hidden items-center gap-8 text-sm font-medium text-foreground/75 md:flex">
-          <a href="#prodotto" className="transition-colors hover:text-foreground">
+        <div
+          className={`hidden items-center gap-8 text-sm font-medium md:flex ${trans} ${
+            isOverHero ? 'text-white/85' : 'text-foreground/75'
+          }`}
+        >
+          <a
+            href="#prodotto"
+            className={
+              isOverHero
+                ? 'transition-colors hover:text-white'
+                : 'transition-colors hover:text-foreground'
+            }
+          >
             {t.nav.product}
           </a>
-          <a href="#use-cases" className="transition-colors hover:text-foreground">
+          <a
+            href="#use-cases"
+            className={
+              isOverHero
+                ? 'transition-colors hover:text-white'
+                : 'transition-colors hover:text-foreground'
+            }
+          >
             {t.nav.useCases}
           </a>
         </div>
         <div className="flex items-center gap-1 sm:gap-2">
           <Link
             href="/login"
-            className="rounded-full px-3 py-1.5 text-sm font-medium text-foreground/75 transition-colors hover:bg-foreground/5 hover:text-foreground"
+            className={`rounded-full px-3 py-1.5 text-sm font-medium ${trans} ${
+              isOverHero
+                ? 'text-white/85 hover:bg-white/10 hover:text-white'
+                : 'text-foreground/75 hover:bg-foreground/5 hover:text-foreground'
+            }`}
           >
             {t.nav.login}
           </Link>
