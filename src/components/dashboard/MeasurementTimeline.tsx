@@ -79,7 +79,7 @@ export function MeasurementTimeline({ measurements, latest }: Props) {
                   <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
                     {group.label}
                   </p>
-                  <div className="grid grid-cols-2 gap-x-6 gap-y-1.5 sm:grid-cols-4">
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
                     {group.fields.map((f) => {
                       const val = latest[f.key as MeasureKey]
                       if (val === null || val === undefined) return null

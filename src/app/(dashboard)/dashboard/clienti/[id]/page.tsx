@@ -138,6 +138,25 @@ export default async function ClienteDetailPage({ params, searchParams }: PagePr
               </div>
             </div>
           </div>
+
+          {/* Misure */}
+          <div className="rounded-xl border border-border bg-card">
+            <div className="flex items-center justify-between border-b border-border px-5 py-4">
+              <h3 className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+                <Ruler className="h-3.5 w-3.5" /> Misure
+              </h3>
+              <Link
+                href={`/dashboard/clienti/${id}/misure/nuova`}
+                className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium transition-colors hover:bg-muted"
+              >
+                <Plus className="h-3.5 w-3.5" /> Nuova rilevazione
+              </Link>
+            </div>
+            <MeasurementTimeline
+              measurements={(measurements as ClientMeasurement[]) ?? []}
+              latest={latestMeasurement as ClientMeasurement | null}
+            />
+          </div>
         </div>
 
         {/* Colonna principale */}
@@ -186,25 +205,6 @@ export default async function ClienteDetailPage({ params, searchParams }: PagePr
                 </li>
               )}
             </ul>
-          </div>
-
-          {/* Misure */}
-          <div className="rounded-xl border border-border bg-card">
-            <div className="flex items-center justify-between border-b border-border px-5 py-4">
-              <h3 className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground flex items-center gap-2">
-                <Ruler className="h-3.5 w-3.5" /> Misure
-              </h3>
-              <Link
-                href={`/dashboard/clienti/${id}/misure/nuova`}
-                className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium hover:bg-muted transition-colors"
-              >
-                <Plus className="h-3.5 w-3.5" /> Nuova rilevazione
-              </Link>
-            </div>
-            <MeasurementTimeline
-              measurements={(measurements as ClientMeasurement[]) ?? []}
-              latest={latestMeasurement as ClientMeasurement | null}
-            />
           </div>
 
           {/* WhatsApp */}
