@@ -1,32 +1,66 @@
 'use client'
 
-import { useTransition, useState } from 'react'
-import { Check, Loader2 } from 'lucide-react'
-import { updatePlatformOwnerProfileAction } from '@/lib/actions/tenants'
+import { useRef, useState, useTransition } from 'react'
+import { Check, Loader2, Trash2 } from 'lucide-react'
 
-interface Props {
-  profile: {
-    full_name: string | null
-    email: string | undefined
-  }
-  stats: {
-    totalTenants: number
-    totalClients: number
-    totalGarments: number
-  }
-  joinedAt: string
+import {
+  invitePlatformOwnerAction,
+  removePlatformOwnerAction,
+  updatePlatformOwnerProfileAction,
+} from '@/lib/actions/tenants'
+import {
+  Card,
+  CardFooter,
+  CardHeader,
+  Field,
+  Row,
+} from '@/components/settings/SettingsCard'
+
+interface ProfileData {
+  full_name: string | null
+  email: string | undefined
 }
 
-export function PlatformSettingsForm({ profile, stats, joinedAt }: Props) {
+interface Stats {
+  totalTenants: number
+  totalClients: number
+  totalGarments: number
+}
+
+export interface PlatformOwner {
+  roleId: string
+  userId: string
+  name: string | null
+  email: string | null
+}
+
+interface Props {
+  profile: ProfileData
+  stats: Stats
+  joinedAt: string
+  owners: PlatformOwner[]
+  currentUserId: string
+}
+
+export function PlatformSettingsForm({
+  profile,
+  stats,
+  joinedAt,
+  owners,
+  currentUserId,
+}: Props) {
   return (
-    <div className="space-y-12">
-      <ProfiloSection profile={profile} />
-      <AccountSection stats={stats} joinedAt={joinedAt} />
+    <div className="space-y-5">
+      <ProfiloCard profile={profile} />
+      <SuperAdminCard owners={owners} currentUserId={currentUserId} />
+      <PiattaformaCard stats={stats} joinedAt={joinedAt} />
     </div>
   )
 }
 
-function ProfiloSection({ profile }: { profile: Props['profile'] }) {
+/* ────────────────────  PROFILO  ──────────────────── */
+
+function ProfiloCard({ profile }: { profile: ProfileData }) {
   const [isPending, startTransition] = useTransition()
   const [result, setResult] = useState<{ success: boolean; error?: string } | null>(null)
 
@@ -41,117 +75,197 @@ function ProfiloSection({ profile }: { profile: Props['profile'] }) {
   }
 
   return (
-    <section>
-      <SectionHeader
-        title="Profilo personale"
+    <Card>
+      <CardHeader
+        label="Profilo"
         description="Il tuo nome visibile nella piattaforma."
       />
-      <div className="rounded-sm border border-border bg-card shadow-card">
-        <form onSubmit={handleSubmit} className="p-6 space-y-5">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Nome completo" name="full_name" defaultValue={profile.full_name ?? ''} />
-            <div className="space-y-1.5">
-              <p className="text-xs font-medium text-muted-foreground">Email account</p>
-              <p className="text-sm text-muted-foreground py-2 border-b border-border/60">
-                {profile.email ?? '—'}
-              </p>
-              <p className="text-[10px] text-muted-foreground/60">
-                Per cambiare l&apos;email contatta il supporto.
-              </p>
-            </div>
+      <form onSubmit={handleSubmit}>
+        <div className="grid gap-5 p-6 sm:grid-cols-2">
+          <Field
+            label="Nome completo"
+            name="full_name"
+            defaultValue={profile.full_name ?? ''}
+          />
+          <div className="space-y-1.5">
+            <label className="block text-xs font-medium text-muted-foreground">
+              Email account
+            </label>
+            <p className="py-2.5 text-sm text-foreground">{profile.email ?? '—'}</p>
+            <p className="text-[10px] text-muted-foreground/70">
+              Per cambiarla contatta il supporto.
+            </p>
           </div>
-          <FormFooter isPending={isPending} result={result} label="Salva profilo" />
-        </form>
-      </div>
-    </section>
+        </div>
+        <CardFooter isPending={isPending} result={result} label="Salva profilo" />
+      </form>
+    </Card>
   )
 }
 
-function AccountSection({ stats, joinedAt }: { stats: Props['stats']; joinedAt: string }) {
-  return (
-    <section>
-      <SectionHeader
-        title="Piattaforma"
-        description="Riepilogo attività sulla piattaforma."
-      />
-      <div className="rounded-sm border border-border bg-card divide-y divide-border">
-        <ReadRow label="Ruolo" value="Platform Owner" accent />
-        <ReadRow label="Attivo dal" value={joinedAt} />
-        <ReadRow label="Sartorie registrate" value={stats.totalTenants.toString()} />
-        <ReadRow label="Clienti totali" value={stats.totalClients.toString()} />
-        <ReadRow label="Abiti configurati" value={stats.totalGarments.toString()} />
-      </div>
-    </section>
-  )
-}
+/* ────────────────────  SUPER ADMIN  ──────────────────── */
 
-function SectionHeader({ title, description }: { title: string; description?: string }) {
-  return (
-    <div className="mb-6">
-      <h2 className="text-base font-semibold text-ink">{title}</h2>
-      {description && (
-        <p className="mt-1 text-sm text-muted-foreground">{description}</p>
-      )}
-    </div>
-  )
-}
-
-function Field({ label, name, defaultValue }: { label: string; name: string; defaultValue?: string }) {
-  return (
-    <div className="space-y-1.5">
-      <label htmlFor={name} className="text-xs font-medium text-muted-foreground">{label}</label>
-      <input
-        id={name}
-        name={name}
-        type="text"
-        defaultValue={defaultValue}
-        className="w-full rounded-sm border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-ring/30 transition-shadow"
-      />
-    </div>
-  )
-}
-
-function FormFooter({
-  isPending,
-  result,
-  label,
+function SuperAdminCard({
+  owners,
+  currentUserId,
 }: {
-  isPending: boolean
-  result: { success: boolean; error?: string } | null
-  label: string
+  owners: PlatformOwner[]
+  currentUserId: string
 }) {
+  const [invitePending, startInvite] = useTransition()
+  const [inviteResult, setInviteResult] = useState<{
+    success: boolean
+    error?: string
+    email?: string
+  } | null>(null)
+  const [removingId, setRemovingId] = useState<string | null>(null)
+  const formRef = useRef<HTMLFormElement>(null)
+
+  function handleInvite(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    const fd = new FormData(e.currentTarget)
+    const email = (fd.get('email') as string) ?? ''
+    setInviteResult(null)
+    startInvite(async () => {
+      const res = await invitePlatformOwnerAction(fd)
+      if (res.success) {
+        setInviteResult({ success: true, email })
+        formRef.current?.reset()
+      } else {
+        setInviteResult({ success: false, error: res.error })
+      }
+    })
+  }
+
+  function handleRemove(roleId: string) {
+    setRemovingId(roleId)
+    removePlatformOwnerAction(roleId).finally(() => setRemovingId(null))
+  }
+
   return (
-    <div className="flex items-center justify-between pt-4 border-t border-border">
-      {result?.success && (
-        <span className="flex items-center gap-1.5 text-xs text-primary">
-          <Check className="h-3.5 w-3.5" /> Salvato
-        </span>
-      )}
-      {result?.error && (
-        <span className="text-xs text-destructive">{result.error}</span>
-      )}
-      {!result && <span />}
-      <button
-        type="submit"
-        disabled={isPending}
-        className="inline-flex items-center gap-2 rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-colors active:scale-[0.97] will-change-transform"
+    <Card>
+      <CardHeader
+        label="Super admin"
+        description="Chi ha accesso totale alla piattaforma. Deve restare almeno uno."
+      />
+      <ul className="divide-y divide-border">
+        {owners.map((o) => (
+          <li
+            key={o.roleId}
+            className="flex items-center justify-between px-6 py-4"
+          >
+            <div className="min-w-0">
+              <p className="truncate text-sm font-medium leading-tight text-foreground">
+                {o.name ?? o.email ?? '—'}
+                {o.userId === currentUserId && (
+                  <span className="ml-2 text-xs font-normal text-muted-foreground">
+                    (tu)
+                  </span>
+                )}
+              </p>
+              {o.name && o.email && (
+                <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                  {o.email}
+                </p>
+              )}
+            </div>
+            <div className="ml-4 flex shrink-0 items-center gap-4">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+                Super admin
+              </span>
+              {o.userId !== currentUserId && (
+                <button
+                  onClick={() => handleRemove(o.roleId)}
+                  disabled={removingId === o.roleId}
+                  title="Revoca super admin"
+                  className="rounded-full p-1.5 text-muted-foreground/50 transition-colors hover:bg-destructive/10 hover:text-destructive disabled:opacity-40"
+                >
+                  {removingId === o.roleId ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Trash2 className="h-3.5 w-3.5" />
+                  )}
+                </button>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <form
+        ref={formRef}
+        onSubmit={handleInvite}
+        className="space-y-4 border-t border-border bg-muted/30 p-6"
       >
-        {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-        {label}
-      </button>
-    </div>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+          Aggiungi super admin
+        </p>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Field
+            label="Nome completo"
+            name="full_name"
+            placeholder="Mario Bianchi"
+            autoComplete="off"
+          />
+          <Field
+            label="Email"
+            name="email"
+            type="email"
+            placeholder="email@esempio.com"
+            required
+            autoComplete="off"
+          />
+        </div>
+        <Field
+          label="Password temporanea"
+          name="password"
+          type="password"
+          required
+          autoComplete="new-password"
+          placeholder="min. 8 caratteri"
+        />
+        <div className="flex items-center justify-between gap-3 pt-1">
+          <div className="text-xs">
+            {inviteResult?.success && (
+              <span className="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400">
+                <Check className="h-3.5 w-3.5" />
+                Invitato <strong className="font-medium">{inviteResult.email}</strong>
+              </span>
+            )}
+            {inviteResult?.error && (
+              <span className="text-destructive">{inviteResult.error}</span>
+            )}
+          </div>
+          <button
+            type="submit"
+            disabled={invitePending}
+            className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 active:scale-[0.97] disabled:opacity-50"
+          >
+            {invitePending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+            Aggiungi
+          </button>
+        </div>
+        <p className="text-[10px] leading-relaxed text-muted-foreground/70">
+          Il nuovo super admin riceverà l’accesso immediato. Comunicagli email +
+          password fuori dall’app. Potrà cambiare password al primo login.
+        </p>
+      </form>
+    </Card>
   )
 }
 
-function ReadRow({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
+/* ────────────────────  PIATTAFORMA (read-only)  ──────────────────── */
+
+function PiattaformaCard({ stats, joinedAt }: { stats: Stats; joinedAt: string }) {
   return (
-    <div className="flex items-center justify-between px-6 py-4">
-      <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-        {label}
-      </span>
-      <span className={accent ? 'text-sm font-semibold text-primary' : 'text-sm text-foreground'}>
-        {value}
-      </span>
-    </div>
+    <Card>
+      <CardHeader label="Piattaforma" description="Riepilogo attività." />
+      <dl className="divide-y divide-border">
+        <Row label="Attivo dal" value={joinedAt} />
+        <Row label="Sartorie registrate" value={stats.totalTenants.toString()} accent />
+        <Row label="Clienti totali" value={stats.totalClients.toString()} accent />
+        <Row label="Abiti configurati" value={stats.totalGarments.toString()} accent />
+      </dl>
+    </Card>
   )
 }

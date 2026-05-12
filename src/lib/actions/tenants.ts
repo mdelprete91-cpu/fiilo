@@ -362,3 +362,117 @@ export async function updatePlatformOwnerProfileAction(formData: FormData): Prom
     return { success: false, error: e instanceof Error ? e.message : 'Errore sconosciuto' }
   }
 }
+
+// ─── Super admin (platform_owner) — invite & remove ─────────────────────────
+
+export async function invitePlatformOwnerAction(
+  formData: FormData,
+): Promise<ActionResult<void>> {
+  try {
+    await requireRole(['platform_owner'])
+    const supabase = await createClient()
+    const service = await createServiceClient()
+
+    const email = ((formData.get('email') as string) ?? '').trim().toLowerCase()
+    const fullName = ((formData.get('full_name') as string) ?? '').trim() || null
+    const password = (formData.get('password') as string) ?? ''
+
+    if (!email || !password) {
+      return { success: false, error: 'Email e password obbligatori' }
+    }
+    if (password.length < 8) {
+      return { success: false, error: 'Password troppo corta (min 8 caratteri)' }
+    }
+
+    // Cerca user già esistente (per email)
+    const { data: list } = await service.auth.admin.listUsers({ perPage: 1000 })
+    const existing = list?.users.find((u) => u.email?.toLowerCase() === email)
+
+    let userId: string
+
+    if (existing) {
+      userId = existing.id
+
+      // È già platform_owner?
+      const { count } = await supabase
+        .from('user_tenant_roles')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', userId)
+        .is('tenant_id', null)
+        .eq('role', 'platform_owner')
+
+      if ((count ?? 0) > 0) {
+        return { success: false, error: 'Questo utente è già super admin' }
+      }
+    } else {
+      // Crea nuovo user via service role (bypassa email confirm)
+      const { data: newUser, error: createErr } = await service.auth.admin.createUser({
+        email,
+        password,
+        email_confirm: true,
+        user_metadata: { full_name: fullName },
+      })
+      if (createErr || !newUser.user) {
+        return { success: false, error: createErr?.message ?? 'Errore creazione utente' }
+      }
+      userId = newUser.user.id
+
+      // Upsert profilo
+      await service.from('profiles').upsert({ id: userId, full_name: fullName })
+    }
+
+    // Concede ruolo platform_owner (tenant_id NULL)
+    const { error: roleErr } = await service.from('user_tenant_roles').insert({
+      user_id: userId,
+      tenant_id: null,
+      role: 'platform_owner',
+    })
+    if (roleErr) return { success: false, error: roleErr.message }
+
+    revalidatePath('/platform/settings')
+    return { success: true, data: undefined }
+  } catch (e: unknown) {
+    return { success: false, error: e instanceof Error ? e.message : 'Errore sconosciuto' }
+  }
+}
+
+export async function removePlatformOwnerAction(
+  roleId: string,
+): Promise<ActionResult<void>> {
+  try {
+    const session = await requireRole(['platform_owner'])
+    const service = await createServiceClient()
+
+    // Recupera il ruolo
+    const { data: role } = await service
+      .from('user_tenant_roles')
+      .select('user_id, role, tenant_id')
+      .eq('id', roleId)
+      .single()
+
+    if (!role || role.role !== 'platform_owner' || role.tenant_id !== null) {
+      return { success: false, error: 'Ruolo non trovato' }
+    }
+    if (role.user_id === session.id) {
+      return { success: false, error: 'Non puoi rimuovere te stesso' }
+    }
+
+    // Anti-lockout: deve restare almeno un super admin
+    const { count } = await service
+      .from('user_tenant_roles')
+      .select('id', { count: 'exact', head: true })
+      .is('tenant_id', null)
+      .eq('role', 'platform_owner')
+    if ((count ?? 0) <= 1) {
+      return { success: false, error: 'Deve restare almeno un super admin' }
+    }
+
+    const { error } = await service.from('user_tenant_roles').delete().eq('id', roleId)
+    if (error) return { success: false, error: error.message }
+
+    revalidatePath('/platform/settings')
+    return { success: true, data: undefined }
+  } catch (e: unknown) {
+    return { success: false, error: e instanceof Error ? e.message : 'Errore sconosciuto' }
+  }
+}

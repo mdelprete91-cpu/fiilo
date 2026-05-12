@@ -9,6 +9,7 @@ import {
   inviteTeamMemberAction,
   removeTeamMemberAction,
 } from '@/lib/actions/tenants'
+import { Card, CardFooter, CardHeader, Field, Row } from '@/components/settings/SettingsCard'
 
 interface TenantData {
   name: string
@@ -371,109 +372,3 @@ function AccountCard({ plan, memberSince }: { plan: string; memberSince: string 
   )
 }
 
-function Row({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-center justify-between px-6 py-4">
-      <dt className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-        {label}
-      </dt>
-      <dd className="text-sm font-medium text-foreground">{value}</dd>
-    </div>
-  )
-}
-
-/* ────────────────────  PRIMITIVES  ──────────────────── */
-
-function Card({ children }: { children: React.ReactNode }) {
-  return (
-    <section className="overflow-hidden rounded-xl border border-border bg-card">
-      {children}
-    </section>
-  )
-}
-
-function CardHeader({
-  label,
-  description,
-}: {
-  label: string
-  description?: string
-}) {
-  return (
-    <div className="border-b border-border px-6 pb-4 pt-5">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-        {label}
-      </p>
-      {description && (
-        <p className="mt-1.5 text-sm text-muted-foreground">{description}</p>
-      )}
-    </div>
-  )
-}
-
-function CardFooter({
-  isPending,
-  result,
-  label,
-}: {
-  isPending: boolean
-  result: { success: boolean; error?: string } | null
-  label: string
-}) {
-  return (
-    <div className="flex items-center justify-between gap-3 border-t border-border bg-muted/30 px-6 py-3">
-      <div className="text-xs">
-        {result?.success && (
-          <span className="flex items-center gap-1.5 text-emerald-700">
-            <Check className="h-3.5 w-3.5" /> Salvato
-          </span>
-        )}
-        {result?.error && (
-          <span className="text-destructive">{result.error}</span>
-        )}
-      </div>
-      <button
-        type="submit"
-        disabled={isPending}
-        className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 active:scale-[0.97] disabled:opacity-50"
-      >
-        {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-        {label}
-      </button>
-    </div>
-  )
-}
-
-function Field({
-  label,
-  name,
-  type = 'text',
-  defaultValue,
-  required,
-}: {
-  label: string
-  name: string
-  type?: string
-  defaultValue?: string
-  required?: boolean
-}) {
-  return (
-    <div className="space-y-1.5">
-      <label
-        htmlFor={name}
-        className="block text-xs font-medium text-muted-foreground"
-      >
-        {label}
-        {required && <span aria-hidden className="ml-0.5 text-foreground/40">*</span>}
-      </label>
-      <input
-        id={name}
-        name={name}
-        type={type}
-        defaultValue={defaultValue}
-        required={required}
-        className="w-full rounded-md border border-border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 transition-shadow focus:outline-none focus:ring-2 focus:ring-ring/30"
-      />
-    </div>
-  )
-}
