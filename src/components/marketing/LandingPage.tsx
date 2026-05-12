@@ -44,7 +44,7 @@ const COPY = {
       titleEm: 'su misura',
       title2: 'per le sartorie.',
       subhead:
-        'Schede cliente complete, WhatsApp ordinato dall’AI, disegno dell’abito al bancone: pensato per le sartorie vere, non riadattato da un programma qualunque. Apriamo i primi accessi nel 2026.',
+        'Schede clienti, configuratore dell’abito, comunicazioni gestite con AI e visibilità dello stato della produzione in un unico posto.',
       cta: 'Prenota una dimostrazione',
     },
     mockup: {
