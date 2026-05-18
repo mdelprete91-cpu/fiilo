@@ -1,9 +1,11 @@
 'use client'
 
 import { useTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -18,6 +20,7 @@ interface ClientFormProps {
 
 export function ClientForm({ client }: ClientFormProps) {
   const [isPending, startTransition] = useTransition()
+  const router = useRouter()
   const {
     register,
     handleSubmit,
@@ -45,14 +48,27 @@ export function ClientForm({ client }: ClientFormProps) {
       const fd = new FormData()
       Object.entries(data).forEach(([k, v]) => fd.set(k, v ?? ''))
 
-      const result = client
-        ? await updateClientAction(client.id, fd)
-        : await createClientAction(fd)
-
-      if (!result.success) {
-        setError('root', { message: result.error })
+      if (client) {
+        const result = await updateClientAction(client.id, fd)
+        if (!result.success) {
+          setError('root', { message: result.error })
+          return
+        }
+        toast.success('Cliente salvato')
+        router.push(`/dashboard/clienti/${client.id}`)
+      } else {
+        const result = await createClientAction(fd)
+        if (result && !result.success) {
+          setError('root', { message: result.error })
+          return
+        }
+        toast.success('Cliente salvato')
       }
     })
+  }
+
+  function handleCancel() {
+    router.push(client ? `/dashboard/clienti/${client.id}` : '/dashboard/clienti')
   }
 
   return (
@@ -66,10 +82,10 @@ export function ClientForm({ client }: ClientFormProps) {
       {/* Nome e cognome */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field label="Nome *" error={errors.first_name?.message}>
-          <Input placeholder="Mario" {...register('first_name')} />
+          <Input placeholder="Mario" required {...register('first_name')} />
         </Field>
         <Field label="Cognome *" error={errors.last_name?.message}>
-          <Input placeholder="Rossi" {...register('last_name')} />
+          <Input placeholder="Rossi" required {...register('last_name')} />
         </Field>
       </div>
 
@@ -110,9 +126,13 @@ export function ClientForm({ client }: ClientFormProps) {
       <div className="flex gap-3">
         <Button type="submit" disabled={isPending}>
           {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {client ? 'Salva modifiche' : 'Crea cliente'}
+          {isPending
+            ? 'Salvataggio...'
+            : client
+              ? 'Salva modifiche'
+              : 'Crea cliente'}
         </Button>
-        <Button type="button" variant="outline" onClick={() => history.back()}>
+        <Button type="button" variant="outline" disabled={isPending} onClick={handleCancel}>
           Annulla
         </Button>
       </div>

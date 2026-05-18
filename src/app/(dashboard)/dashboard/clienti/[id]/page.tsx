@@ -5,11 +5,17 @@ import { Edit, Plus, Ruler, Scissors } from 'lucide-react'
 import { requireRole } from '@/lib/auth/session'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
+import { BackButton } from '@/components/dashboard/BackButton'
 import { MeasurementTimeline } from '@/components/dashboard/MeasurementTimeline'
 import { NuovoAbitoButton } from '@/components/dashboard/NuovoAbitoButton'
 import { PaymentStatusToggle } from '@/components/dashboard/PaymentStatusToggle'
 import { WhatsAppSection } from '@/components/dashboard/WhatsAppSection'
+import { ClientSummaryCard } from '@/components/dashboard/ClientSummaryCard'
 import { getMessagesForClient } from '@/lib/actions/whatsapp'
+import {
+  countNewMessagesSinceSummary,
+  getSummary,
+} from '@/lib/actions/client-summary'
 import type { ClientMeasurement, Garment } from '@/types/database'
 
 interface PageProps {
@@ -33,7 +39,7 @@ export default async function ClienteDetailPage({ params, searchParams }: PagePr
 
   if (!client) notFound()
 
-  const [{ data: measurements }, { data: garments }, whatsappMessages] = await Promise.all([
+  const [{ data: measurements }, { data: garments }, whatsappMessages, summary] = await Promise.all([
     supabase
       .from('client_measurements')
       .select('*')
@@ -47,12 +53,18 @@ export default async function ClienteDetailPage({ params, searchParams }: PagePr
       .eq('tenant_id', tid)
       .order('created_at', { ascending: false }),
     getMessagesForClient(id),
+    getSummary(id),
   ])
 
   const latestMeasurement = measurements?.[0] ?? null
+  const unreadMessagesCount = await countNewMessagesSinceSummary({
+    clientId: id,
+    lastMessageSentAt: summary?.last_message_sent_at ?? null,
+  })
 
   return (
     <div className="min-h-full bg-background space-y-6 p-6 lg:p-8">
+      <BackButton fallbackHref="/dashboard/clienti" label="Torna ai clienti" />
       <TopBar
         role={session.role}
         userName={session.fullName ?? session.email}
@@ -150,6 +162,13 @@ export default async function ClienteDetailPage({ params, searchParams }: PagePr
 
         {/* Colonna principale */}
         <div className="lg:col-span-2 space-y-6">
+          {/* Sintesi AI */}
+          <ClientSummaryCard
+            summary={summary}
+            clientId={id}
+            unreadMessagesCount={unreadMessagesCount}
+          />
+
           {/* Abiti */}
           <div className="rounded-xl border border-border bg-card">
             <div className="flex items-center justify-between border-b border-border px-5 py-4">

@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { requireRole } from '@/lib/auth/session'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
+import { tokenize, ilikeOrClause } from '@/lib/search'
 
 interface PageProps {
   searchParams: Promise<{ q?: string; plan?: string; status?: string }>
@@ -17,8 +18,8 @@ export default async function PlatformTenantsPage({ searchParams }: PageProps) {
     .select('id, name, slug, plan, is_active, created_at', { count: 'exact' })
     .order('created_at', { ascending: false })
 
-  if (q?.trim()) {
-    query = query.or(`name.ilike.%${q.trim()}%,slug.ilike.%${q.trim()}%`)
+  for (const token of tokenize(q)) {
+    query = query.or(ilikeOrClause(token, ['name', 'slug']))
   }
   if (plan && ['starter', 'professional', 'enterprise'].includes(plan)) {
     query = query.eq('plan', plan as 'starter' | 'professional' | 'enterprise')

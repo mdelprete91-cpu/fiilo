@@ -5,15 +5,17 @@ import { createClient } from '@supabase/supabase-js'
 import { categorize } from '@/lib/whatsapp/categorize'
 import { transcribeWhatsAppAudio } from '@/lib/whatsapp/transcribe'
 import { analyzePhoto } from '@/lib/whatsapp/analyze-photo'
-import { normalizePhone, phonesMatch } from '@/lib/whatsapp/normalize-phone'
+import { phonesMatch } from '@/lib/whatsapp/normalize-phone'
+import {
+  decryptToken,
+  getIntegrationByPhoneNumberId,
+} from '@/lib/whatsapp/integrations'
 import type { WhatsappMsgType } from '@/types/database'
 
 const VERIFY_TOKEN = process.env.WHATSAPP_VERIFY_TOKEN ?? ''
 const APP_SECRET = process.env.META_APP_SECRET ?? ''
-const WA_TOKEN = process.env.WHATSAPP_CLOUD_API_TOKEN ?? ''
 const WA_API = 'https://graph.facebook.com/v19.0'
 
-// Whisper restituisce nomi estesi ("italian"); il resto del prodotto si aspetta ISO.
 const LANGUAGE_TO_ISO: Record<string, string> = {
   italian: 'it', italiano: 'it',
   english: 'en',
@@ -32,7 +34,7 @@ function normalizeLanguage(lang: string | null | undefined): string | null {
   return l.length <= 3 ? l : l.slice(0, 2)
 }
 
-// Service-role client — bypasses RLS for webhook inserts
+// Service-role client — bypasses RLS per inserire i messaggi del webhook
 function adminClient() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -59,7 +61,6 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const rawBody = await req.text()
 
-  // Signature verification
   if (APP_SECRET) {
     const signature = req.headers.get('x-hub-signature-256') ?? ''
     const expected = `sha256=${createHmac('sha256', APP_SECRET).update(rawBody).digest('hex')}`
@@ -75,10 +76,6 @@ export async function POST(req: NextRequest) {
     return new NextResponse('Bad Request', { status: 400 })
   }
 
-  // Vercel termina la funzione appena ritorniamo la response, quindi un
-  // fire-and-forget puro perde le chiamate AI a metà. waitUntil() dice a
-  // Vercel di tenere viva la funzione finché la promise risolve, mentre
-  // Meta riceve subito il 200.
   waitUntil(
     processWebhook(payload as WebhookPayload).catch((err) =>
       console.error('[whatsapp.webhook] processing error', err),
@@ -127,19 +124,39 @@ async function processWebhook(payload: WebhookPayload) {
       const phoneNumberId = value.metadata?.phone_number_id
       if (!phoneNumberId) continue
 
-      // Find tenant by phone_number_id
-      const { data: tenant } = await supabase
-        .from('tenants')
-        .select('id')
-        .eq('whatsapp_phone_number_id', phoneNumberId)
-        .single()
+      // Risoluzione multi-tenant: phone_number_id → integration
+      const integration = await getIntegrationByPhoneNumberId(phoneNumberId)
+      if (!integration) {
+        console.warn(
+          `[whatsapp.webhook] nessuna integration per phone_number_id=${phoneNumberId}`,
+        )
+        continue
+      }
+      if (integration.status === 'revoked') {
+        console.warn(
+          `[whatsapp.webhook] integration revocata per tenant=${integration.tenant_id}`,
+        )
+        continue
+      }
 
-      if (!tenant) continue
+      const tenantId = integration.tenant_id
+
+      // Token decifrato per scaricare media (lazy, solo se necessario)
+      let waToken: string | null = null
+      async function getToken(): Promise<string | null> {
+        if (waToken) return waToken
+        try {
+          waToken = await decryptToken(integration!.id)
+        } catch (err) {
+          console.error('[whatsapp.webhook] decrypt token error', err)
+          waToken = null
+        }
+        return waToken
+      }
 
       for (const msg of value.messages ?? []) {
         if (!msg.id || !msg.from) continue
 
-        // Avoid duplicates
         const { count } = await supabase
           .from('whatsapp_messages')
           .select('id', { count: 'exact', head: true })
@@ -153,17 +170,15 @@ async function processWebhook(payload: WebhookPayload) {
           ? new Date(parseInt(msg.timestamp) * 1000).toISOString()
           : new Date().toISOString()
 
-        // Match client by phone
         const { data: clients } = await supabase
           .from('clients')
           .select('id, phone')
-          .eq('tenant_id', tenant.id)
+          .eq('tenant_id', tenantId)
           .not('phone', 'is', null)
 
         const matchedClient = clients?.find((c) => phonesMatch(c.phone!, fromPhone))
         const clientId = matchedClient?.id ?? null
 
-        // Determine message type and content
         const rawType = msg.type ?? 'text'
         const validTypes: WhatsappMsgType[] = ['text', 'image', 'audio', 'document', 'video', 'sticker']
         const messageType: WhatsappMsgType = validTypes.includes(rawType as WhatsappMsgType)
@@ -173,7 +188,6 @@ async function processWebhook(payload: WebhookPayload) {
         let body = msg.text?.body ?? null
         const caption = msg.image?.caption ?? msg.video?.caption ?? null
 
-        // Download media to Supabase Storage + transcribe audio
         let mediaUrl: string | null = null
         let mediaMimeType: string | null = null
         let transcriptConfidence: number | null = null
@@ -185,56 +199,57 @@ async function processWebhook(payload: WebhookPayload) {
           msg.image?.mime_type ?? msg.video?.mime_type ??
           msg.audio?.mime_type ?? msg.document?.mime_type ?? msg.sticker?.mime_type
 
-        if (mediaId && WA_TOKEN) {
-          mediaMimeType = rawMime ?? null
-          try {
-            const metaRes = await fetch(`${WA_API}/${mediaId}`, {
-              headers: { Authorization: `Bearer ${WA_TOKEN}` },
-            })
-            if (metaRes.ok) {
-              const { url } = await metaRes.json() as { url?: string }
-              if (url) {
-                const mediaRes = await fetch(url, {
-                  headers: { Authorization: `Bearer ${WA_TOKEN}` },
-                })
-                if (mediaRes.ok) {
-                  const buffer = Buffer.from(await mediaRes.arrayBuffer())
+        if (mediaId) {
+          const token = await getToken()
+          if (token) {
+            mediaMimeType = rawMime ?? null
+            try {
+              const metaRes = await fetch(`${WA_API}/${mediaId}`, {
+                headers: { Authorization: `Bearer ${token}` },
+              })
+              if (metaRes.ok) {
+                const { url } = await metaRes.json() as { url?: string }
+                if (url) {
+                  const mediaRes = await fetch(url, {
+                    headers: { Authorization: `Bearer ${token}` },
+                  })
+                  if (mediaRes.ok) {
+                    const buffer = Buffer.from(await mediaRes.arrayBuffer())
 
-                  // Trascrivi audio prima di salvare in Storage (Whisper su Groq, free)
-                  if (messageType === 'audio') {
-                    try {
-                      const transcript = await transcribeWhatsAppAudio(buffer, rawMime ?? null)
-                      if (transcript && transcript.text.trim()) {
-                        body = transcript.text.trim()
-                        detectedLanguage = normalizeLanguage(transcript.language)
-                        transcriptConfidence = transcript.confidence
+                    if (messageType === 'audio') {
+                      try {
+                        const transcript = await transcribeWhatsAppAudio(buffer, rawMime ?? null)
+                        if (transcript && transcript.text.trim()) {
+                          body = transcript.text.trim()
+                          detectedLanguage = normalizeLanguage(transcript.language)
+                          transcriptConfidence = transcript.confidence
+                        }
+                      } catch (err) {
+                        console.error('[whatsapp] transcribe error', err)
                       }
-                    } catch (err) {
-                      console.error('[whatsapp] transcribe error', err)
                     }
-                  }
 
-                  const ext = (rawMime ?? 'image/jpeg').split('/')[1]?.split(';')[0] ?? 'bin'
-                  const storagePath = `whatsapp/${tenant.id}/${mediaId}.${ext}`
-                  const { error: uploadErr } = await supabase.storage
-                    .from('assets')
-                    .upload(storagePath, buffer, {
-                      contentType: rawMime ?? 'application/octet-stream',
-                      upsert: true,
-                    })
-                  if (!uploadErr) {
-                    const { data: pub } = supabase.storage.from('assets').getPublicUrl(storagePath)
-                    mediaUrl = pub.publicUrl
+                    const ext = (rawMime ?? 'image/jpeg').split('/')[1]?.split(';')[0] ?? 'bin'
+                    const storagePath = `whatsapp/${tenantId}/${mediaId}.${ext}`
+                    const { error: uploadErr } = await supabase.storage
+                      .from('assets')
+                      .upload(storagePath, buffer, {
+                        contentType: rawMime ?? 'application/octet-stream',
+                        upsert: true,
+                      })
+                    if (!uploadErr) {
+                      const { data: pub } = supabase.storage.from('assets').getPublicUrl(storagePath)
+                      mediaUrl = pub.publicUrl
+                    }
                   }
                 }
               }
+            } catch (err) {
+              console.error('[whatsapp] media download error', err)
             }
-          } catch (err) {
-            console.error('[whatsapp] media download error', err)
           }
         }
 
-        // Categorize (AI con fallback rule-based)
         const cat = await categorize({
           message_type: messageType,
           body: body ?? caption,
@@ -244,7 +259,7 @@ async function processWebhook(payload: WebhookPayload) {
         const { data: inserted } = await supabase
           .from('whatsapp_messages')
           .insert({
-            tenant_id: tenant.id,
+            tenant_id: tenantId,
             client_id: clientId,
             wa_message_id: msg.id,
             wa_phone_number_id: phoneNumberId,
@@ -264,9 +279,6 @@ async function processWebhook(payload: WebhookPayload) {
           .select('id')
           .single()
 
-        // Vision analysis per immagini — awaited così Vercel non termina
-        // la funzione prima che il risultato sia salvato (waitUntil esterno
-        // copre tutto il processWebhook)
         if (
           inserted?.id &&
           messageType === 'image' &&

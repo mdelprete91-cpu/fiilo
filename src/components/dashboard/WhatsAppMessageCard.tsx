@@ -124,7 +124,8 @@ export function WhatsAppMessageCard({ message, clientId }: Props) {
 
   return (
     <div
-      className={`flex cursor-default gap-3 px-5 py-3.5 transition-colors hover:bg-muted/40 ${
+      id={`msg-${message.id}`}
+      className={`flex cursor-default gap-3 scroll-mt-24 px-5 py-3.5 transition-colors hover:bg-muted/40 ${
         isUnread ? 'bg-blue-50/60 dark:bg-blue-950/15' : ''
       }`}
       onClick={handleRead}

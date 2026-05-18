@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { FabricSchema, type FabricFormData } from '@/lib/validations/catalog'
 import { upsertFabricAction, deleteFabricAction } from '@/lib/actions/catalog'
 import type { Fabric } from '@/types/database'
@@ -32,6 +33,33 @@ export function FabricsTable({ fabrics }: { fabrics: Fabric[] }) {
   function handleDelete(id: string) {
     if (!confirm('Eliminare questo tessuto?')) return
     startTransition(async () => { await deleteFabricAction(id) })
+  }
+
+  if (!fabrics.length) {
+    return (
+      <div>
+        <Empty className="rounded-xl border border-dashed border-border bg-card py-14">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <Plus className="h-4 w-4" />
+            </EmptyMedia>
+            <EmptyTitle>Nessun tessuto nel catalogo</EmptyTitle>
+            <EmptyDescription>
+              Inizia caricando i tuoi tessuti.
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Button onClick={openCreate}>
+              <Plus className="mr-1.5 h-4 w-4" /> Aggiungi tessuto
+            </Button>
+          </EmptyContent>
+        </Empty>
+
+        <Dialog open={open} onOpenChange={setOpen}>
+          <FabricFormDialog fabric={editing} onClose={() => setOpen(false)} />
+        </Dialog>
+      </div>
+    )
   }
 
   return (
@@ -79,13 +107,6 @@ export function FabricsTable({ fabrics }: { fabrics: Fabric[] }) {
                 </td>
               </tr>
             ))}
-            {!fabrics.length && (
-              <tr>
-                <td colSpan={9} className="px-5 py-10 text-center text-sm text-muted-foreground">
-                  Nessun tessuto nel catalogo.
-                </td>
-              </tr>
-            )}
           </tbody>
         </table>
       </div>

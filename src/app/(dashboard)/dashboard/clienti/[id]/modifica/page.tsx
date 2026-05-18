@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { requireRole } from '@/lib/auth/session'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
+import { BackButton } from '@/components/dashboard/BackButton'
 import { ClientForm } from '@/components/dashboard/ClientForm'
 
 interface PageProps {
@@ -24,6 +25,7 @@ export default async function ModificaClientePage({ params }: PageProps) {
 
   return (
     <div className="space-y-6 p-6 lg:p-8 max-w-3xl">
+      <BackButton fallbackHref={`/dashboard/clienti/${id}`} label="Indietro" />
       <TopBar
         role={session.role}
         userName={session.fullName ?? session.email}

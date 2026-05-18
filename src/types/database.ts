@@ -643,6 +643,54 @@ export type Database = {
         Update: never
         Relationships: []
       }
+      client_summaries: {
+        Row: {
+          id: string
+          tenant_id: string
+          client_id: string
+          summary_json: Json
+          summary_text: string | null
+          model: string
+          tokens_in: number | null
+          tokens_out: number | null
+          cost_cents: number | null
+          source_message_count: number
+          last_message_sent_at: string | null
+          generated_at: string
+          generated_by: string | null
+        }
+        Insert: {
+          id?: string
+          tenant_id: string
+          client_id: string
+          summary_json: Json
+          summary_text?: string | null
+          model: string
+          tokens_in?: number | null
+          tokens_out?: number | null
+          cost_cents?: number | null
+          source_message_count?: number
+          last_message_sent_at?: string | null
+          generated_at?: string
+          generated_by?: string | null
+        }
+        Update: {
+          id?: string
+          tenant_id?: string
+          client_id?: string
+          summary_json?: Json
+          summary_text?: string | null
+          model?: string
+          tokens_in?: number | null
+          tokens_out?: number | null
+          cost_cents?: number | null
+          source_message_count?: number
+          last_message_sent_at?: string | null
+          generated_at?: string
+          generated_by?: string | null
+        }
+        Relationships: []
+      }
       whatsapp_messages: {
         Row: {
           id: string

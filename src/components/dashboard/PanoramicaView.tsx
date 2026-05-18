@@ -219,7 +219,7 @@ export function PanoramicaView({ garments }: { garments: PanoramicaGarment[] }) 
       </div>
 
       {/* Two-column grid — fills remaining height */}
-      <div className="flex-1 min-h-0 grid gap-5 lg:grid-cols-5">
+      <div className="flex-1 min-h-0 grid gap-5 grid-cols-1 lg:grid-cols-5">
 
         {/* ── Card sinistra: Produzione ── */}
         <div className="lg:col-span-2 rounded-xl border border-border bg-card overflow-hidden flex flex-col shadow-card">
@@ -368,7 +368,7 @@ export function PanoramicaView({ garments }: { garments: PanoramicaGarment[] }) 
           </div>
 
           {/* KPI finanziari */}
-          <div className="shrink-0 grid grid-cols-3 divide-x divide-border border-b border-border">
+          <div className="shrink-0 grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-border border-b border-border">
             <div className="px-6 py-5">
               <p className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground/70 mb-2.5">
                 Fatturato

@@ -3,10 +3,13 @@ import { Plus, Search } from 'lucide-react'
 import { requireRole } from '@/lib/auth/session'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
+import { tokenize, ilikeOrClause } from '@/lib/search'
 
 interface PageProps {
   searchParams: Promise<{ q?: string }>
 }
+
+const CLIENT_SEARCH_FIELDS = ['first_name', 'last_name', 'email', 'phone', 'city']
 
 export default async function ClientiPage({ searchParams }: PageProps) {
   const session = await requireRole(['tenant_admin', 'tenant_staff'])
@@ -14,25 +17,59 @@ export default async function ClientiPage({ searchParams }: PageProps) {
   const supabase = await createClient()
   const tid = session.tenantId!
 
+  const tokens = tokenize(q)
+
   let query = supabase
     .from('clients')
     .select('id, first_name, last_name, email, phone, city, created_at')
     .eq('tenant_id', tid)
     .order('last_name', { ascending: true })
 
-  if (q) {
-    query = query.or(
-      `first_name.ilike.%${q}%,last_name.ilike.%${q}%,email.ilike.%${q}%`
+  for (const token of tokens) {
+    query = query.or(ilikeOrClause(token, CLIENT_SEARCH_FIELDS))
+  }
+
+  // Ricerca anche nei messaggi WhatsApp: tutti i token devono comparire nel body.
+  let waClientIds: string[] = []
+  if (tokens.length > 0) {
+    let waQuery = supabase
+      .from('whatsapp_messages')
+      .select('client_id')
+      .eq('tenant_id', tid)
+      .not('client_id', 'is', null)
+    for (const token of tokens) {
+      waQuery = waQuery.ilike('body', `%${token}%`)
+    }
+    const { data: waMatches } = await waQuery.limit(500)
+    waClientIds = Array.from(
+      new Set((waMatches ?? []).map((m) => m.client_id).filter((id): id is string => !!id)),
     )
   }
 
-  const [{ data: clients }, { data: garments }] = await Promise.all([
+  const [{ data: primaryClients }, { data: garments }] = await Promise.all([
     query.limit(100),
     supabase
       .from('garments')
       .select('client_id, status, total_price')
       .eq('tenant_id', tid),
   ])
+
+  const primaryIds = new Set((primaryClients ?? []).map((c) => c.id))
+  const extraIds = waClientIds.filter((id) => !primaryIds.has(id))
+
+  let waOnlyClients: typeof primaryClients = []
+  if (extraIds.length > 0) {
+    const { data } = await supabase
+      .from('clients')
+      .select('id, first_name, last_name, email, phone, city, created_at')
+      .eq('tenant_id', tid)
+      .in('id', extraIds)
+      .order('last_name', { ascending: true })
+    waOnlyClients = data ?? []
+  }
+
+  const waMatchedIds = new Set(waClientIds)
+  const clients = [...(primaryClients ?? []), ...(waOnlyClients ?? [])]
 
   // Conteggi per cliente calcolati lato JS
   const richiesti = new Map<string, number>()
@@ -79,7 +116,7 @@ export default async function ClientiPage({ searchParams }: PageProps) {
         <input
           name="q"
           defaultValue={q}
-          placeholder="Cerca per nome o email…"
+          placeholder="Nome, telefono, email o un dettaglio dei messaggi…"
           className="w-full rounded-xl border border-border bg-card py-2.5 pl-9 pr-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 transition-shadow"
         />
       </form>
@@ -130,6 +167,11 @@ export default async function ClientiPage({ searchParams }: PageProps) {
                     <span className="font-medium text-foreground">
                       {c.last_name} {c.first_name}
                     </span>
+                    {waMatchedIds.has(c.id) && !primaryIds.has(c.id) && (
+                      <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
+                        nei messaggi
+                      </span>
+                    )}
                   </div>
                 </td>
                 <td className="hidden px-5 py-4 text-muted-foreground md:table-cell">

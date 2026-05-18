@@ -1,11 +1,29 @@
+import { Search } from 'lucide-react'
 import { requireRole } from '@/lib/auth/session'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { ProduzioneBoard, type GarmentRow } from '@/components/dashboard/ProduzioneBoard'
 import { NuovoAbitoModal } from '@/components/dashboard/NuovoAbitoModal'
+import { tokenize, matchesAllTokens } from '@/lib/search'
 
-export default async function ProduzionePage() {
+const TYPE_LABEL_IT: Record<string, string> = {
+  suit_2pc: 'abito 2 pezzi', suit_3pc: 'abito 3 pezzi', jacket: 'giacca',
+  trousers: 'pantalone', waistcoat: 'gilet', coat: 'soprabito',
+  tuxedo: 'smoking', shirt: 'camicia',
+}
+
+const STATUS_LABEL_IT: Record<string, string> = {
+  confirmed: 'richiesti', in_production: 'in lavorazione',
+  ready: 'pronti', delivered: 'consegnati',
+}
+
+interface PageProps {
+  searchParams: Promise<{ q?: string }>
+}
+
+export default async function ProduzionePage({ searchParams }: PageProps) {
   const session = await requireRole(['tenant_admin', 'tenant_staff'])
+  const { q } = await searchParams
   const dateLabel = new Date().toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' })
   const supabase = await createClient()
   const tid = session.tenantId!
@@ -19,7 +37,7 @@ export default async function ProduzionePage() {
       .order('delivery_eta', { ascending: true, nullsFirst: false }),
     supabase
       .from('clients')
-      .select('id, first_name, last_name')
+      .select('id, first_name, last_name, email, phone')
       .eq('tenant_id', tid)
       .order('last_name', { ascending: true }),
     supabase
@@ -41,7 +59,7 @@ export default async function ProduzionePage() {
   const staffMap = new Map(staffList.map((s) => [s.id, s.name]))
   const clientMap = new Map(clients.map((c) => [c.id, `${c.first_name} ${c.last_name}`]))
 
-  const rows: GarmentRow[] = garments.map((g) => ({
+  const allRows: GarmentRow[] = garments.map((g) => ({
     id: g.id,
     name: g.name,
     type: g.type,
@@ -58,6 +76,20 @@ export default async function ProduzionePage() {
     payment_status: g.payment_status ?? null,
   }))
 
+  const tokens = tokenize(q)
+  const rows = tokens.length
+    ? allRows.filter((r) =>
+        matchesAllTokens(tokens, () => [
+          r.name,
+          r.clientName,
+          r.internal_notes,
+          r.assigneeName,
+          TYPE_LABEL_IT[r.type],
+          STATUS_LABEL_IT[r.status],
+        ]),
+      )
+    : allRows
+
   return (
     <div className="min-h-full bg-background px-6 py-8 lg:px-8 space-y-8">
       <div className="flex items-start justify-between gap-4">
@@ -72,6 +104,25 @@ export default async function ProduzionePage() {
           <NuovoAbitoModal clients={clients} />
         </div>
       </div>
+
+      <form className="max-w-sm space-y-2">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <input
+            name="q"
+            defaultValue={q}
+            placeholder="Cliente, tipo, stato, note o referente…"
+            className="w-full rounded-xl border border-border bg-card py-2.5 pl-9 pr-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 transition-shadow"
+          />
+        </div>
+        {tokens.length > 0 && (
+          <p className="text-xs text-muted-foreground">
+            {rows.length === 0
+              ? `Nessun ordine corrisponde a "${q}"`
+              : `${rows.length} di ${allRows.length} ordini`}
+          </p>
+        )}
+      </form>
 
       <ProduzioneBoard garments={rows} staffList={staffList} />
     </div>

@@ -5,11 +5,14 @@ import { useRouter } from 'next/navigation'
 import { Plus, X, Loader2, Search, UserPlus, ChevronRight } from 'lucide-react'
 import { createClientQuietAction } from '@/lib/actions/clients'
 import { createGarmentAction } from '@/lib/actions/garments'
+import { tokenize, matchesAllTokens } from '@/lib/search'
 
 interface ClientOption {
   id: string
   first_name: string
   last_name: string
+  email?: string | null
+  phone?: string | null
 }
 
 interface Props {
@@ -51,9 +54,10 @@ export function NuovoAbitoModal({ clients }: Props) {
     return () => window.removeEventListener('keydown', handler)
   }, [open])
 
-  const filtered = query.trim()
+  const tokens = tokenize(query)
+  const filtered = tokens.length
     ? clients.filter((c) =>
-        `${c.first_name} ${c.last_name}`.toLowerCase().includes(query.toLowerCase())
+        matchesAllTokens(tokens, () => [c.first_name, c.last_name, c.email, c.phone]),
       )
     : clients.slice(0, 8)
 
@@ -169,7 +173,7 @@ export function NuovoAbitoModal({ clients }: Props) {
                       ref={searchRef}
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
-                      placeholder="Cerca per nome o cognome…"
+                      placeholder="Nome, cognome, telefono o email…"
                       className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-ring/30 transition-shadow"
                     />
                     <ul className="divide-y divide-border rounded-lg border border-border overflow-hidden max-h-64 overflow-y-auto">

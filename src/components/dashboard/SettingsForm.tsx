@@ -116,7 +116,7 @@ function SartoriaCard({ tenant }: { tenant: TenantData }) {
 
 const ROLE_LABEL: Record<string, string> = {
   tenant_admin: 'Admin',
-  tenant_staff: 'Staff',
+  tenant_staff: 'Referente',
 }
 
 function TeamCard({

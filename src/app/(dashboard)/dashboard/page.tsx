@@ -1,3 +1,5 @@
+import Link from 'next/link'
+import { Plus } from 'lucide-react'
 import { requireRole } from '@/lib/auth/session'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
@@ -20,6 +22,8 @@ export default async function DashboardPage() {
       .select('id, first_name, last_name')
       .eq('tenant_id', tid),
   ])
+
+  const hasClients = (rawClients?.length ?? 0) > 0
 
   const clientMap = new Map(
     (rawClients ?? []).map((c) => [c.id, `${c.first_name} ${c.last_name}`]),
@@ -67,6 +71,28 @@ export default async function DashboardPage() {
           <p className="mt-2 text-sm text-muted-foreground capitalize">{dateLabel}</p>
         </div>
       </div>
+
+      {!hasClients && (
+        <div className="shrink-0 mb-6 rounded-xl border border-primary/20 bg-primary/5 px-5 py-4 sm:px-6 sm:py-5">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="min-w-0">
+              <p className="font-heading text-xl text-ink leading-tight">
+                Benvenuto in filo
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Inizia creando il tuo primo cliente.
+              </p>
+            </div>
+            <Link
+              href="/dashboard/clienti/nuovo"
+              className="shrink-0 inline-flex items-center gap-2 self-start rounded-full bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 active:scale-[0.97] transition-colors will-change-transform sm:self-auto"
+            >
+              <Plus className="h-4 w-4" />
+              Crea cliente
+            </Link>
+          </div>
+        </div>
+      )}
 
       <div className="flex-1 min-h-0">
         <PanoramicaView garments={garments} />

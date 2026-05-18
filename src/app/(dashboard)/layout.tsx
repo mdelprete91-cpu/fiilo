@@ -3,6 +3,7 @@ import { requireRole } from '@/lib/auth/session'
 import { createClient } from '@/lib/supabase/server'
 import { AppSidebar } from '@/components/layout/AppSidebar'
 import { ImpersonateBanner } from '@/components/dashboard/ImpersonateBanner'
+import { Toaster } from '@/components/ui/sonner'
 import { getUnreadCount } from '@/lib/actions/whatsapp'
 
 export default async function DashboardLayout({
@@ -43,6 +44,7 @@ export default async function DashboardLayout({
           {children}
         </main>
       </div>
+      <Toaster />
     </div>
   )
 }
