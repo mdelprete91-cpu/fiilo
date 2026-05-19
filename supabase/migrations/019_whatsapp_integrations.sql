@@ -5,12 +5,12 @@
 -- Ogni tenant collega il proprio WhatsApp Business; il webhook
 -- risolve il tenant via phone_number_id e legge il token cifrato.
 --
--- Chiave di crittografia: settare app.wa_encryption_key in Supabase
--- (Dashboard → Project Settings → Database → Custom Postgres Config)
--- oppure via SQL:
---   ALTER DATABASE postgres
---     SET app.wa_encryption_key = '<32-char-random-key>';
---   SELECT pg_reload_conf();
+-- Chiave di crittografia: NON è memorizzata nel DB. Viene passata
+-- come parametro alle RPC `set_wa_token(integration_id, plaintext, key)`
+-- e `get_wa_token(integration_id, key)` direttamente dall'app
+-- (env `WHATSAPP_TOKEN_ENCRYPTION_KEY` su Vercel/locale).
+-- Questo evita il GUC `app.wa_encryption_key` che richiede superuser
+-- (non disponibile su Supabase managed).
 -- ============================================================
 
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
@@ -74,32 +74,31 @@ CREATE POLICY "tenant member update own integration"
 
 CREATE OR REPLACE FUNCTION public.set_wa_token(
   p_integration_id UUID,
-  p_plaintext      TEXT
+  p_plaintext      TEXT,
+  p_key            TEXT
 ) RETURNS VOID
 LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
-DECLARE
-  v_key TEXT := current_setting('app.wa_encryption_key', true);
 BEGIN
-  IF v_key IS NULL OR length(v_key) < 16 THEN
-    RAISE EXCEPTION 'app.wa_encryption_key non configurata o troppo corta';
+  IF p_key IS NULL OR length(p_key) < 16 THEN
+    RAISE EXCEPTION 'encryption key mancante o troppo corta (min 16 char)';
   END IF;
 
   UPDATE public.whatsapp_integrations
-  SET access_token_encrypted = pgp_sym_encrypt(p_plaintext, v_key)
+  SET access_token_encrypted = pgp_sym_encrypt(p_plaintext, p_key)
   WHERE id = p_integration_id;
 END;
 $$;
 
 CREATE OR REPLACE FUNCTION public.get_wa_token(
-  p_integration_id UUID
+  p_integration_id UUID,
+  p_key            TEXT
 ) RETURNS TEXT
 LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
 DECLARE
-  v_key    TEXT := current_setting('app.wa_encryption_key', true);
   v_cipher BYTEA;
 BEGIN
-  IF v_key IS NULL OR length(v_key) < 16 THEN
-    RAISE EXCEPTION 'app.wa_encryption_key non configurata o troppo corta';
+  IF p_key IS NULL OR length(p_key) < 16 THEN
+    RAISE EXCEPTION 'encryption key mancante o troppo corta (min 16 char)';
   END IF;
 
   SELECT access_token_encrypted INTO v_cipher
@@ -110,13 +109,13 @@ BEGIN
     RETURN NULL;
   END IF;
 
-  RETURN pgp_sym_decrypt(v_cipher, v_key);
+  RETURN pgp_sym_decrypt(v_cipher, p_key);
 END;
 $$;
 
 -- Le funzioni sono SECURITY DEFINER ma richiediamo che vengano
 -- chiamate via service-role: revochiamo l'EXECUTE a anon/authenticated.
-REVOKE EXECUTE ON FUNCTION public.set_wa_token(UUID, TEXT) FROM PUBLIC;
-REVOKE EXECUTE ON FUNCTION public.get_wa_token(UUID)       FROM PUBLIC;
-GRANT  EXECUTE ON FUNCTION public.set_wa_token(UUID, TEXT) TO service_role;
-GRANT  EXECUTE ON FUNCTION public.get_wa_token(UUID)       TO service_role;
+REVOKE EXECUTE ON FUNCTION public.set_wa_token(UUID, TEXT, TEXT) FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.get_wa_token(UUID, TEXT)       FROM PUBLIC;
+GRANT  EXECUTE ON FUNCTION public.set_wa_token(UUID, TEXT, TEXT) TO service_role;
+GRANT  EXECUTE ON FUNCTION public.get_wa_token(UUID, TEXT)       TO service_role;

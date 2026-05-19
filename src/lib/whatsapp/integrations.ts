@@ -52,6 +52,16 @@ function adminClient() {
   )
 }
 
+function getEncryptionKey(): string {
+  const key = process.env.WHATSAPP_TOKEN_ENCRYPTION_KEY
+  if (!key || key.length < 16) {
+    throw new Error(
+      'WHATSAPP_TOKEN_ENCRYPTION_KEY mancante o troppo corta (min 16 char). Settala su Vercel e in .env.local.',
+    )
+  }
+  return key
+}
+
 // Treat "table not in schema cache" (PGRST205) as "no integration": permette di usare
 // la UI anche prima che la migration 019 sia applicata in DB.
 function isTableMissing(error: { code?: string } | null): boolean {
@@ -132,6 +142,7 @@ export async function upsertIntegration(input: {
   const { error: rpcError } = await supabase.rpc('set_wa_token', {
     p_integration_id: integration.id,
     p_plaintext: input.plaintextAccessToken,
+    p_key: getEncryptionKey(),
   })
   if (rpcError) throw rpcError
 
@@ -161,6 +172,7 @@ export async function decryptToken(integrationId: string): Promise<string | null
   const supabase = adminClient()
   const { data, error } = await supabase.rpc('get_wa_token', {
     p_integration_id: integrationId,
+    p_key: getEncryptionKey(),
   })
   if (error) throw error
   return (data as string | null) ?? null

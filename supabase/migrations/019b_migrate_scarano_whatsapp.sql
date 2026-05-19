@@ -1,21 +1,20 @@
 -- ============================================================
 -- 019b — Migrazione integration WhatsApp Scarano (single-tenant → multi-tenant)
 -- ============================================================
--- PRIMA di applicare questa migration:
---   1. Settare app.wa_encryption_key in Supabase (vedi 019_whatsapp_integrations.sql)
---   2. Rieseguire ALTER DATABASE ... SET app.wa_encryption_key = ... + SELECT pg_reload_conf();
---
--- Dopo l'INSERT, eseguire SEPARATAMENTE l'UPDATE che cifra il token
--- (lo lascio fuori da questo file per non hardcodare segreti):
+-- Dopo l'INSERT, eseguire SEPARATAMENTE questo UPDATE per cifrare il token
+-- (lo teniamo fuori da questo file per non hardcodare segreti):
 --
 --   UPDATE public.whatsapp_integrations
 --   SET access_token_encrypted = pgp_sym_encrypt(
 --         '<WHATSAPP_CLOUD_API_TOKEN_PLAINTEXT>',
---         current_setting('app.wa_encryption_key')
+--         '<WHATSAPP_TOKEN_ENCRYPTION_KEY_PLAINTEXT>'
 --       ),
 --       status = 'connected',
 --       connected_at = now()
 --   WHERE tenant_id = 'db057da1-b786-410e-8db4-223183a42ab8';
+--
+-- La chiave di cifratura va memorizzata SOLO in env var Vercel
+-- (WHATSAPP_TOKEN_ENCRYPTION_KEY); non viene salvata nel DB.
 --
 -- ============================================================
 
