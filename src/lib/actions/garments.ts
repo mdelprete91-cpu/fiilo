@@ -75,7 +75,7 @@ export async function saveGarmentAction(
     const baseUpdate = {
       name,
       current_step: currentStep,
-      configuration: config as unknown as Record<string, unknown>,
+      configuration: config as unknown as import('@/types/database').Json,
     }
     const update = config.garmentType
       ? { ...baseUpdate, type: config.garmentType }

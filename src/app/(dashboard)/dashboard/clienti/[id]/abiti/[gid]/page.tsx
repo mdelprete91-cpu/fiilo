@@ -72,7 +72,9 @@ export default async function ConfiguratorePage({ params, searchParams }: PagePr
       .eq('tenant_id', tid),
   ])
 
-  const config = mergeConfigWithDefaults(garment.configuration ?? {})
+  const config = mergeConfigWithDefaults(
+    (garment.configuration as Record<string, unknown> | null) ?? {},
+  )
   const initialStep = isEditMode ? 'setup.type' : (garment.current_step ?? 'setup.type')
   const measurementsCount = measurementsCountResult.count ?? 0
 

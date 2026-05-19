@@ -210,16 +210,24 @@ export function WhatsAppMessageCard({ message, clientId }: Props) {
   )
 }
 
+interface PhotoAnalysisShape {
+  garment_type?: string | null
+  pattern?: string | null
+  colors?: string[] | null
+  details?: string[] | null
+}
+
 function PhotoTags({
   analysis,
 }: {
   analysis: NonNullable<WhatsappMessage['photo_analysis']>
 }) {
+  const a = analysis as unknown as PhotoAnalysisShape
   const tags = [
-    analysis.garment_type,
-    analysis.pattern,
-    ...(analysis.colors ?? []).slice(0, 2),
-    ...(analysis.details ?? []).slice(0, 2),
+    a.garment_type,
+    a.pattern,
+    ...(a.colors ?? []).slice(0, 2),
+    ...(a.details ?? []).slice(0, 2),
   ].filter((t): t is string => Boolean(t))
 
   if (tags.length === 0) return null

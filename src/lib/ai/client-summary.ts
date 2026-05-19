@@ -219,7 +219,8 @@ async function fetchData(opts: { clientId: string; tenantId: string }): Promise<
     category: m.category,
     message_type: m.message_type,
     body: m.body,
-    photo_description: m.photo_analysis?.description ?? null,
+    photo_description:
+      (m.photo_analysis as { description?: string | null } | null)?.description ?? null,
     detected_language: m.detected_language,
   }))
 

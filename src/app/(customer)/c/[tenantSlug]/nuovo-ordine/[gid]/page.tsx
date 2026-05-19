@@ -69,7 +69,9 @@ export default async function CustomerNuovoOrdinePage({ params }: PageProps) {
       .eq('client_id', ctx.clientId),
   ])
 
-  const config = mergeConfigWithDefaults(garment.configuration ?? {})
+  const config = mergeConfigWithDefaults(
+    (garment.configuration as Record<string, unknown> | null) ?? {},
+  )
   const initialStep = garment.current_step ?? 'setup.type'
   const measurementsCount = measurementsCountResult.count ?? 0
 

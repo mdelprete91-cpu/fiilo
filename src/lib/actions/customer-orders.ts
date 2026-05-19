@@ -67,7 +67,7 @@ export async function saveCustomerDraftAction(
     const baseUpdate = {
       name: data.name,
       current_step: data.currentStep,
-      configuration: data.config as unknown as Record<string, unknown>,
+      configuration: data.config as unknown as import('@/types/database').Json,
     }
     const update = data.config.garmentType
       ? { ...baseUpdate, type: data.config.garmentType }
