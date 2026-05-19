@@ -16,9 +16,14 @@ import type { Client } from '@/types/database'
 
 interface ClientFormProps {
   client?: Client
+  /**
+   * Stato corrente dell'opt-in newsletter email del cliente (se presente in `newsletter_preferences`).
+   * Default `false`: GDPR-compliant (no auto-opt-in).
+   */
+  newsletterEmailOptIn?: boolean
 }
 
-export function ClientForm({ client }: ClientFormProps) {
+export function ClientForm({ client, newsletterEmailOptIn = false }: ClientFormProps) {
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
   const {
@@ -39,14 +44,23 @@ export function ClientForm({ client }: ClientFormProps) {
           city: client.city ?? '',
           country: client.country ?? '',
           notes: client.notes ?? '',
+          newsletter_email_opt_in: newsletterEmailOptIn,
         }
-      : {},
+      : {
+          newsletter_email_opt_in: false,
+        },
   })
 
   function onSubmit(data: ClientFormData) {
     startTransition(async () => {
       const fd = new FormData()
-      Object.entries(data).forEach(([k, v]) => fd.set(k, v ?? ''))
+      Object.entries(data).forEach(([k, v]) => {
+        if (typeof v === 'boolean') {
+          fd.set(k, v ? 'on' : 'off')
+        } else {
+          fd.set(k, (v ?? '') as string)
+        }
+      })
 
       if (client) {
         const result = await updateClientAction(client.id, fd)
@@ -122,6 +136,26 @@ export function ClientForm({ client }: ClientFormProps) {
           {...register('notes')}
         />
       </Field>
+
+      {/* Consenso marketing */}
+      <div className="space-y-2 rounded-lg border border-border bg-muted/20 px-4 py-3">
+        <label className="flex cursor-pointer items-start gap-3">
+          <input
+            type="checkbox"
+            {...register('newsletter_email_opt_in')}
+            className="mt-0.5 h-4 w-4 accent-primary"
+          />
+          <div>
+            <div className="text-sm font-medium text-foreground">
+              Voglio ricevere comunicazioni email dal mio sarto
+            </div>
+            <div className="mt-0.5 text-xs text-muted-foreground">
+              Solo newsletter occasionali su nuovi tessuti, eventi, novità di atelier.
+              Niente spam. Annullabile in qualsiasi momento.
+            </div>
+          </div>
+        </label>
+      </div>
 
       <div className="flex gap-3">
         <Button type="submit" disabled={isPending}>

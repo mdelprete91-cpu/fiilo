@@ -11,6 +11,7 @@ import { NuovoAbitoButton } from '@/components/dashboard/NuovoAbitoButton'
 import { PaymentStatusToggle } from '@/components/dashboard/PaymentStatusToggle'
 import { WhatsAppSection } from '@/components/dashboard/WhatsAppSection'
 import { ClientSummaryCard } from '@/components/dashboard/ClientSummaryCard'
+import { InvitaPortaleButton } from '@/components/dashboard/InvitaPortaleButton'
 import { getMessagesForClient } from '@/lib/actions/whatsapp'
 import {
   countNewMessagesSinceSummary,
@@ -46,9 +47,11 @@ export default async function ClienteDetailPage({ params, searchParams }: PagePr
       .eq('client_id', id)
       .eq('tenant_id', tid)
       .order('taken_at', { ascending: false }),
-    supabase
-      .from('garments')
-      .select('id, name, type, status, delivery_eta, created_at, total_price, currency')
+    // submitted_by_customer è colonna nuova (migration 021), non ancora nei
+    // types: query untyped.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (supabase.from('garments') as any)
+      .select('id, name, type, status, delivery_eta, created_at, total_price, currency, submitted_by_customer')
       .eq('client_id', id)
       .eq('tenant_id', tid)
       .order('created_at', { ascending: false }),
@@ -124,6 +127,10 @@ export default async function ClienteDetailPage({ params, searchParams }: PagePr
                 {client.notes}
               </div>
             )}
+
+            <div className="border-t border-border px-5 py-3">
+              <InvitaPortaleButton clientId={id} />
+            </div>
           </div>
 
           {/* KPI strip */}
@@ -178,15 +185,23 @@ export default async function ClienteDetailPage({ params, searchParams }: PagePr
               <NuovoAbitoButton clientId={id} />
             </div>
             <ul className="divide-y divide-border">
-              {(garments as Garment[] ?? []).map((g) => (
+              {((garments ?? []) as unknown as Garment[]).map((g) => (
                 <li key={g.id}>
                   <Link
                     href={`/dashboard/clienti/${id}/abiti/${g.id}`}
                     className="flex items-center justify-between px-5 py-4 hover:bg-muted/30 transition-colors group"
                   >
                     <div className="min-w-0">
-                      <p className="text-sm font-medium text-foreground leading-tight">
-                        {g.name ?? garmentTypeLabel(g.type)}
+                      <p className="text-sm font-medium text-foreground leading-tight flex items-center gap-1.5 flex-wrap">
+                        <span>{g.name ?? garmentTypeLabel(g.type)}</span>
+                        {(g as { submitted_by_customer?: boolean }).submitted_by_customer && (
+                          <span
+                            className="inline-flex items-center rounded-sm bg-blue-100 px-1.5 py-px text-[9px] font-semibold uppercase tracking-wide text-blue-800 dark:bg-blue-900/40 dark:text-blue-300"
+                            title="Richiesta arrivata dal portale cliente"
+                          >
+                            Da cliente
+                          </span>
+                        )}
                       </p>
                       <p className="text-xs text-muted-foreground mt-0.5">
                         {g.delivery_eta
@@ -234,11 +249,12 @@ function Row({ label, value }: { label: string; value: string }) {
 
 function StatusBadge({ status }: { status: string }) {
   const labels: Record<string, string> = {
-    draft: 'Bozza', confirmed: 'Confermato', in_production: 'In prod.',
+    draft: 'Bozza', submitted: 'Richiesta cliente', confirmed: 'Confermato', in_production: 'In prod.',
     ready: 'Pronto', delivered: 'Consegnato', cancelled: 'Annullato',
   }
   const styles: Record<string, React.CSSProperties> = {
     draft:         { background: 'oklch(0.94 0.005 85)', color: 'oklch(0.55 0.02 85)' },
+    submitted:     { background: 'oklch(0.93 0.06 250)', color: 'oklch(0.35 0.10 250)' },
     confirmed:     { background: 'oklch(0.93 0.04 250)', color: 'oklch(0.35 0.07 250)' },
     in_production: { background: 'oklch(0.96 0.06 70)',  color: 'oklch(0.50 0.12 55)' },
     ready:         { background: 'oklch(0.93 0.05 155)', color: 'oklch(0.28 0.07 155)' },

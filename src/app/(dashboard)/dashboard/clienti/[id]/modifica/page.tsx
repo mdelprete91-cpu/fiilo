@@ -23,6 +23,30 @@ export default async function ModificaClientePage({ params }: PageProps) {
 
   if (!client) notFound()
 
+  // Newsletter preferences (best-effort: la migration 022 potrebbe non essere
+  // ancora applicata. In quel caso restiamo silenziosi e usiamo default false).
+  let newsletterEmailOptIn = false
+  try {
+    const prefRes = await (
+      supabase.from('newsletter_preferences') as unknown as {
+        select: (q: string) => {
+          eq: (k: string, v: unknown) => {
+            maybeSingle: () => Promise<{
+              data: { email_opted_in: boolean } | null
+              error: { message: string } | null
+            }>
+          }
+        }
+      }
+    )
+      .select('email_opted_in')
+      .eq('client_id', id)
+      .maybeSingle()
+    if (prefRes.data?.email_opted_in) newsletterEmailOptIn = true
+  } catch {
+    /* migration 022 non applicata: default false */
+  }
+
   return (
     <div className="space-y-6 p-6 lg:p-8 max-w-3xl">
       <BackButton fallbackHref={`/dashboard/clienti/${id}`} label="Indietro" />
@@ -32,7 +56,7 @@ export default async function ModificaClientePage({ params }: PageProps) {
         title={`Modifica — ${client.first_name} ${client.last_name}`}
       />
       <div className="rounded-xl border border-border bg-card p-6">
-        <ClientForm client={client} />
+        <ClientForm client={client} newsletterEmailOptIn={newsletterEmailOptIn} />
       </div>
     </div>
   )

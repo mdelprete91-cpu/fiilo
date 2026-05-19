@@ -1,0 +1,41 @@
+import { requireRole } from '@/lib/auth/session'
+import { createClient } from '@/lib/supabase/server'
+import { TopBar } from '@/components/layout/TopBar'
+import { BackButton } from '@/components/dashboard/BackButton'
+import { NewCampaignForm } from '@/components/marketing/NewCampaignForm'
+
+export default async function NuovaCampagnaPage() {
+  const session = await requireRole(['tenant_admin', 'tenant_staff'])
+  const supabase = await createClient()
+  const tid = session.tenantId!
+
+  const { data: fabrics } = await supabase
+    .from('fabrics')
+    .select('id, name, mill, color, season')
+    .eq('tenant_id', tid)
+    .eq('is_available', true)
+    .order('name', { ascending: true })
+    .limit(200)
+
+  return (
+    <div className="min-h-full bg-background px-6 py-8 lg:px-8 space-y-6">
+      <div className="flex items-start gap-3">
+        <TopBar role={session.role} userName={session.fullName ?? session.email} />
+        <div className="flex-1">
+          <BackButton fallbackHref="/dashboard/marketing" label="Marketing" />
+          <h1 className="mt-2 font-heading text-4xl text-ink leading-none">
+            Nuova campagna
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Scegli l'occasione e il tessuto in evidenza. filo scriverà una newsletter
+            diversa per ogni cliente.
+          </p>
+        </div>
+      </div>
+
+      <div className="max-w-2xl">
+        <NewCampaignForm fabrics={fabrics ?? []} />
+      </div>
+    </div>
+  )
+}

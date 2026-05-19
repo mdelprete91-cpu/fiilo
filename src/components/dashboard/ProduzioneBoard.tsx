@@ -32,6 +32,7 @@ export interface GarmentRow {
   total_price: number | null
   deposit_amount: number | null
   payment_status: string | null
+  submitted_by_customer?: boolean
 }
 
 interface StaffMember {
@@ -307,8 +308,16 @@ function GarmentCard({ garment: g, staffList, onEditPrice }: { garment: GarmentR
           </span>
           <div className="min-w-0 flex-1">
             <div className="flex items-start justify-between gap-2">
-              <p className="text-sm font-medium text-foreground leading-tight">
-                {g.name ?? TYPE_LABEL[g.type] ?? g.type}
+              <p className="text-sm font-medium text-foreground leading-tight flex items-center gap-1.5 flex-wrap">
+                <span>{g.name ?? TYPE_LABEL[g.type] ?? g.type}</span>
+                {g.submitted_by_customer && (
+                  <span
+                    className="inline-flex shrink-0 items-center rounded-sm bg-blue-100 px-1.5 py-px text-[9px] font-semibold uppercase tracking-wide text-blue-800 dark:bg-blue-900/40 dark:text-blue-300"
+                    title="Richiesta arrivata dal portale cliente"
+                  >
+                    Da cliente
+                  </span>
+                )}
               </p>
               {(g.needs_materials || hasNotes) && (
                 <span className="flex items-center gap-1 shrink-0 mt-1">

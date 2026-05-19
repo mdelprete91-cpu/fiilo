@@ -10,7 +10,10 @@ import {
   decryptToken,
   getIntegrationByPhoneNumberId,
 } from '@/lib/whatsapp/integrations'
+import { sendTextMessage } from '@/lib/whatsapp/meta-client'
 import type { WhatsappMsgType } from '@/types/database'
+
+const OPTOUT_KEYWORDS_REGEX = /^(stop|fermati|basta|cancella|unsubscribe)\b/i
 
 const VERIFY_TOKEN = process.env.WHATSAPP_VERIFY_TOKEN ?? ''
 const APP_SECRET = process.env.META_APP_SECRET ?? ''
@@ -178,6 +181,48 @@ async function processWebhook(payload: WebhookPayload) {
 
         const matchedClient = clients?.find((c) => phonesMatch(c.phone!, fromPhone))
         const clientId = matchedClient?.id ?? null
+
+        // ─── Intercept STOP / opt-out keywords (text inbound only) ──────
+        // Se il cliente scrive "STOP" (o sinonimi), settiamo marketing_optout=true
+        // e proviamo a rispondere (siamo dentro la 24h customer-service window).
+        // La logica esistente prosegue normalmente: il messaggio viene comunque
+        // salvato in whatsapp_messages così resta tracciato.
+        if (
+          clientId &&
+          (msg.type === 'text' || !msg.type) &&
+          msg.text?.body &&
+          OPTOUT_KEYWORDS_REGEX.test(msg.text.body.trim())
+        ) {
+          try {
+            await supabase
+              .from('clients')
+              .update({
+                marketing_optout: true,
+                marketing_optout_at: new Date().toISOString(),
+              })
+              .eq('id', clientId)
+              .eq('tenant_id', tenantId)
+
+            const token = await getToken()
+            if (token) {
+              try {
+                await sendTextMessage({
+                  token,
+                  phoneNumberId,
+                  to: fromPhone,
+                  body:
+                    'Hai disattivato le comunicazioni promozionali. ' +
+                    'Non riceverai più annunci di nuovi tessuti. ' +
+                    'Per riattivarle, contatta il tuo sarto.',
+                })
+              } catch (err) {
+                console.error('[whatsapp] optout reply error', err)
+              }
+            }
+          } catch (err) {
+            console.error('[whatsapp] optout update error', err)
+          }
+        }
 
         const rawType = msg.type ?? 'text'
         const validTypes: WhatsappMsgType[] = ['text', 'image', 'audio', 'document', 'video', 'sticker']

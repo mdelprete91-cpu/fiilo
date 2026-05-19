@@ -10,8 +10,19 @@ export const ClientSchema = z.object({
   city: z.string().max(100).optional().or(z.literal('')),
   country: z.string().max(100).optional().or(z.literal('')),
   notes: z.string().max(2000).optional().or(z.literal('')),
+  // Opt-in newsletter email — default off per GDPR.
+  // Nota: nel form react-hook-form passa boolean diretto; nel server action
+  // arriva come stringa "on"/"off"/"true"/"false". `parseNewsletterOptIn`
+  // gestisce entrambi i casi.
+  newsletter_email_opt_in: z.union([z.boolean(), z.string()]).optional(),
 })
 export type ClientFormData = z.infer<typeof ClientSchema>
+
+/** Converte il valore del form (boolean dal checkbox, oppure stringa dalla FormData). */
+export function parseNewsletterOptIn(v: unknown): boolean {
+  if (v === true || v === 'on' || v === 'true') return true
+  return false
+}
 
 export const MeasurementSchema = z.object({
   taken_at: z.string().min(1),

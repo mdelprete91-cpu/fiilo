@@ -18,6 +18,7 @@ const dashboardNav: NavItem[] = [
   { label: 'Produzione', href: '/dashboard/produzione' },
   { label: 'Clienti', href: '/dashboard/clienti' },
   { label: 'Catalogo', href: '/dashboard/catalogo' },
+  { label: 'Marketing', href: '/dashboard/marketing' },
   { label: 'Impostazioni', href: '/dashboard/settings' },
 ]
 

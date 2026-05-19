@@ -1,9 +1,10 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Plus, Pencil, Trash2, Loader2 } from 'lucide-react'
+import { Plus, Pencil, Trash2, Loader2, Megaphone } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -97,6 +98,13 @@ export function FabricsTable({ fabrics }: { fabrics: Fabric[] }) {
                 <td className="px-4 py-3.5 text-muted-foreground">{f.price_per_meter ? `€${f.price_per_meter}` : '—'}</td>
                 <td className="pr-5 py-3.5">
                   <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity justify-end">
+                    <Link
+                      href={`/dashboard/catalogo/${f.id}/annuncio`}
+                      className="rounded p-1 hover:bg-muted transition-colors"
+                      title="Annuncia ai clienti"
+                    >
+                      <Megaphone className="h-3.5 w-3.5 text-muted-foreground" />
+                    </Link>
                     <button onClick={() => openEdit(f)} className="rounded p-1 hover:bg-muted transition-colors">
                       <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
                     </button>

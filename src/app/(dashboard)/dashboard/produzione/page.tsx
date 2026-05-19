@@ -28,13 +28,19 @@ export default async function ProduzionePage({ searchParams }: PageProps) {
   const supabase = await createClient()
   const tid = session.tenantId!
 
+  // garments.submitted_by_customer è una colonna aggiunta dalla migration 021
+  // e non è ancora nei types autogenerati: query untyped.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const garmentsQuery = (supabase.from('garments') as any)
+    .select(
+      'id, name, type, status, delivery_eta, client_id, internal_notes, assigned_to, needs_materials, total_price, deposit_amount, payment_status, submitted_by_customer',
+    )
+    .eq('tenant_id', tid)
+    .not('status', 'in', '("draft","cancelled")')
+    .order('delivery_eta', { ascending: true, nullsFirst: false })
+
   const [{ data: rawGarments }, { data: rawClients }, { data: rawRoles }] = await Promise.all([
-    supabase
-      .from('garments')
-      .select('id, name, type, status, delivery_eta, client_id, internal_notes, assigned_to, needs_materials, total_price, deposit_amount, payment_status')
-      .eq('tenant_id', tid)
-      .not('status', 'in', '("draft","cancelled")')
-      .order('delivery_eta', { ascending: true, nullsFirst: false }),
+    garmentsQuery,
     supabase
       .from('clients')
       .select('id, first_name, last_name, email, phone')
@@ -47,7 +53,21 @@ export default async function ProduzionePage({ searchParams }: PageProps) {
       .in('role', ['tenant_admin', 'tenant_staff']),
   ])
 
-  const garments = rawGarments ?? []
+  const garments = (rawGarments ?? []) as Array<{
+    id: string
+    name: string | null
+    type: string
+    status: string
+    delivery_eta: string | null
+    client_id: string
+    internal_notes: string | null
+    assigned_to: string | null
+    needs_materials: boolean | null
+    total_price: number | null
+    deposit_amount: number | null
+    payment_status: string | null
+    submitted_by_customer: boolean | null
+  }>
   const clients = rawClients ?? []
 
   const staffIds = (rawRoles ?? []).map((r) => r.user_id)
@@ -74,6 +94,7 @@ export default async function ProduzionePage({ searchParams }: PageProps) {
     total_price: g.total_price ?? null,
     deposit_amount: g.deposit_amount ?? null,
     payment_status: g.payment_status ?? null,
+    submitted_by_customer: g.submitted_by_customer ?? false,
   }))
 
   const tokens = tokenize(q)
@@ -104,6 +125,17 @@ export default async function ProduzionePage({ searchParams }: PageProps) {
           <NuovoAbitoModal clients={clients} />
         </div>
       </div>
+
+      {(() => {
+        const submitted = allRows.filter((r) => r.status === 'submitted')
+        if (submitted.length === 0) return null
+        return (
+          <div className="rounded-md border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-900 dark:border-blue-900/50 dark:bg-blue-950/30 dark:text-blue-200">
+            {submitted.length} {submitted.length === 1 ? 'richiesta' : 'richieste'} dal portale cliente in attesa di conferma.
+            Apri la scheda del cliente per rivedere e confermare l&apos;ordine.
+          </div>
+        )
+      })()}
 
       <form className="max-w-sm space-y-2">
         <div className="relative">

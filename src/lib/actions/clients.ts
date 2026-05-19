@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { requireRole } from '@/lib/auth/session'
-import { ClientSchema, MeasurementSchema } from '@/lib/validations/client'
+import { ClientSchema, MeasurementSchema, parseNewsletterOptIn } from '@/lib/validations/client'
 import type { ActionResult } from './auth'
 
 // ─── Clienti ─────────────────────────────────────────────────
@@ -27,8 +27,50 @@ export async function createClientQuietAction(
     .select('id')
     .single()
   if (error) return { success: false, error: error.message }
+  // Crea la riga newsletter_preferences (opt-in OFF di default per GDPR).
+  // Best-effort: se la migration 022 non è applicata, non interrompiamo il flow.
+  await ensureNewsletterPreferences(supabase, session.tenantId!, data.id, false)
   revalidatePath('/dashboard/clienti')
   return { success: true, data: { id: data.id } }
+}
+
+/**
+ * Helper: crea la riga newsletter_preferences se non esiste.
+ * Best-effort — non lancia se la migration 022 non è applicata.
+ */
+async function ensureNewsletterPreferences(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  tenantId: string,
+  clientId: string,
+  emailOptIn: boolean,
+): Promise<void> {
+  try {
+    await (
+      supabase.from('newsletter_preferences') as unknown as {
+        upsert: (
+          v: {
+            client_id: string
+            tenant_id: string
+            email_opted_in: boolean
+          },
+          opts: { onConflict: string; ignoreDuplicates?: boolean },
+        ) => Promise<{ error: { message: string } | null }>
+      }
+    ).upsert(
+      {
+        client_id: clientId,
+        tenant_id: tenantId,
+        email_opted_in: emailOptIn,
+      },
+      { onConflict: 'client_id' },
+    )
+  } catch (err) {
+    // Silenziato: la migration 022 potrebbe non essere ancora applicata.
+    console.warn(
+      '[ensureNewsletterPreferences] best-effort failed:',
+      err instanceof Error ? err.message : err,
+    )
+  }
 }
 
 export async function createClientAction(formData: FormData): Promise<ActionResult> {
@@ -62,6 +104,14 @@ export async function createClientAction(formData: FormData): Promise<ActionResu
     .single()
 
   if (error) return { success: false, error: error.message }
+
+  // Newsletter preferences (opt-in via checkbox, default off)
+  await ensureNewsletterPreferences(
+    supabase,
+    tid,
+    data.id,
+    parseNewsletterOptIn(parsed.data.newsletter_email_opt_in),
+  )
 
   revalidatePath('/dashboard/clienti')
   redirect(`/dashboard/clienti/${data.id}`)
@@ -99,6 +149,14 @@ export async function updateClientAction(
     .eq('tenant_id', tid)
 
   if (error) return { success: false, error: error.message }
+
+  // Aggiorna preferenza newsletter (upsert: crea se mancante, aggiorna email_opted_in)
+  await ensureNewsletterPreferences(
+    supabase,
+    tid,
+    clientId,
+    parseNewsletterOptIn(parsed.data.newsletter_email_opt_in),
+  )
 
   revalidatePath(`/dashboard/clienti/${clientId}`)
   return { success: true }

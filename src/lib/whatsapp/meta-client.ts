@@ -262,6 +262,104 @@ export async function sendTemplateMessage(input: {
   return readMeta<SendMessageResponse>(res)
 }
 
+// Template avanzato con HEADER IMAGE + body variables.
+export interface TemplateHeaderImage {
+  media_id: string
+}
+
+export async function sendTemplateMessageWithComponents(opts: {
+  token: string
+  phoneNumberId: string
+  to: string
+  templateName: string
+  language: string
+  headerImage?: TemplateHeaderImage
+  bodyParams: string[]
+}): Promise<SendMessageResponse> {
+  const url = new URL(`${GRAPH_BASE}/${opts.phoneNumberId}/messages`)
+
+  const components: Array<Record<string, unknown>> = []
+  if (opts.headerImage) {
+    components.push({
+      type: 'header',
+      parameters: [
+        { type: 'image', image: { id: opts.headerImage.media_id } },
+      ],
+    })
+  }
+  if (opts.bodyParams.length > 0) {
+    components.push({
+      type: 'body',
+      parameters: opts.bodyParams.map((t) => ({ type: 'text', text: t })),
+    })
+  }
+
+  const res = await fetch(url.toString(), {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${opts.token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      messaging_product: 'whatsapp',
+      to: opts.to,
+      type: 'template',
+      template: {
+        name: opts.templateName,
+        language: { code: opts.language },
+        ...(components.length > 0 ? { components } : {}),
+      },
+    }),
+  })
+  return readMeta<SendMessageResponse>(res)
+}
+
+// ─── Media upload ───────────────────────────────────────────────────────────
+
+export interface UploadMediaResponse {
+  id: string
+}
+
+// Scarica `mediaUrl` (HTTPS), poi POST /{phone_number_id}/media a Meta.
+// Ritorna media_id valido per 30 giorni, da usare in `header.image.id`.
+export async function uploadMedia(input: {
+  token: string
+  phoneNumberId: string
+  mediaUrl: string
+  mimeType?: string
+}): Promise<UploadMediaResponse> {
+  // 1) scarica i bytes della media
+  const mediaRes = await fetch(input.mediaUrl)
+  if (!mediaRes.ok) {
+    throw new MetaApiError(
+      `Impossibile scaricare media da ${input.mediaUrl} (${mediaRes.status})`,
+      mediaRes.status,
+    )
+  }
+  const buffer = await mediaRes.arrayBuffer()
+  const mime =
+    input.mimeType ?? mediaRes.headers.get('content-type') ?? 'image/jpeg'
+
+  // 2) upload a Meta (multipart/form-data)
+  const form = new FormData()
+  form.set('messaging_product', 'whatsapp')
+  form.set('type', mime)
+  form.set('file', new Blob([buffer], { type: mime }), guessFilename(mime))
+
+  const url = new URL(`${GRAPH_BASE}/${input.phoneNumberId}/media`)
+  const res = await fetch(url.toString(), {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${input.token}` },
+    body: form,
+  })
+  return readMeta<UploadMediaResponse>(res)
+}
+
+function guessFilename(mime: string): string {
+  const ext = mime.split('/')[1]?.split(';')[0] ?? 'bin'
+  return `upload.${ext}`
+}
+
 // ─── Utility ────────────────────────────────────────────────────────────────
 
 export function buildAppAccessToken(appId: string, appSecret: string): string {
