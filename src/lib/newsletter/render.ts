@@ -18,11 +18,17 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://fiilo.it'
 interface RenderEmailOpts {
   tenantName: string
   tenantLogoUrl?: string | null
+  tenantBrandColor?: string | null
   personalization: Personalization
   unsubscribeToken: string
   /** Eventuale body_md (template scritto dal sarto). Se vuoto, usiamo solo personalization. */
   templateBodyMd?: string | null
+  /** Bottone CTA opzionale (es. "Scopri il tessuto") */
+  ctaLabel?: string | null
+  ctaUrl?: string | null
 }
+
+const DEFAULT_BRAND_COLOR = '#1f1f1f'
 
 export interface RenderedEmail {
   subject: string
@@ -35,10 +41,16 @@ export function renderNewsletterEmail(opts: RenderEmailOpts): RenderedEmail {
   const {
     tenantName,
     tenantLogoUrl,
+    tenantBrandColor,
     personalization,
     unsubscribeToken,
     templateBodyMd,
+    ctaLabel,
+    ctaUrl,
   } = opts
+  const brandColor = tenantBrandColor && /^#[0-9A-Fa-f]{6}$/.test(tenantBrandColor)
+    ? tenantBrandColor
+    : DEFAULT_BRAND_COLOR
 
   const unsubscribeUrl = `${APP_URL}/api/newsletter/unsubscribe?token=${encodeURIComponent(unsubscribeToken)}`
   const subject = (personalization.subject ?? '').trim() || `Un saluto da ${tenantName}`
@@ -85,7 +97,7 @@ export function renderNewsletterEmail(opts: RenderEmailOpts): RenderedEmail {
   <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#f5f3ef;">
     <tr>
       <td align="center" style="padding:32px 16px;">
-        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="560" style="max-width:560px;width:100%;background:#ffffff;border:1px solid #e6e2db;border-radius:8px;overflow:hidden;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="560" style="max-width:560px;width:100%;background:#ffffff;border:1px solid #e6e2db;border-radius:8px;overflow:hidden;border-top:3px solid ${brandColor};">
           <tr>
             <td style="padding:32px 32px 16px 32px;border-bottom:1px solid #f0ece5;">
               ${headerHtml}
@@ -96,6 +108,13 @@ export function renderNewsletterEmail(opts: RenderEmailOpts): RenderedEmail {
               ${bodyHtml}
             </td>
           </tr>
+          ${ctaLabel && ctaUrl ? `<tr>
+            <td style="padding:0 32px 24px 32px;">
+              <a href="${escapeAttr(ctaUrl)}" style="display:inline-block;background:${brandColor};color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:999px;font-size:14px;font-weight:600;letter-spacing:0.02em;">
+                ${escapeHtml(ctaLabel)}
+              </a>
+            </td>
+          </tr>` : ''}
           <tr>
             <td style="padding:8px 32px 32px 32px;">
               <p style="margin:0;color:#1f1f1f;font-size:16px;line-height:1.6;">
@@ -108,7 +127,7 @@ export function renderNewsletterEmail(opts: RenderEmailOpts): RenderedEmail {
               <p style="margin:0;font-size:12px;color:#7a7468;line-height:1.5;">
                 Ricevi questa email perché ti sei iscritto agli aggiornamenti di ${escapeHtml(tenantName)} su filo.
                 <br />
-                <a href="${escapeAttr(unsubscribeUrl)}" style="color:#7a7468;text-decoration:underline;">Annulla iscrizione</a>
+                <a href="${escapeAttr(unsubscribeUrl)}" style="color:${brandColor};text-decoration:underline;">Annulla iscrizione</a>
               </p>
             </td>
           </tr>

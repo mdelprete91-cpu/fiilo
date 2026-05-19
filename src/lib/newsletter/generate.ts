@@ -98,7 +98,7 @@ export async function generateCampaignDraft(
       : Promise.resolve({ data: null, error: null }),
     supabase
       .from('tenants')
-      .select('name, logo_url, email')
+      .select('name, logo_url, brand_color, email')
       .eq('id', opts.tenantId)
       .single(),
   ])
@@ -117,6 +117,7 @@ export async function generateCampaignDraft(
 
   const tenantName = tenantRes.data?.name ?? 'la tua sartoria'
   const tenantLogoUrl = tenantRes.data?.logo_url ?? null
+  const tenantBrandColor = tenantRes.data?.brand_color ?? null
 
   // 3. Crea campagna in DB
   const systemPromptText = getSystemPromptText()
@@ -194,6 +195,7 @@ export async function generateCampaignDraft(
     const rendered = renderNewsletterEmail({
       tenantName,
       tenantLogoUrl,
+      tenantBrandColor,
       personalization: personalization.data,
       unsubscribeToken: member.unsubscribe_token,
       templateBodyMd: null,

@@ -37,6 +37,84 @@ export async function updateMyTenantAction(formData: FormData): Promise<ActionRe
   }
 }
 
+// ─── Aggiorna branding (logo + colore brand) ─────────────────────────────────
+
+const ALLOWED_LOGO_MIME = ['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml']
+const MAX_LOGO_BYTES = 1_000_000 // 1 MB
+const HEX_COLOR_REGEX = /^#[0-9a-fA-F]{6}$/
+
+export async function updateMyBrandingAction(
+  formData: FormData,
+): Promise<ActionResult<{ logo_url: string | null; brand_color: string | null }>> {
+  try {
+    const session = await requireRole(['tenant_admin'])
+    const tid = session.tenantId!
+    const supabase = await createClient()
+
+    const brandColorRaw = (formData.get('brand_color') as string | null)?.trim() ?? ''
+    let brandColor: string | null = null
+    if (brandColorRaw) {
+      if (!HEX_COLOR_REGEX.test(brandColorRaw)) {
+        return { success: false, error: 'Colore non valido. Usa formato esadecimale es. #E89B3C.' }
+      }
+      brandColor = brandColorRaw.toUpperCase()
+    }
+
+    const removeLogo = formData.get('remove_logo') === '1'
+    const file = formData.get('logo') as File | null
+
+    const update: { brand_color?: string | null; logo_url?: string | null } = {}
+    if (brandColorRaw !== '') update.brand_color = brandColor
+
+    if (removeLogo) {
+      update.logo_url = null
+    } else if (file && typeof file === 'object' && file.size > 0) {
+      if (!ALLOWED_LOGO_MIME.includes(file.type)) {
+        return {
+          success: false,
+          error: 'Formato non supportato. Usa PNG, JPG, WebP o SVG.',
+        }
+      }
+      if (file.size > MAX_LOGO_BYTES) {
+        return { success: false, error: 'Il logo è troppo pesante (max 1 MB).' }
+      }
+
+      const ext = file.type === 'image/svg+xml' ? 'svg'
+        : file.type === 'image/png' ? 'png'
+        : file.type === 'image/webp' ? 'webp'
+        : 'jpg'
+      const path = `tenants/${tid}/logo-${Date.now()}.${ext}`
+      const buffer = await file.arrayBuffer()
+
+      const { error: uploadError } = await supabase.storage
+        .from('assets')
+        .upload(path, buffer, { contentType: file.type, upsert: true })
+      if (uploadError) return { success: false, error: `Upload logo fallito: ${uploadError.message}` }
+
+      const { data: pub } = supabase.storage.from('assets').getPublicUrl(path)
+      update.logo_url = pub.publicUrl
+    }
+
+    if (Object.keys(update).length === 0) {
+      return { success: false, error: 'Nessuna modifica da salvare.' }
+    }
+
+    const { error } = await supabase.from('tenants').update(update).eq('id', tid)
+    if (error) return { success: false, error: error.message }
+
+    revalidatePath('/dashboard/settings')
+    return {
+      success: true,
+      data: {
+        logo_url: update.logo_url ?? null,
+        brand_color: update.brand_color ?? null,
+      },
+    }
+  } catch (e: unknown) {
+    return { success: false, error: e instanceof Error ? e.message : 'Errore sconosciuto' }
+  }
+}
+
 // ─── Aggiorna profilo personale ───────────────────────────────────────────────
 
 export async function updateMyProfileAction(formData: FormData): Promise<ActionResult<void>> {

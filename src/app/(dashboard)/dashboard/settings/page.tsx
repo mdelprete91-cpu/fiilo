@@ -4,6 +4,7 @@ import { requireRole } from '@/lib/auth/session'
 import { createClient, createServiceClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { SettingsForm, type TeamMember } from '@/components/dashboard/SettingsForm'
+import { BrandSettingsCard } from '@/components/dashboard/BrandSettingsCard'
 import { getIntegrationByTenant } from '@/lib/whatsapp/integrations'
 
 export default async function SettingsPage() {
@@ -14,7 +15,7 @@ export default async function SettingsPage() {
   const [{ data: tenant }, { data: userProfile }] = await Promise.all([
     supabase
       .from('tenants')
-      .select('name, email, phone, address, city, plan, created_at')
+      .select('name, email, phone, address, city, plan, created_at, logo_url, brand_color')
       .eq('id', tid)
       .single(),
     supabase
@@ -105,6 +106,14 @@ export default async function SettingsPage() {
             </span>
           </div>
         </Link>
+
+        {session.role === 'tenant_admin' && (
+          <BrandSettingsCard
+            tenantName={tenant.name}
+            currentLogoUrl={tenant.logo_url}
+            currentBrandColor={tenant.brand_color}
+          />
+        )}
 
         <SettingsForm
           tenant={{
