@@ -96,7 +96,7 @@ export default async function SettingsPage({ searchParams }: PageProps) {
   return (
     <div className="min-h-full bg-background">
       {/* Header full-width */}
-      <div className="border-b border-border bg-background">
+      <div className="bg-background">
         <div className="px-6 py-8 lg:px-8">
           <div className="flex items-start gap-3">
             <TopBar role={session.role} userName={session.fullName ?? session.email} />
@@ -107,7 +107,7 @@ export default async function SettingsPage({ searchParams }: PageProps) {
           </div>
 
           {/* Tabs */}
-          <nav className="-mb-px mt-8 flex gap-1 border-b border-border" aria-label="Tabs">
+          <nav className="mt-8 flex gap-1 border-b border-border" aria-label="Tabs">
             {TABS.map((t) => {
               const active = t.value === tab
               return (
