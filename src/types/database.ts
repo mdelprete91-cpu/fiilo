@@ -804,9 +804,11 @@ export type Database = {
           sent_count: number
           status: Database["public"]["Enums"]["newsletter_status"]
           template_body_md: string | null
+          template_id: string | null
           template_subject: string | null
           tenant_id: string
           title: string
+          use_ai: boolean
         }
         Insert: {
           ai_cost_cents?: number
@@ -823,9 +825,11 @@ export type Database = {
           sent_count?: number
           status?: Database["public"]["Enums"]["newsletter_status"]
           template_body_md?: string | null
+          template_id?: string | null
           template_subject?: string | null
           tenant_id: string
           title: string
+          use_ai?: boolean
         }
         Update: {
           ai_cost_cents?: number
@@ -842,9 +846,11 @@ export type Database = {
           sent_count?: number
           status?: Database["public"]["Enums"]["newsletter_status"]
           template_body_md?: string | null
+          template_id?: string | null
           template_subject?: string | null
           tenant_id?: string
           title?: string
+          use_ai?: boolean
         }
         Relationships: [
           {
@@ -852,6 +858,13 @@ export type Database = {
             columns: ["featured_fabric_id"]
             isOneToOne: false
             referencedRelation: "fabrics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "newsletter_campaigns_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "newsletter_templates"
             referencedColumns: ["id"]
           },
           {
@@ -974,6 +987,68 @@ export type Database = {
           },
           {
             foreignKeyName: "newsletter_recipients_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      newsletter_templates: {
+        Row: {
+          chiusura_template: string
+          created_at: string
+          cta_label: string | null
+          cta_url_template: string | null
+          description: string | null
+          gancio_template: string
+          id: string
+          incipit_template: string
+          is_system: boolean
+          name: string
+          occasion: Database["public"]["Enums"]["newsletter_occasion"]
+          slug: string
+          sort_order: number
+          subject_template: string
+          tenant_id: string | null
+        }
+        Insert: {
+          chiusura_template: string
+          created_at?: string
+          cta_label?: string | null
+          cta_url_template?: string | null
+          description?: string | null
+          gancio_template: string
+          id?: string
+          incipit_template: string
+          is_system?: boolean
+          name: string
+          occasion: Database["public"]["Enums"]["newsletter_occasion"]
+          slug: string
+          sort_order?: number
+          subject_template: string
+          tenant_id?: string | null
+        }
+        Update: {
+          chiusura_template?: string
+          created_at?: string
+          cta_label?: string | null
+          cta_url_template?: string | null
+          description?: string | null
+          gancio_template?: string
+          id?: string
+          incipit_template?: string
+          is_system?: boolean
+          name?: string
+          occasion?: Database["public"]["Enums"]["newsletter_occasion"]
+          slug?: string
+          sort_order?: number
+          subject_template?: string
+          tenant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "newsletter_templates_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -1699,23 +1774,3 @@ export const Constants = {
     },
   },
 } as const
-
-// ── Row alias di convenienza usati nel codebase ──────────────
-export type Tenant = Database['public']['Tables']['tenants']['Row']
-export type Client = Database['public']['Tables']['clients']['Row']
-export type ClientMeasurement = Database['public']['Tables']['client_measurements']['Row']
-export type Garment = Database['public']['Tables']['garments']['Row']
-export type Fabric = Database['public']['Tables']['fabrics']['Row']
-export type Lining = Database['public']['Tables']['linings']['Row']
-export type Button = Database['public']['Tables']['buttons']['Row']
-export type ThreadColor = Database['public']['Tables']['thread_colors']['Row']
-export type WhatsappMessage = Database['public']['Tables']['whatsapp_messages']['Row']
-export type UserTenantRole = Database['public']['Tables']['user_tenant_roles']['Row']
-
-// Enum alias
-export type TenantRole = Database['public']['Enums']['tenant_role']
-export type GarmentStatus = Database['public']['Enums']['garment_status']
-export type GarmentType = Database['public']['Enums']['garment_type']
-export type FabricSeason = Database['public']['Enums']['fabric_season']
-export type WhatsappCategory = Database['public']['Enums']['whatsapp_category']
-export type WhatsappMsgType = Database['public']['Enums']['whatsapp_msg_type']
