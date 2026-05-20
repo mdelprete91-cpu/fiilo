@@ -1774,3 +1774,23 @@ export const Constants = {
     },
   },
 } as const
+
+// ── Row alias di convenienza usati nel codebase ──────────────
+export type Tenant = Database['public']['Tables']['tenants']['Row']
+export type Client = Database['public']['Tables']['clients']['Row']
+export type ClientMeasurement = Database['public']['Tables']['client_measurements']['Row']
+export type Garment = Database['public']['Tables']['garments']['Row']
+export type Fabric = Database['public']['Tables']['fabrics']['Row']
+export type Lining = Database['public']['Tables']['linings']['Row']
+export type Button = Database['public']['Tables']['buttons']['Row']
+export type ThreadColor = Database['public']['Tables']['thread_colors']['Row']
+export type WhatsappMessage = Database['public']['Tables']['whatsapp_messages']['Row']
+export type UserTenantRole = Database['public']['Tables']['user_tenant_roles']['Row']
+
+// Enum alias
+export type TenantRole = Database['public']['Enums']['tenant_role']
+export type GarmentStatus = Database['public']['Enums']['garment_status']
+export type GarmentType = Database['public']['Enums']['garment_type']
+export type FabricSeason = Database['public']['Enums']['fabric_season']
+export type WhatsappCategory = Database['public']['Enums']['whatsapp_category']
+export type WhatsappMsgType = Database['public']['Enums']['whatsapp_msg_type']

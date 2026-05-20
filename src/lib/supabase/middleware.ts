@@ -3,6 +3,22 @@ import { NextResponse, type NextRequest } from 'next/server'
 import type { Database } from '@/types/database'
 
 export async function updateSession(request: NextRequest) {
+  // Maintenance mode: se attivo, rewrite verso /manutenzione. Lascia passare
+  // i webhook (WhatsApp/Meta devono continuare a ricevere) e la pagina stessa.
+  if (
+    process.env.NEXT_PUBLIC_MAINTENANCE_MODE === '1' &&
+    !request.nextUrl.pathname.startsWith('/api/webhooks/') &&
+    request.nextUrl.pathname !== '/manutenzione'
+  ) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/manutenzione'
+    // 503 + Retry-After per SEO/monitoring (Google, Pingdom, ecc.).
+    const res = NextResponse.rewrite(url, { status: 503 })
+    res.headers.set('Retry-After', '600')
+    res.headers.set('Cache-Control', 'no-store, max-age=0')
+    return res
+  }
+
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient<Database>(

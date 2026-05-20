@@ -3,6 +3,7 @@ import { requireRole } from '@/lib/auth/session'
 import { createClient } from '@/lib/supabase/server'
 import { AppSidebar } from '@/components/layout/AppSidebar'
 import { ImpersonateBanner } from '@/components/dashboard/ImpersonateBanner'
+import { StatusBanner } from '@/components/layout/StatusBanner'
 import { Toaster } from '@/components/ui/sonner'
 import { getUnreadCount } from '@/lib/actions/whatsapp'
 
@@ -29,6 +30,7 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-background">
+      <StatusBanner />
       {session.isImpersonating && tenantName && (
         <ImpersonateBanner tenantName={tenantName} />
       )}
