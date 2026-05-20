@@ -15,20 +15,23 @@ interface PageProps {
   searchParams: Promise<{ tab?: string }>
 }
 
-const TABS: Array<{ value: SettingsTab; label: string }> = [
+type PageTab = SettingsTab | 'integrazioni'
+
+const TABS: Array<{ value: PageTab; label: string }> = [
   { value: 'sartoria', label: 'Sartoria' },
   { value: 'team', label: 'Team' },
+  { value: 'integrazioni', label: 'Integrazioni' },
   { value: 'profilo', label: 'Profilo' },
 ]
 
-function isValidTab(t: string | undefined): t is SettingsTab {
-  return t === 'sartoria' || t === 'team' || t === 'profilo'
+function isValidTab(t: string | undefined): t is PageTab {
+  return t === 'sartoria' || t === 'team' || t === 'integrazioni' || t === 'profilo'
 }
 
 export default async function SettingsPage({ searchParams }: PageProps) {
   const session = await requireRole(['tenant_admin', 'tenant_staff'])
   const { tab: tabRaw } = await searchParams
-  const tab: SettingsTab = isValidTab(tabRaw) ? tabRaw : 'sartoria'
+  const tab: PageTab = isValidTab(tabRaw) ? tabRaw : 'sartoria'
 
   const supabase = await createClient()
   const tid = session.tenantId!
@@ -132,6 +135,7 @@ export default async function SettingsPage({ searchParams }: PageProps) {
 
       {/* Content full-width */}
       <div className="px-6 py-8 lg:px-8 space-y-5">
+        {tab !== 'integrazioni' && (
         <SettingsForm
           tab={tab}
           tenant={{
@@ -155,41 +159,53 @@ export default async function SettingsPage({ searchParams }: PageProps) {
           team={team}
           preferredLanguage={userProfile?.preferred_language ?? 'it'}
         />
+        )}
 
         {tab === 'sartoria' && session.role === 'tenant_admin' && (
-          <>
-            <BrandSettingsCard
-              tenantName={tenant.name}
-              currentLogoUrl={tenant.logo_url}
-              currentBrandColor={tenant.brand_color}
-            />
+          <BrandSettingsCard
+            tenantName={tenant.name}
+            currentLogoUrl={tenant.logo_url}
+            currentBrandColor={tenant.brand_color}
+          />
+        )}
 
+        {tab === 'integrazioni' && (
+          <div className="space-y-3">
             <Link
               href="/dashboard/settings/integrazioni"
               className="group block overflow-hidden rounded-xl border border-border bg-card transition-colors hover:bg-muted/40"
             >
-              <div className="flex items-start justify-between gap-4 border-b border-border px-6 pb-4 pt-5">
-                <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
-                    Integrazioni
-                  </p>
-                  <p className="mt-1.5 text-sm text-muted-foreground">
-                    Collega WhatsApp Business e altri strumenti.
-                  </p>
+              <div className="flex items-center justify-between gap-4 px-6 py-5">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-50 dark:bg-emerald-900/20">
+                    <MessageCircle className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">WhatsApp Business</p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">
+                      Ricevi e gestisci i messaggi dei clienti direttamente in filo.
+                    </p>
+                  </div>
                 </div>
-                <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
-              </div>
-              <div className="flex items-center justify-between px-6 py-4">
-                <span className="inline-flex items-center gap-2 text-sm text-foreground">
-                  <MessageCircle className="h-4 w-4 text-muted-foreground" />
-                  WhatsApp Business
-                </span>
-                <span className={`text-xs font-medium ${waStatusTone}`}>
-                  {waStatusLabel}
-                </span>
+                <div className="flex items-center gap-3">
+                  <span className={`text-xs font-medium ${waStatusTone}`}>
+                    {waStatusLabel}
+                  </span>
+                  <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+                </div>
               </div>
             </Link>
-          </>
+
+            {/* Placeholder per future integrazioni */}
+            <div className="rounded-xl border border-dashed border-border bg-muted/30 px-6 py-8 text-center">
+              <p className="text-sm text-muted-foreground">
+                Altre integrazioni in arrivo
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground/70">
+                Email transazionali, calendario, contabilità e altri strumenti.
+              </p>
+            </div>
+          </div>
         )}
       </div>
     </div>
