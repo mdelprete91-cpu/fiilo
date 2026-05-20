@@ -57,7 +57,7 @@ export async function generateCampaignDraftFromTemplate(
     opts.featuredFabricId
       ? supabase
           .from('fabrics')
-          .select('id, name, mill, composition, weight_grams, color, season')
+          .select('id, name, mill, composition, weight_grams, color, season, external_url')
           .eq('id', opts.featuredFabricId)
           .eq('tenant_id', opts.tenantId)
           .single()
@@ -87,6 +87,7 @@ export async function generateCampaignDraftFromTemplate(
         name: fabricRes.data.name,
         mill: fabricRes.data.mill,
         season: fabricRes.data.season,
+        external_url: (fabricRes.data as { external_url?: string | null }).external_url ?? null,
       }
     : null
 

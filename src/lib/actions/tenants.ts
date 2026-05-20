@@ -137,6 +137,43 @@ export async function updateMyProfileAction(formData: FormData): Promise<ActionR
   }
 }
 
+// ─── Aggiorna URL sito web sartoria ──────────────────────────────────────────
+
+export async function updateMyWebsiteUrlAction(
+  formData: FormData,
+): Promise<ActionResult<{ website_url: string | null }>> {
+  try {
+    const session = await requireRole(['tenant_admin'])
+    const tid = session.tenantId!
+    const supabase = await createClient()
+
+    const raw = (formData.get('website_url') as string | null)?.trim() ?? ''
+    let website: string | null = null
+    if (raw) {
+      try {
+        const u = new URL(raw.startsWith('http') ? raw : `https://${raw}`)
+        if (u.protocol !== 'https:' && u.protocol !== 'http:') {
+          return { success: false, error: 'URL non valido (usa http o https).' }
+        }
+        website = u.origin + (u.pathname === '/' ? '' : u.pathname)
+      } catch {
+        return { success: false, error: 'URL non valido.' }
+      }
+    }
+
+    const { error } = await supabase
+      .from('tenants')
+      .update({ website_url: website } as never)
+      .eq('id', tid)
+    if (error) return { success: false, error: error.message }
+
+    revalidatePath('/dashboard/settings')
+    return { success: true, data: { website_url: website } }
+  } catch (e: unknown) {
+    return { success: false, error: e instanceof Error ? e.message : 'Errore sconosciuto' }
+  }
+}
+
 // ─── Aggiorna lingua preferita ───────────────────────────────────────────────
 
 export async function updateLanguageAction(language: string): Promise<ActionResult<void>> {

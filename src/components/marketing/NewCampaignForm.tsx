@@ -96,7 +96,7 @@ export function NewCampaignForm({ fabrics, templates }: NewCampaignFormProps) {
       // createDraftAction redirects on success; if we get here it's an error
       if (res && !res.success) {
         setError(res.error)
-        toast.error('Impossibile creare la campagna', { description: res.error })
+        toast.error('Impossibile creare la comunicazione', { description: res.error })
       } else {
         // Redirect è andato, ma per sicurezza
         router.refresh()
@@ -128,7 +128,7 @@ export function NewCampaignForm({ fabrics, templates }: NewCampaignFormProps) {
           maxLength={200}
         />
         <p className="text-xs text-muted-foreground">
-          Solo per te, per ritrovare la campagna. Non viene mostrato ai clienti.
+          Solo per te, per ritrovare la comunicazione. Non viene mostrato ai clienti.
         </p>
       </div>
 

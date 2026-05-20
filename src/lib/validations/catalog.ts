@@ -11,6 +11,12 @@ export const FabricSchema = z.object({
   price_per_meter: z.coerce.number().positive().optional().nullable(),
   season: z.enum(['spring_summer','autumn_winter','all_season']).optional().nullable(),
   is_available: z.coerce.boolean().default(true),
+  external_url: z
+    .string()
+    .max(2000)
+    .url('Inserisci un URL valido (es. https://sartoria.it/tessuti/...)')
+    .optional()
+    .or(z.literal('')),
 })
 export type FabricFormData = z.infer<typeof FabricSchema>
 

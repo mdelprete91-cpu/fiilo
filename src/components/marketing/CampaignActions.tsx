@@ -59,14 +59,14 @@ export function CampaignActions({
   }
 
   function handleCancel() {
-    if (typeof window !== 'undefined' && !window.confirm('Annullare la campagna? Non sarà più inviabile.')) return
+    if (typeof window !== 'undefined' && !window.confirm('Annullare questa comunicazione? Non sarà più inviabile.')) return
     startTransition(async () => {
       const res = await cancelCampaignAction(campaignId)
       if (!res.success) {
         toast.error('Errore', { description: res.error })
         return
       }
-      toast.success('Campagna annullata')
+      toast.success('Comunicazione annullata')
       router.refresh()
     })
   }
@@ -129,8 +129,8 @@ export function CampaignActions({
         </>
       ) : (
         <p className="text-sm text-muted-foreground">
-          Nessun destinatario disponibile per questa campagna. Verifica che alcuni
-          clienti abbiano dato il consenso email.
+          Nessun destinatario disponibile. Verifica che alcuni clienti abbiano dato
+          il consenso a ricevere email.
         </p>
       )}
 
@@ -141,7 +141,7 @@ export function CampaignActions({
         onClick={handleCancel}
       >
         <X className="mr-2 h-4 w-4" />
-        Annulla campagna
+        Annulla comunicazione
       </Button>
     </div>
   )

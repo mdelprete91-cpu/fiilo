@@ -44,7 +44,7 @@ export function RecipientsList({ recipients }: RecipientsListProps) {
     return (
       <section className="rounded-xl border border-border bg-card p-12 text-center">
         <p className="text-sm text-muted-foreground">
-          Nessun destinatario per questa campagna.
+          Nessun destinatario per questa comunicazione.
         </p>
       </section>
     )

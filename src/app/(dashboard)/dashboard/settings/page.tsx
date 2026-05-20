@@ -5,6 +5,7 @@ import { createClient, createServiceClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { SettingsForm, type TeamMember } from '@/components/dashboard/SettingsForm'
 import { BrandSettingsCard } from '@/components/dashboard/BrandSettingsCard'
+import { SiteImportCard } from '@/components/dashboard/SiteImportCard'
 import { getIntegrationByTenant } from '@/lib/whatsapp/integrations'
 
 export default async function SettingsPage() {
@@ -15,7 +16,7 @@ export default async function SettingsPage() {
   const [{ data: tenant }, { data: userProfile }] = await Promise.all([
     supabase
       .from('tenants')
-      .select('name, email, phone, address, city, plan, created_at, logo_url, brand_color')
+      .select('name, email, phone, address, city, plan, created_at, logo_url, brand_color, website_url')
       .eq('id', tid)
       .single(),
     supabase
@@ -108,11 +109,19 @@ export default async function SettingsPage() {
         </Link>
 
         {session.role === 'tenant_admin' && (
-          <BrandSettingsCard
-            tenantName={tenant.name}
-            currentLogoUrl={tenant.logo_url}
-            currentBrandColor={tenant.brand_color}
-          />
+          <>
+            <SiteImportCard
+              tenantName={tenant.name}
+              currentWebsiteUrl={(tenant as { website_url?: string | null }).website_url ?? null}
+              currentLogoUrl={tenant.logo_url}
+              currentBrandColor={tenant.brand_color}
+            />
+            <BrandSettingsCard
+              tenantName={tenant.name}
+              currentLogoUrl={tenant.logo_url}
+              currentBrandColor={tenant.brand_color}
+            />
+          </>
         )}
 
         <SettingsForm

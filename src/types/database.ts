@@ -498,6 +498,7 @@ export type Database = {
           composition: string | null
           created_at: string
           currency: string
+          external_url: string | null
           id: string
           image_url: string | null
           is_available: boolean
@@ -516,6 +517,7 @@ export type Database = {
           composition?: string | null
           created_at?: string
           currency?: string
+          external_url?: string | null
           id?: string
           image_url?: string | null
           is_available?: boolean
@@ -534,6 +536,7 @@ export type Database = {
           composition?: string | null
           created_at?: string
           currency?: string
+          external_url?: string | null
           id?: string
           image_url?: string | null
           is_available?: boolean
@@ -1139,6 +1142,7 @@ export type Database = {
           slug: string
           updated_at: string
           whatsapp_phone_number_id: string | null
+          website_url: string | null
         }
         Insert: {
           address?: string | null
@@ -1160,6 +1164,7 @@ export type Database = {
           slug: string
           updated_at?: string
           whatsapp_phone_number_id?: string | null
+          website_url?: string | null
         }
         Update: {
           address?: string | null
@@ -1181,6 +1186,7 @@ export type Database = {
           slug?: string
           updated_at?: string
           whatsapp_phone_number_id?: string | null
+          website_url?: string | null
         }
         Relationships: []
       }

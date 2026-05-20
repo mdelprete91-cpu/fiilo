@@ -66,9 +66,9 @@ export default async function MarketingPage() {
         <div className="flex items-start gap-3">
           <TopBar role={session.role} userName={session.fullName ?? session.email} />
           <div>
-            <h1 className="font-heading text-5xl text-ink leading-none">Marketing</h1>
+            <h1 className="font-heading text-5xl text-ink leading-none">Comunicazioni</h1>
             <p className="mt-2 text-sm text-muted-foreground">
-              Newsletter personalizzate via email per i tuoi clienti
+              Email e newsletter per i tuoi clienti
             </p>
           </div>
         </div>
@@ -77,7 +77,7 @@ export default async function MarketingPage() {
           className="shrink-0 inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 active:scale-[0.97] transition-colors will-change-transform"
         >
           <Plus className="h-4 w-4" />
-          Nuova campagna
+          Nuova comunicazione
         </Link>
       </div>
 
@@ -85,10 +85,10 @@ export default async function MarketingPage() {
         <div className="rounded-xl border border-border bg-card p-12 text-center">
           <Mail className="mx-auto h-10 w-10 text-muted-foreground/40" />
           <p className="mt-4 text-sm font-medium text-foreground">
-            Nessuna campagna ancora
+            Nessuna comunicazione ancora
           </p>
           <p className="mt-1 text-xs text-muted-foreground">
-            Inizia creando la prima newsletter per i tuoi clienti.
+            Crea la prima newsletter per i tuoi clienti.
           </p>
           <Link
             href="/dashboard/marketing/nuova"

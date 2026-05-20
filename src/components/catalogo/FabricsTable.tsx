@@ -136,7 +136,8 @@ function FabricFormDialog({ fabric, onClose }: { fabric: Fabric | null; onClose:
       color: fabric.color ?? '', pattern: fabric.pattern ?? undefined,
       price_per_meter: fabric.price_per_meter ?? undefined, season: fabric.season ?? undefined,
       is_available: fabric.is_available,
-    } : { is_available: true },
+      external_url: ((fabric as unknown as { external_url?: string | null }).external_url) ?? '',
+    } : { is_available: true, external_url: '' },
   })
 
   function onSubmit(data: FabricFormData) {
@@ -176,6 +177,22 @@ function FabricFormDialog({ fabric, onClose }: { fabric: Fabric | null; onClose:
             </select>
           </F>
           <F label="Prezzo al metro (€)"><Input type="number" step="0.01" {...register('price_per_meter')} /></F>
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">
+            Link alla pagina del prodotto sul tuo sito
+          </Label>
+          <Input
+            type="url"
+            placeholder="https://sartoria.it/tessuti/loro-piana-flannel-250g"
+            {...register('external_url')}
+          />
+          <p className="text-[11px] text-muted-foreground/80">
+            Esempio: https://sartoria.it/tessuti/loro-piana-flannel-250g — sarà il bottone primario nella newsletter quando promuovi questo tessuto.
+          </p>
+          {errors.external_url && (
+            <p className="text-xs text-destructive">{errors.external_url.message}</p>
+          )}
         </div>
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" {...register('is_available')} className="rounded" />

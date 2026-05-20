@@ -8,7 +8,8 @@
  *   - client_first_name, client_last_name, client_full_name
  *   - tenant_name, whatsapp_url
  *   - fabric_name, fabric_mill, fabric_mill_suffix, fabric_season,
- *     fabric_season_label
+ *     fabric_season_label, fabric_external_url
+ *   - fabric_external_url_or_whatsapp (derivata: external_url o whatsapp_url)
  *   - current_season (primavera/estate/autunno/inverno)
  *   - current_month_it
  */
@@ -36,6 +37,7 @@ interface FabricInput {
   name: string
   mill: string | null
   season: string | null
+  external_url?: string | null
 }
 
 export function buildTemplateVars(opts: {

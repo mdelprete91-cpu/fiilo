@@ -50,13 +50,13 @@ export default async function NuovaCampagnaPage() {
       <div className="flex items-start gap-3">
         <TopBar role={session.role} userName={session.fullName ?? session.email} />
         <div className="flex-1">
-          <BackButton fallbackHref="/dashboard/marketing" label="Marketing" />
+          <BackButton fallbackHref="/dashboard/marketing" label="Comunicazioni" />
           <h1 className="mt-2 font-heading text-4xl text-ink leading-none">
-            Nuova campagna
+            Nuova comunicazione
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Scegli l'occasione e il tessuto in evidenza. filo scriverà una newsletter
-            diversa per ogni cliente.
+            Scegli un template, l'occasione e (se vuoi) un tessuto in evidenza.
+            filo invierà la newsletter a tutti i tuoi clienti iscritti.
           </p>
         </div>
       </div>

@@ -24,7 +24,7 @@ export async function upsertFabricAction(id: string | null, formData: FormData):
   const supabase = await createClient()
   const d = parsed.data
 
-  const payload = {
+  const basePayload = {
     tenant_id: tid,
     name: d.name,
     mill: nullify(d.mill),
@@ -37,6 +37,11 @@ export async function upsertFabricAction(id: string | null, formData: FormData):
     season: d.season ?? null,
     is_available: d.is_available,
   }
+  // external_url non è ancora in src/types/database.ts → cast localizzato.
+  const payload = {
+    ...basePayload,
+    external_url: nullify(d.external_url),
+  } as typeof basePayload
 
   const { error } = id
     ? await supabase.from('fabrics').update(payload).eq('id', id).eq('tenant_id', tid)
