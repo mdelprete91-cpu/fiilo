@@ -7,6 +7,10 @@ import { createClient, createServiceClient } from '@/lib/supabase/server'
 
 type ActionResult<T = void> = { success: true; data: T } | { success: false; error: string }
 
+const ALLOWED_LOGO_MIME = ['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml']
+const MAX_LOGO_BYTES = 1_000_000 // 1 MB
+const HEX_COLOR_REGEX = /^#[0-9a-fA-F]{6}$/
+
 // ─── Aggiorna impostazioni della propria sartoria (tenant_admin) ─────────────
 
 export async function updateMyTenantAction(formData: FormData): Promise<ActionResult<void>> {
@@ -32,14 +36,58 @@ export async function updateMyTenantAction(formData: FormData): Promise<ActionRe
       }
     }
 
-    const { error } = await supabase.from('tenants').update({
+    // Brand color (opzionale)
+    const brandColorRaw = (formData.get('brand_color') as string | null)?.trim() ?? ''
+    let brandColor: string | null | undefined = undefined
+    if (formData.has('brand_color')) {
+      if (brandColorRaw === '') {
+        brandColor = null
+      } else if (!HEX_COLOR_REGEX.test(brandColorRaw)) {
+        return { success: false, error: 'Colore non valido. Usa formato esadecimale es. #E89B3C.' }
+      } else {
+        brandColor = brandColorRaw.toUpperCase()
+      }
+    }
+
+    // Logo file (opzionale) — riusa logica di updateMyBrandingAction
+    const removeLogo = formData.get('remove_logo') === '1'
+    const file = formData.get('logo') as File | null
+    let logoUrlUpdate: string | null | undefined = undefined
+    if (removeLogo) {
+      logoUrlUpdate = null
+    } else if (file && typeof file === 'object' && file.size > 0) {
+      if (!ALLOWED_LOGO_MIME.includes(file.type)) {
+        return { success: false, error: 'Formato logo non supportato. Usa PNG, JPG, WebP o SVG.' }
+      }
+      if (file.size > MAX_LOGO_BYTES) {
+        return { success: false, error: 'Il logo è troppo pesante (max 1 MB).' }
+      }
+      const ext = file.type === 'image/svg+xml' ? 'svg'
+        : file.type === 'image/png' ? 'png'
+        : file.type === 'image/webp' ? 'webp'
+        : 'jpg'
+      const path = `tenants/${tid}/logo-${Date.now()}.${ext}`
+      const buffer = await file.arrayBuffer()
+      const { error: uploadError } = await supabase.storage
+        .from('assets')
+        .upload(path, buffer, { contentType: file.type, upsert: true })
+      if (uploadError) return { success: false, error: `Upload logo fallito: ${uploadError.message}` }
+      const { data: pub } = supabase.storage.from('assets').getPublicUrl(path)
+      logoUrlUpdate = pub.publicUrl
+    }
+
+    const update: Record<string, unknown> = {
       name: name.trim(),
       email: nullify(formData.get('email') as string),
       phone: nullify(formData.get('phone') as string),
       address: nullify(formData.get('address') as string),
       city: nullify(formData.get('city') as string),
       website_url: websiteUrl,
-    }).eq('id', tid)
+    }
+    if (brandColor !== undefined) update.brand_color = brandColor
+    if (logoUrlUpdate !== undefined) update.logo_url = logoUrlUpdate
+
+    const { error } = await supabase.from('tenants').update(update as never).eq('id', tid)
 
     if (error) return { success: false, error: error.message }
 
@@ -50,11 +98,9 @@ export async function updateMyTenantAction(formData: FormData): Promise<ActionRe
   }
 }
 
-// ─── Aggiorna branding (logo + colore brand) ─────────────────────────────────
-
-const ALLOWED_LOGO_MIME = ['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml']
-const MAX_LOGO_BYTES = 1_000_000 // 1 MB
-const HEX_COLOR_REGEX = /^#[0-9a-fA-F]{6}$/
+// ─── Aggiorna branding (logo + colore brand) — DEPRECATED ───────────────────
+// La logica è ora dentro `updateMyTenantAction`. Questa funzione resta solo
+// per retrocompatibilità con eventuali chiamate esterne.
 
 export async function updateMyBrandingAction(
   formData: FormData,

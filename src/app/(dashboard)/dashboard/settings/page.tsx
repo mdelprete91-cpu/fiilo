@@ -8,7 +8,6 @@ import {
   type TeamMember,
   type SettingsTab,
 } from '@/components/dashboard/SettingsForm'
-import { BrandSettingsCard } from '@/components/dashboard/BrandSettingsCard'
 import { getIntegrationByTenant } from '@/lib/whatsapp/integrations'
 
 interface PageProps {
@@ -159,14 +158,6 @@ export default async function SettingsPage({ searchParams }: PageProps) {
           team={team}
           preferredLanguage={userProfile?.preferred_language ?? 'it'}
         />
-        )}
-
-        {tab === 'sartoria' && session.role === 'tenant_admin' && (
-          <BrandSettingsCard
-            tenantName={tenant.name}
-            currentLogoUrl={tenant.logo_url}
-            currentBrandColor={tenant.brand_color}
-          />
         )}
 
         {tab === 'integrazioni' && (

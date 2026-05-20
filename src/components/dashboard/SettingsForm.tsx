@@ -1,8 +1,9 @@
 'use client'
 
 import { useTransition, useState, useRef } from 'react'
+import Image from 'next/image'
 import { toast } from 'sonner'
-import { Check, Loader2, Trash2, Sparkles, Globe } from 'lucide-react'
+import { Check, Loader2, Trash2, Sparkles, Globe, Upload, X } from 'lucide-react'
 import {
   updateMyTenantAction,
   updateMyProfileAction,
@@ -112,10 +113,34 @@ export function SettingsForm({
 
 /* ────────────────────  SARTORIA  ──────────────────── */
 
+const DEFAULT_BRAND_COLOR = '#1F1F1F'
+
 function SartoriaCard({ tenant }: { tenant: TenantData }) {
   const [isPending, startTransition] = useTransition()
   const [result, setResult] = useState<{ success: boolean; error?: string } | null>(null)
   const [autoImporting, setAutoImporting] = useState(false)
+  const [logoPreview, setLogoPreview] = useState<string | null>(tenant.logo_url)
+  const [pendingLogoFile, setPendingLogoFile] = useState<File | null>(null)
+  const [removeLogo, setRemoveLogo] = useState(false)
+  const [brandColor, setBrandColor] = useState(tenant.brand_color ?? DEFAULT_BRAND_COLOR)
+  const logoInputRef = useRef<HTMLInputElement>(null)
+
+  function handleLogoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setPendingLogoFile(file)
+    setRemoveLogo(false)
+    const reader = new FileReader()
+    reader.onload = (ev) => setLogoPreview(ev.target?.result as string)
+    reader.readAsDataURL(file)
+  }
+
+  function handleLogoRemove() {
+    setLogoPreview(null)
+    setPendingLogoFile(null)
+    setRemoveLogo(true)
+    if (logoInputRef.current) logoInputRef.current.value = ''
+  }
 
   async function maybeAutoImport(newWebsiteUrl: string) {
     // Auto-import logo/colore/catalogo se il sito è cambiato e mancano logo o colore
@@ -153,10 +178,20 @@ function SartoriaCard({ tenant }: { tenant: TenantData }) {
     e.preventDefault()
     const fd = new FormData(e.currentTarget)
     const newWebsite = (fd.get('website_url') as string)?.trim() ?? ''
+
+    // Append logo + brand color manually because file input isn't in form
+    if (pendingLogoFile) fd.set('logo', pendingLogoFile)
+    if (removeLogo) fd.set('remove_logo', '1')
+    fd.set('brand_color', brandColor)
+
     setResult(null)
     startTransition(async () => {
       const res = await updateMyTenantAction(fd)
       setResult(res)
+      if (res.success) {
+        setPendingLogoFile(null)
+        setRemoveLogo(false)
+      }
       if (res.success && newWebsite && newWebsite !== (tenant.website_url ?? '')) {
         maybeAutoImport(newWebsite)
       }
@@ -209,6 +244,94 @@ function SartoriaCard({ tenant }: { tenant: TenantData }) {
             <Field label="Città" name="city" defaultValue={tenant.city ?? ''} />
           </div>
           <Field label="Indirizzo" name="address" defaultValue={tenant.address ?? ''} />
+
+          {/* Brand: logo + colore */}
+          <div className="pt-4 border-t border-border space-y-5">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+              Brand
+            </p>
+
+            <div className="grid gap-5 sm:grid-cols-2">
+              {/* Logo */}
+              <div className="space-y-2">
+                <label className="block text-xs font-medium text-muted-foreground">
+                  Logo
+                </label>
+                <div className="flex items-center gap-3">
+                  <div className="flex h-16 w-32 items-center justify-center rounded-md border border-border bg-muted/30 p-2 overflow-hidden">
+                    {logoPreview ? (
+                      <Image
+                        src={logoPreview}
+                        alt={tenant.name}
+                        width={120}
+                        height={48}
+                        className="max-h-12 max-w-full object-contain"
+                        unoptimized
+                      />
+                    ) : (
+                      <span className="text-[10px] text-muted-foreground">Nessun logo</span>
+                    )}
+                  </div>
+                  <div className="space-y-1.5">
+                    <button
+                      type="button"
+                      onClick={() => logoInputRef.current?.click()}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium hover:bg-muted transition-colors"
+                    >
+                      <Upload className="h-3 w-3" />
+                      {logoPreview ? 'Cambia' : 'Carica'}
+                    </button>
+                    {logoPreview && (
+                      <button
+                        type="button"
+                        onClick={handleLogoRemove}
+                        className="block text-xs text-muted-foreground hover:text-destructive transition-colors"
+                      >
+                        <X className="h-3 w-3 inline mr-0.5" />
+                        Rimuovi
+                      </button>
+                    )}
+                  </div>
+                  <input
+                    ref={logoInputRef}
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                    className="hidden"
+                    onChange={handleLogoChange}
+                  />
+                </div>
+                <p className="text-[10px] text-muted-foreground/70">
+                  PNG, JPG, WebP o SVG. Max 1 MB.
+                </p>
+              </div>
+
+              {/* Brand color */}
+              <div className="space-y-2">
+                <label className="block text-xs font-medium text-muted-foreground">
+                  Colore brand
+                </label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    value={brandColor}
+                    onChange={(e) => setBrandColor(e.target.value.toUpperCase())}
+                    className="h-10 w-12 cursor-pointer rounded-md border border-border bg-card p-1"
+                  />
+                  <input
+                    type="text"
+                    value={brandColor}
+                    onChange={(e) => setBrandColor(e.target.value.toUpperCase())}
+                    placeholder="#E89B3C"
+                    className="w-28 rounded-md border border-border bg-background px-3 py-2 text-sm font-mono uppercase focus:outline-none focus:ring-2 focus:ring-ring/30"
+                    pattern="^#[0-9a-fA-F]{6}$"
+                  />
+                </div>
+                <p className="text-[10px] text-muted-foreground/70">
+                  Usato nelle email e nelle newsletter.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
         <CardFooter isPending={isPending} result={result} label="Salva modifiche" />
       </form>
