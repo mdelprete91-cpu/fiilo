@@ -1,7 +1,8 @@
 'use client'
 
 import { useTransition, useState, useRef } from 'react'
-import { Check, Loader2, Trash2 } from 'lucide-react'
+import { toast } from 'sonner'
+import { Check, Loader2, Trash2, Sparkles, Globe } from 'lucide-react'
 import {
   updateMyTenantAction,
   updateMyProfileAction,
@@ -9,6 +10,10 @@ import {
   inviteTeamMemberAction,
   removeTeamMemberAction,
 } from '@/lib/actions/tenants'
+import {
+  importFromSiteUrlAction,
+  applyImportPreviewAction,
+} from '@/lib/actions/onboarding-from-site'
 import { Card, CardFooter, CardHeader, Field, Row } from '@/components/settings/SettingsCard'
 
 interface TenantData {
@@ -17,6 +22,9 @@ interface TenantData {
   phone: string | null
   address: string | null
   city: string | null
+  website_url: string | null
+  logo_url: string | null
+  brand_color: string | null
 }
 
 interface ProfileData {
@@ -32,7 +40,10 @@ export interface TeamMember {
   role: string
 }
 
+export type SettingsTab = 'sartoria' | 'team' | 'profilo'
+
 interface Props {
+  tab: SettingsTab
   tenant: TenantData
   profile: ProfileData
   isAdmin: boolean
@@ -44,6 +55,7 @@ interface Props {
 }
 
 export function SettingsForm({
+  tab,
   tenant,
   profile,
   isAdmin,
@@ -53,13 +65,47 @@ export function SettingsForm({
   team,
   preferredLanguage,
 }: Props) {
+  if (tab === 'team') {
+    return (
+      <div className="space-y-5">
+        <TeamCard team={team} currentUserId={currentUserId} isAdmin={isAdmin} />
+      </div>
+    )
+  }
+
+  if (tab === 'profilo') {
+    return (
+      <div className="space-y-5">
+        <ProfiloCard profile={profile} />
+        <LinguaCard currentLanguage={preferredLanguage} />
+        <AccountCard plan={plan} memberSince={memberSince} />
+      </div>
+    )
+  }
+
+  // tab === 'sartoria'
   return (
     <div className="space-y-5">
-      {isAdmin && <SartoriaCard tenant={tenant} />}
-      {isAdmin && <TeamCard team={team} currentUserId={currentUserId} />}
-      <ProfiloCard profile={profile} />
-      <LinguaCard currentLanguage={preferredLanguage} />
-      <AccountCard plan={plan} memberSince={memberSince} />
+      {isAdmin ? (
+        <SartoriaCard tenant={tenant} />
+      ) : (
+        <Card>
+          <CardHeader
+            label="La sartoria"
+            description="Solo gli amministratori possono modificare i dati della sartoria."
+          />
+          <div className="grid gap-5 p-6 sm:grid-cols-2">
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">Nome</p>
+              <p className="mt-1 text-sm text-foreground">{tenant.name}</p>
+            </div>
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">Sito web</p>
+              <p className="mt-1 text-sm text-foreground">{tenant.website_url ?? '—'}</p>
+            </div>
+          </div>
+        </Card>
+      )}
     </div>
   )
 }
@@ -69,14 +115,51 @@ export function SettingsForm({
 function SartoriaCard({ tenant }: { tenant: TenantData }) {
   const [isPending, startTransition] = useTransition()
   const [result, setResult] = useState<{ success: boolean; error?: string } | null>(null)
+  const [autoImporting, setAutoImporting] = useState(false)
+
+  async function maybeAutoImport(newWebsiteUrl: string) {
+    // Auto-import logo/colore/catalogo se il sito è cambiato e mancano logo o colore
+    const needsLogo = !tenant.logo_url
+    const needsColor = !tenant.brand_color
+    if (!needsLogo && !needsColor) return
+
+    setAutoImporting(true)
+    try {
+      const fd = new FormData()
+      fd.set('website_url', newWebsiteUrl)
+      const previewRes = await importFromSiteUrlAction(fd)
+      if (!previewRes.success) return // silent fail (è opzionale)
+
+      const applyRes = await applyImportPreviewAction({
+        websiteUrl: previewRes.data.websiteUrl,
+        logoUrl: needsLogo ? previewRes.data.analysis.logo_url : null,
+        brandColor: needsColor ? previewRes.data.analysis.brand_color_hex : null,
+        officialName: null, // non sovrascrivere il nome senza chiedere
+        catalogItems: previewRes.data.catalogItems,
+      })
+      if (applyRes.success) {
+        toast.success('Logo e colore importati dal tuo sito.', {
+          description: `Trovate ${previewRes.data.catalogItems.length} pagine catalogo.`,
+        })
+      }
+    } catch {
+      // silent
+    } finally {
+      setAutoImporting(false)
+    }
+  }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const fd = new FormData(e.currentTarget)
+    const newWebsite = (fd.get('website_url') as string)?.trim() ?? ''
     setResult(null)
     startTransition(async () => {
       const res = await updateMyTenantAction(fd)
       setResult(res)
+      if (res.success && newWebsite && newWebsite !== (tenant.website_url ?? '')) {
+        maybeAutoImport(newWebsite)
+      }
     })
   }
 
@@ -84,12 +167,33 @@ function SartoriaCard({ tenant }: { tenant: TenantData }) {
     <Card>
       <CardHeader
         label="La sartoria"
-        description="Informazioni di contatto visibili ai clienti."
+        description="Dati anagrafici e sito web. Quando salvi il sito, filo legge automaticamente logo e colore."
       />
       <form onSubmit={handleSubmit}>
         <div className="space-y-5 p-6">
           <div className="grid gap-5 sm:grid-cols-2">
             <Field label="Nome sartoria" name="name" defaultValue={tenant.name} required />
+            <div className="space-y-1.5">
+              <label className="block text-xs font-medium text-muted-foreground">
+                Sito web
+              </label>
+              <div className="relative">
+                <Globe className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                <input
+                  name="website_url"
+                  type="text"
+                  defaultValue={tenant.website_url ?? ''}
+                  placeholder="esempio.it"
+                  className="w-full rounded-md border border-border bg-background py-2.5 pl-9 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring/30"
+                />
+              </div>
+              {autoImporting && (
+                <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                  <Sparkles className="h-3 w-3 animate-pulse" />
+                  Sto leggendo logo e colore dal tuo sito…
+                </p>
+              )}
+            </div>
             <Field
               label="Email di contatto"
               name="email"
@@ -122,9 +226,11 @@ const ROLE_LABEL: Record<string, string> = {
 function TeamCard({
   team,
   currentUserId,
+  isAdmin,
 }: {
   team: TeamMember[]
   currentUserId: string
+  isAdmin: boolean
 }) {
   const [invitePending, startInvite] = useTransition()
   const [inviteResult, setInviteResult] = useState<{
@@ -182,7 +288,7 @@ function TeamCard({
               <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
                 {ROLE_LABEL[member.role] ?? member.role}
               </span>
-              {member.userId !== currentUserId && (
+              {isAdmin && member.userId !== currentUserId && (
                 <button
                   onClick={() => handleRemove(member.roleId)}
                   disabled={removingId === member.roleId}
@@ -201,7 +307,13 @@ function TeamCard({
         ))}
       </ul>
 
-      <form
+      {!isAdmin && (
+        <div className="border-t border-border bg-muted/30 px-6 py-4 text-xs text-muted-foreground">
+          Solo gli amministratori possono invitare nuovi membri o rimuoverli.
+        </div>
+      )}
+
+      {isAdmin && <form
         ref={formRef}
         onSubmit={handleInvite}
         className="space-y-3 border-t border-border bg-muted/30 p-6"
@@ -244,7 +356,7 @@ function TeamCard({
         {inviteResult?.error && (
           <p className="text-xs text-destructive">{inviteResult.error}</p>
         )}
-      </form>
+      </form>}
     </Card>
   )
 }

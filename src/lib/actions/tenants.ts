@@ -20,12 +20,25 @@ export async function updateMyTenantAction(formData: FormData): Promise<ActionRe
     const name = formData.get('name') as string
     if (!name?.trim()) return { success: false, error: 'Il nome della sartoria è obbligatorio' }
 
+    // Website url normalizzato (https prefix se mancante)
+    const websiteRaw = (formData.get('website_url') as string | null)?.trim() ?? ''
+    let websiteUrl: string | null = null
+    if (websiteRaw) {
+      try {
+        const u = new URL(websiteRaw.startsWith('http') ? websiteRaw : `https://${websiteRaw}`)
+        websiteUrl = u.origin + (u.pathname === '/' ? '' : u.pathname)
+      } catch {
+        return { success: false, error: 'URL del sito non valido.' }
+      }
+    }
+
     const { error } = await supabase.from('tenants').update({
       name: name.trim(),
       email: nullify(formData.get('email') as string),
       phone: nullify(formData.get('phone') as string),
       address: nullify(formData.get('address') as string),
       city: nullify(formData.get('city') as string),
+      website_url: websiteUrl,
     }).eq('id', tid)
 
     if (error) return { success: false, error: error.message }
