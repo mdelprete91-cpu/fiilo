@@ -17,6 +17,34 @@ export default async function NuovaCampagnaPage() {
     .order('name', { ascending: true })
     .limit(200)
 
+  // Templates di sistema + custom del tenant. RLS già filtra correttamente.
+  // src/types/database.ts non contiene la tabella newsletter_templates:
+  // cast esplicito via 'as never'.
+  const tplRes = await supabase
+    .from('newsletter_templates' as never)
+    .select(
+      'id, slug, name, occasion, description, is_system, subject_template, incipit_template, gancio_template, chiusura_template, cta_label',
+    )
+    .order('sort_order' as never, { ascending: true })
+
+  // Se la migration 024 non è applicata, tplRes.error sarà PGRST205: fallback [].
+  type TemplateRow = {
+    id: string
+    slug: string
+    name: string
+    occasion: 'new_fabric' | 'seasonal' | 'event' | 'custom'
+    description: string | null
+    is_system: boolean
+    subject_template: string
+    incipit_template: string
+    gancio_template: string
+    chiusura_template: string
+    cta_label: string | null
+  }
+  const templates: TemplateRow[] = tplRes.error
+    ? []
+    : ((tplRes.data ?? []) as unknown as TemplateRow[])
+
   return (
     <div className="min-h-full bg-background px-6 py-8 lg:px-8 space-y-6">
       <div className="flex items-start gap-3">
@@ -34,7 +62,7 @@ export default async function NuovaCampagnaPage() {
       </div>
 
       <div className="max-w-2xl">
-        <NewCampaignForm fabrics={fabrics ?? []} />
+        <NewCampaignForm fabrics={fabrics ?? []} templates={templates} />
       </div>
     </div>
   )

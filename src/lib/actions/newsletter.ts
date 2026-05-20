@@ -6,6 +6,7 @@ import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
 import { requireRole } from '@/lib/auth/session'
 import { generateCampaignDraft } from '@/lib/newsletter/generate'
+import { generateCampaignDraftFromTemplate } from '@/lib/newsletter/generate-from-template'
 import { sendNewsletterEmail } from '@/lib/newsletter/send-email'
 import type { ActionResult } from './auth'
 import type {
@@ -18,6 +19,8 @@ const CreateDraftSchema = z.object({
   title: z.string().min(2, 'Il titolo è obbligatorio').max(200),
   occasion: z.enum(['new_fabric', 'seasonal', 'event', 'custom']),
   featured_fabric_id: z.string().uuid().optional().or(z.literal('')),
+  template_id: z.string().uuid().optional().or(z.literal('')),
+  use_ai: z.union([z.literal('on'), z.literal('1'), z.literal('true')]).optional(),
 })
 
 /**
@@ -42,16 +45,39 @@ export async function createDraftAction(
   }
 
   try {
-    const result = await generateCampaignDraft({
-      tenantId: tid,
-      title: parsed.data.title,
-      occasion: parsed.data.occasion as NewsletterOccasion,
-      featuredFabricId:
-        parsed.data.featured_fabric_id && parsed.data.featured_fabric_id !== ''
-          ? parsed.data.featured_fabric_id
-          : undefined,
-      userId: session.id,
-    })
+    const featuredFabricId =
+      parsed.data.featured_fabric_id && parsed.data.featured_fabric_id !== ''
+        ? parsed.data.featured_fabric_id
+        : undefined
+    const templateId =
+      parsed.data.template_id && parsed.data.template_id !== ''
+        ? parsed.data.template_id
+        : undefined
+    const useAi = Boolean(parsed.data.use_ai)
+
+    if (!templateId && !useAi) {
+      return {
+        success: false,
+        error: 'Seleziona un template oppure attiva la generazione AI.',
+      }
+    }
+
+    const result = templateId
+      ? await generateCampaignDraftFromTemplate({
+          tenantId: tid,
+          title: parsed.data.title,
+          occasion: parsed.data.occasion as NewsletterOccasion,
+          templateId,
+          featuredFabricId,
+          userId: session.id,
+        })
+      : await generateCampaignDraft({
+          tenantId: tid,
+          title: parsed.data.title,
+          occasion: parsed.data.occasion as NewsletterOccasion,
+          featuredFabricId,
+          userId: session.id,
+        })
 
     revalidatePath('/dashboard/marketing')
     redirect(`/dashboard/marketing/${result.campaignId}`)
