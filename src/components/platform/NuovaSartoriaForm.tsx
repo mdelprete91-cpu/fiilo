@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { Loader2, ArrowLeft } from 'lucide-react'
+import { Loader2, ArrowLeft, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -109,7 +109,22 @@ export function NuovaSartoriaForm() {
             </F>
           </div>
 
-          <F label="Colore brand">
+          <F
+            label="Sito web della sartoria"
+            hint="Se fornito, filo importa automaticamente logo, colore brand e catalogo dal sito."
+          >
+            <div className="relative">
+              <Sparkles className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-primary" />
+              <Input
+                name="website_url"
+                type="text"
+                placeholder="esempio.it"
+                className="pl-9"
+              />
+            </div>
+          </F>
+
+          <F label="Colore brand di fallback" hint="Usato solo se il sito non viene fornito o l'auto-import non trova un colore.">
             <div className="flex items-center gap-3">
               <input
                 type="color"
@@ -164,14 +179,19 @@ export function NuovaSartoriaForm() {
         </div>
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex items-center gap-3">
         <Button type="submit" disabled={isPending}>
           {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Crea sartoria
+          {isPending ? 'Creazione in corso…' : 'Crea sartoria'}
         </Button>
         <Button type="button" variant="outline" onClick={() => router.push('/platform')}>
           Annulla
         </Button>
+        {isPending && (
+          <p className="text-xs text-muted-foreground">
+            Se hai inserito un sito, l&apos;analisi può richiedere fino a 30 secondi.
+          </p>
+        )}
       </div>
     </form>
   )

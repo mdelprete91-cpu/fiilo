@@ -339,6 +339,16 @@ export async function createTenantAction(formData: FormData): Promise<ActionResu
     const address = formData.get('address') as string || null
     const city = formData.get('city') as string || null
     const brandColor = formData.get('brand_color') as string || null
+    const websiteRaw = (formData.get('website_url') as string | null)?.trim() ?? ''
+    let websiteUrl: string | null = null
+    if (websiteRaw) {
+      try {
+        const u = new URL(websiteRaw.startsWith('http') ? websiteRaw : `https://${websiteRaw}`)
+        websiteUrl = u.origin + (u.pathname === '/' ? '' : u.pathname)
+      } catch {
+        return { success: false, error: 'URL del sito non valido' }
+      }
+    }
 
     if (!name || !slug || !email || !password) {
       return { success: false, error: 'Campi obbligatori mancanti' }
@@ -352,7 +362,8 @@ export async function createTenantAction(formData: FormData): Promise<ActionResu
     const { data: tenant, error: tenantErr } = await supabase.from('tenants').insert({
       name, slug, plan: plan as 'starter' | 'professional' | 'enterprise',
       email, phone, address, city, brand_color: brandColor, is_active: true,
-    }).select('id').single()
+      website_url: websiteUrl,
+    } as never).select('id').single()
 
     if (tenantErr || !tenant) return { success: false, error: tenantErr?.message ?? 'Errore creazione tenant' }
 
@@ -382,6 +393,17 @@ export async function createTenantAction(formData: FormData): Promise<ActionResu
 
     if (roleErr) {
       return { success: false, error: roleErr.message }
+    }
+
+    // 6. Se è stato fornito un sito web, auto-importa logo + colore + catalogo
+    //    (fail-soft: se fallisce, la sartoria è comunque stata creata)
+    if (websiteUrl) {
+      const { runSiteImportForTenant } = await import('./onboarding-from-site')
+      await runSiteImportForTenant({
+        tenantId: tenant.id,
+        websiteUrl,
+        preserveExisting: true,
+      })
     }
 
     revalidatePath('/platform')
