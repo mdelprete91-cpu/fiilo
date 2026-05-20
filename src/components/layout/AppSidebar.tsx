@@ -2,10 +2,12 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { UserPlus } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { FiiloLogo } from './FiiloLogo'
 import { NotificationsBell } from './NotificationsBell'
 import { UserMenu } from './UserMenu'
+import { useNuovoCliente } from '@/components/dashboard/NuovoClienteModal'
 import type { TenantRole } from '@/types/database'
 
 interface NavItem {
@@ -54,6 +56,8 @@ export function AppSidebar({ role, userName, unreadNotifications }: AppSidebarPr
   const nav = role === 'platform_owner' ? platformNav : dashboardNav
   const isTenant = role !== 'platform_owner'
 
+  const openNuovoCliente = useNuovoCliente().open
+
   return (
     <aside
       className="flex h-full w-56 flex-col border-r"
@@ -81,6 +85,21 @@ export function AppSidebar({ role, userName, unreadNotifications }: AppSidebarPr
           />
         )}
       </div>
+
+      {/* Quick action: Nuovo cliente — solo nel dashboard */}
+      {isTenant && (
+        <div className="px-3 pt-2 pb-1">
+          <button
+            type="button"
+            onClick={openNuovoCliente}
+            className="w-full inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
+            style={{ background: D.ink, color: D.bg }}
+          >
+            <UserPlus className="h-3.5 w-3.5" />
+            Nuovo cliente
+          </button>
+        </div>
+      )}
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto px-2 py-3 space-y-0.5">

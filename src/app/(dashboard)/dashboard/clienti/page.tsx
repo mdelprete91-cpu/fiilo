@@ -1,8 +1,9 @@
 import Link from 'next/link'
-import { Plus, Search } from 'lucide-react'
+import { Search } from 'lucide-react'
 import { requireRole } from '@/lib/auth/session'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
+import { NuovoClienteButton } from '@/components/dashboard/NuovoClienteButton'
 import { tokenize, ilikeOrClause } from '@/lib/search'
 
 interface PageProps {
@@ -101,13 +102,7 @@ export default async function ClientiPage({ searchParams }: PageProps) {
             </p>
           </div>
         </div>
-        <Link
-          href="/dashboard/clienti/nuovo"
-          className="shrink-0 inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 active:scale-[0.97] transition-colors will-change-transform"
-        >
-          <Plus className="h-4 w-4" />
-          Nuovo cliente
-        </Link>
+        <NuovoClienteButton />
       </div>
 
       {/* Search */}
@@ -224,12 +219,11 @@ export default async function ClientiPage({ searchParams }: PageProps) {
                       <p className="text-xs text-muted-foreground mb-4">
                         Inizia aggiungendo il primo cliente alla tua rubrica.
                       </p>
-                      <Link
-                        href="/dashboard/clienti/nuovo"
+                      <NuovoClienteButton
+                        variant="inline"
+                        label="Aggiungi il primo →"
                         className="text-xs font-medium text-primary hover:text-primary/80 transition-colors"
-                      >
-                        Aggiungi il primo →
-                      </Link>
+                      />
                     </>
                   )}
                 </td>

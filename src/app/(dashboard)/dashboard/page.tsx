@@ -1,9 +1,8 @@
-import Link from 'next/link'
-import { Plus } from 'lucide-react'
 import { requireRole } from '@/lib/auth/session'
 import { createClient } from '@/lib/supabase/server'
 import { TopBar } from '@/components/layout/TopBar'
 import { PanoramicaView, type PanoramicaGarment } from '@/components/dashboard/PanoramicaView'
+import { NuovoClienteButton } from '@/components/dashboard/NuovoClienteButton'
 
 export default async function DashboardPage() {
   const session = await requireRole(['tenant_admin', 'tenant_staff'])
@@ -83,13 +82,7 @@ export default async function DashboardPage() {
                 Inizia creando il tuo primo cliente.
               </p>
             </div>
-            <Link
-              href="/dashboard/clienti/nuovo"
-              className="shrink-0 inline-flex items-center gap-2 self-start rounded-full bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 active:scale-[0.97] transition-colors will-change-transform sm:self-auto"
-            >
-              <Plus className="h-4 w-4" />
-              Crea cliente
-            </Link>
+            <NuovoClienteButton label="Crea cliente" />
           </div>
         </div>
       )}
